@@ -2,12 +2,15 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Messages from './components/messages';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export default function Settings({ auth, storeUrl, company }) {
     const [companyInfoServer, setCompanyInfoServer] = useState(company[0]);
     const companyInfoKeys = Object.keys(companyInfoServer);
     const [companyInfo, setComp] = useState(companyInfoServer);
+    const [messages, setMessages] = useState([]);
 
     const handleUpdateValue = (key, newValue) => {
         setComp({
@@ -20,6 +23,20 @@ export default function Settings({ auth, storeUrl, company }) {
     return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    const addMessage = (text, type) => {
+        const uuid = uuidv4();
+        const message = {
+            text,
+            type,
+            uuid
+        };
+        setMessages(m => [message, ...m]);
+        setTimeout(() => {
+            setMessages(m => m.filter(m => m.uuid !== uuid));
+        }, 2000);
+        // success warning danger
+    }
+
     const store = () => {
         console.log('Store');
 
@@ -27,6 +44,7 @@ export default function Settings({ auth, storeUrl, company }) {
             .then(res => {
                 if (res.status === 201) {
                     setCompanyInfoServer({...companyInfo})
+                    addMessage(res.data.message, res.data.type);
                     console.log('Urraaa');
                 }
                 else {
@@ -41,10 +59,10 @@ export default function Settings({ auth, storeUrl, company }) {
     }
 
     const cancel = () => {
-        console.log('cancel');
         setComp({
             ...companyInfoServer,
           })
+        addMessage('Data restored', 'warning');
     }
 
     return (
@@ -59,7 +77,7 @@ export default function Settings({ auth, storeUrl, company }) {
             <Head title="Settings" />
             {console.log(companyInfoServer)}
             {console.log(companyInfoKeys)}
-            <div className="py-12">
+            <div className="py-12 ">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-2xl font-bold text-blue-500 w-auto mx- auto text-center">
@@ -116,6 +134,11 @@ export default function Settings({ auth, storeUrl, company }) {
                         </div>
                     </div>
                 </div>
+                <Messages
+                    const messages = {messages}
+
+
+                />
             </div>
         </AuthenticatedLayout>
     );

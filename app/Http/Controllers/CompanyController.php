@@ -72,8 +72,8 @@ class CompanyController extends Controller
         $company->save();
         return response()->json(
             [
-                'message' => 'Social created',
-
+                'message' => 'Company details stored',
+                'type' => 'success',
             ],
             201
         );
