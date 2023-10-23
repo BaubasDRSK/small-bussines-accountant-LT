@@ -28,10 +28,10 @@ Route::get('/', function () {
 
 //settings route
 Route::get('/settings', [CompanyController::class, 'index'])->middleware(['auth', 'verified'])->name('settings');
-Route::post('/settigs/store', [CompanyController::class, 'store'])->name('settings-store');
+Route::post('/settigs/store', [CompanyController::class, 'store'])->middleware(['auth', 'verified'])->name('settings-store');
 
 //customer routes
-Route::prefix('customers')->name('customers-')->group(function () {
+Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')->group(function () {
     Route::get('customers', [CustomerController::class,'index'])->name('list');
     Route::post('customers2', [CustomerController::class,'list'])->name('listf');
 
