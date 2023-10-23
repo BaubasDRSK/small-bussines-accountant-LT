@@ -16,7 +16,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::paginate(2);
+        $customers = Customer::paginate(4);
 
         return Inertia::render('Customers', [
             'customers' => $customers,

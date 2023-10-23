@@ -69,6 +69,34 @@ export default function Settings({ auth, newlist, customers }) {
                     {console.log(customers['links'])}
 
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <tbody className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    <input className="rounded-md placeholder-gray-300 " type="text" placeholder="Search by name" />
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <input className="rounded-md placeholder-gray-300 " type="text" placeholder="Search by Street" />
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <input className="rounded-md placeholder-gray-300 " type="text" placeholder="Search by city" />
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Record per page
+                                    <select className="rounded-md text-gray-500 ml-4">
+                                        <option value="option1">15</option>
+                                        <option value="option2">30</option>
+                                        <option value="option3">50</option>
+                                    </select>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Action
+                                </th>
+
+                            </tr>
+                        </tbody>
+                        <hr />
+                        </table>
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
