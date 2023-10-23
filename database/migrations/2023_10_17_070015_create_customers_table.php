@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->string('vat_code')->nullable();
+            $table->string('name');
+            $table->string('nickname')->nullable();
+            $table->string('street');
+            $table->string('city');
+            $table->string('country');
+            $table->string('zip')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->string('website')->nullable();
             $table->timestamps();
         });
     }

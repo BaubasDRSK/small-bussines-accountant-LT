@@ -75,15 +75,17 @@ export default function Settings({ auth, storeUrl, company }) {
             }
         >
             <Head title="Settings" />
-            {console.log(companyInfoServer)}
-            {console.log(companyInfoKeys)}
             <div className="py-12 ">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-2xl font-bold text-blue-500 w-auto mx- auto text-center">
+                        <div className="p-6 text-2xl font-bold text-blue-500 w-auto mx-auto text-center">
                             Settings of yout company
                         </div>
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900 w-1/2 mx-auto">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900 sm:w-full md:w-10/12 lg:w-1/2 mx-auto">
+                            <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
+                                    Company details:
+                            </h3>
+                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
                         {companyInfoKeys.map((key) => (
                              key ==='isvat' ?
                              (
@@ -109,6 +111,27 @@ export default function Settings({ auth, storeUrl, company }) {
                                 </div>
                              ) : (
                                 <div className="mb-4" key={key}>
+                                    {key === 'street' ?(<div>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
+                                            Address details:
+                                        </h3>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                    </div>):(null)}
+                                    {key === 'phone' ?(<div>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
+                                            Contact details:
+                                        </h3>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                    </div>):(null)}
+                                    {key === 'bank' ?(<div>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
+                                            Bank details:
+                                        </h3>
+                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
+                                    </div>):(null)}
                                     <label
                                         htmlFor={key}
                                         className="block text-gray-600 font-bold mb-1"
@@ -122,7 +145,8 @@ export default function Settings({ auth, storeUrl, company }) {
                                         value={companyInfo[key]}
                                         onChange={(e) => handleUpdateValue(key, e.target.value)}
                                     />
-                                </div>)
+                                </div>
+                              )
                             )
                         )}
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,11 @@ Route::get('/', function () {
 //settings route
 Route::get('/settings', [CompanyController::class, 'index'])->middleware(['auth', 'verified'])->name('settings');
 Route::post('/settigs/store', [CompanyController::class, 'store'])->name('settings-store');
+
+//customer routes
+Route::prefix('customers')->name('customers-')->group(function () {
+    Route::get('customers', [CustomerController::class,'index'])->name('list');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

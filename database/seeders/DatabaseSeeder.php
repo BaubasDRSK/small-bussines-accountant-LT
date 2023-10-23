@@ -22,5 +22,22 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123'),
         ]);
 
+        $faker = Faker::create('lt_LT');
+
+        foreach (range(1, 12) as $_) {
+            DB::table('customers')->insert([
+                'code' => $faker->unique()->numberBetween(10000000, 99999999),
+                'vat_code' => $faker->unique()->numberBetween(10000000, 99999999),
+                'name' => $faker->name,
+                'nickname' => $faker->name,
+                'street' => $faker->streetAddress,
+                'city' => $faker->city,
+                'country' => $faker->country,
+                'zip' => $faker->postcode,
+                'notes' => $faker->paragraph,
+                'contact_name' => $faker->name,
+            ]);
+        }
+
     }
 }
