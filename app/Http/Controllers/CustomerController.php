@@ -26,12 +26,15 @@ class CustomerController extends Controller
 
     public function list(Request $request)
     {
-
+        $search = $request->search ?? '';
+        $pagination = $request->pagination;
+        $customers = Customer::where('name','like', '%'.$search.'%')->paginate($pagination);
         return response()->json(
             [
                 'message' => 'Customer list renewed',
                 'type' => 'success',
-                'aaa' => $request->search,
+                'customers' => $customers,
+                'aaa' => $search,
 
             ],
             201
