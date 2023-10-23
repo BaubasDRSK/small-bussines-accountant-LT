@@ -6,10 +6,51 @@ import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
 // import { usePage } from '@inertiajs/inertia-react';
 
-export default function Settings({ auth, customers }) {
+export default function Settings({ auth, newlist, customers }) {
 
     const [messages, setMessages] = useState([]);
+    const [paginations, setPaginations] = useState(5);
+    // const [filter, setFilter] = useState([]);
+    // const [search, setSearch] = useState('nothing');
+    const search = {
+        'search': 'kaminas',
+    }
 
+
+    useEffect(() =>{
+        console.log('saunam');
+        console.log(search);
+        axios.post(newlist, search)
+        .then(res => {
+            if (res.status === 201) {
+                addMessage(res.data.message, res.data.type);
+                console.log(res.data.aaa);
+            }
+            else {
+
+            }
+        }
+        )
+        .catch(e => {
+            console.log(e);
+        }
+        );
+
+    } ,[]);
+
+    const addMessage = (text, type) => {
+        const uuid = uuidv4();
+        const message = {
+            text,
+            type,
+            uuid
+        };
+        setMessages(m => [message, ...m]);
+        setTimeout(() => {
+            setMessages(m => m.filter(m => m.uuid !== uuid));
+        }, 2000);
+        // success warning danger
+    }
 
 
     return (
@@ -27,50 +68,55 @@ export default function Settings({ auth, customers }) {
                     {console.log(customers)}
                     {console.log(customers['links'])}
 
-                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Company name
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Street
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     City
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Action
                                 </th>
-                                <th scope="col" class="px-6 py-3">
-                                    <span class="sr-only">Edit</span>
+                                <th scope="col" className="px-6 py-3">
+                                    <span className="sr-only">Edit</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                     {customers.data.map((item) => (
 
-                            <tr key={item.code} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <tr key={item.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {item.name}
                             </th>
-                            <td class="px-6 py-4">
+                            <td className="px-6 py-4">
                             {item.street}
                             </td>
-                            <td class="px-6 py-4">
+                            <td className="px-6 py-4">
                             {item.city}
                             </td>
-                            <td class="px-6 py-4">
+                            <td className="px-6 py-4">
                                 $2999
                             </td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            <td className="px-6 py-4 text-right">
+                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                             </td>
                         </tr>
                     ))}
                         </tbody>
                         </table>
+                        <div className="flex justify-center items-end ">
+                            {customers.links.map((item) => (
+                            <a key={item.label} href={item.url} dangerouslySetInnerHTML={{ __html: item.label }} className={`m-4 ${item.active && 'text-xl text-blue-500'}`}></a>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

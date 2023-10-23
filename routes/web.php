@@ -33,6 +33,8 @@ Route::post('/settigs/store', [CompanyController::class, 'store'])->name('settin
 //customer routes
 Route::prefix('customers')->name('customers-')->group(function () {
     Route::get('customers', [CustomerController::class,'index'])->name('list');
+    Route::post('customers2', [CustomerController::class,'list'])->name('listf');
+
 });
 
 Route::middleware('auth')->group(function () {

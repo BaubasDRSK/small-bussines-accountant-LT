@@ -16,11 +16,26 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::paginate(5);
+        $customers = Customer::paginate(2);
 
         return Inertia::render('Customers', [
             'customers' => $customers,
+            'newlist' => route('customers-listf'),
         ]);
+    }
+
+    public function list(Request $request)
+    {
+
+        return response()->json(
+            [
+                'message' => 'Customer list renewed',
+                'type' => 'success',
+                'aaa' => $request->search,
+
+            ],
+            201
+        );
     }
 
     /**
