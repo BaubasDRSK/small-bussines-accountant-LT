@@ -16,8 +16,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::paginate(4);
-
+        $customers = Customer::paginate(2);
         return Inertia::render('Customers', [
             'customers' => $customers,
             'newlist' => route('customers-listf'),
@@ -28,13 +27,14 @@ class CustomerController extends Controller
     {
         $search = $request->search ?? '';
         $pagination = $request->pagination;
+        $page = $request->page;
         $customers = Customer::where('name','like', '%'.$search.'%')->paginate($pagination);
         return response()->json(
             [
                 'message' => 'Customer list renewed',
                 'type' => 'success',
                 'customers' => $customers,
-                'aaa' => $search,
+                'aaa' => $page,
 
             ],
             201

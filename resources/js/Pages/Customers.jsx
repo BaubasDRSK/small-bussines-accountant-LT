@@ -10,43 +10,22 @@ export default function Settings({ auth, newlist, customers }) {
     const [messages, setMessages] = useState([]);
     const [paginations, setPaginations] = useState(5);
     const [searchName, setSearchName] = useState('');
-    const [customersList, setCustomersList] = useState(null);
+    const [customersList, setCustomersList] = useState(customers);
     const [timer1, setTimer1] = useState(null);
     const [pagination, setPagination] = useState(2);
-    // const [filter, setFilter] = useState([]);
-    // const [search, setSearch] = useState('nothing');
-
-    const search = {
-        'search': '',
-        'pagination' : pagination,
-    }
 
 
-    useEffect(() =>{
-        axios.post(newlist, search)
-        .then(res => {
-            if (res.status === 201) {
-                setCustomersList(res.data.customers);
-                console.log(res.data.aaa);
-            }
-            else {
-                addMessage('Something went wrong', 'danger');
-            }
-        }
-        )
-        .catch(e => {
-            console.log(e);
-        }
-        );
-
-    } ,[]);
 
     useEffect(()=>{
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
-            uzklausa(searchName);
+            uzklausa(newlist, searchName);
         }, 1000));
     },[searchName])
+
+    useEffect(()=>{
+       uzklausa(newlist, searchName);
+    },[pagination])
 
     const addMessage = (text, type) => {
         const uuid = uuidv4();
@@ -69,13 +48,18 @@ export default function Settings({ auth, newlist, customers }) {
         }
     };
 
-    const uzklausa = (value) => {
-        axios.post(newlist, {'search':value, 'pagination':pagination})
+    const uzklausa = (url, value) => {
+        axios.post(url, {
+            'search':value,
+            'pagination':pagination,
+            // 'page': pageNUmber,
+        })
         .then(res => {
             if (res.status === 201) {
                 addMessage(res.data.message, res.data.type);
                 setCustomersList(res.data.customers);
                 console.log(res.data.aaa);
+                console.log(res.data.customers);
             }
             else {
                 addMessage('Something went wrong', 'danger');
@@ -157,35 +141,43 @@ export default function Settings({ auth, newlist, customers }) {
                             </tr>
                         </thead>
                         <tbody>
-                     { customersList !== null ? (customersList.data.map((item) => (
+                            { customersList !== null ? (customersList.data.map((item) => (
 
-                            <tr key={item.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {item.name}
-                            </th>
-                            <td className="px-6 py-4">
-                            {item.street}
-                            </td>
-                            <td className="px-6 py-4">
-                            {item.city}
-                            </td>
-                            <td className="px-6 py-4">
-                                $2999
-                            </td>
-                            <td className="px-6 py-4 text-right">
-                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            </td>
-                        </tr>
-                    ))) : (
-                        <tr>
-                            <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">Loading</td>
-                        </tr>
-                    )}
-                        </tbody>
-                        </table>
+                                    <tr key={item.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {item.name}
+                                    </th>
+                                    <td className="px-6 py-4">
+                                    {item.street}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                    {item.city}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        $2999
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                    </td>
+                                </tr>
+                            ))) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">Loading</td>
+                                </tr>
+                            )}
+                            </tbody>
+                            </table>
                         <div className="flex justify-center items-end ">
-                            {customers.links.map((item) => (
-                            <a key={item.label} href={item.url} dangerouslySetInnerHTML={{ __html: item.label }} className={`m-4 ${item.active && 'text-xl text-blue-500'}`}></a>
+                            {customersList.links.map((item) => (
+                            <p  key={item.label}
+
+                                onClick = {()=>{
+                                    console.log(item.url);
+                                    uzklausa(item.url, searchName);}}
+                                dangerouslySetInnerHTML={{ __html: item.label }}
+                                className={`m-4 ${item.active && 'text-xl text-blue-500'} cursor-pointer`}
+
+                            ></p>
                             ))}
                         </div>
                     </div>
