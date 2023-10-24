@@ -19,12 +19,8 @@ export default function Settings({ auth, newlist, customers }) {
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
             uzklausa(newlist, searchName);
-        }, 1000));
-    },[searchName])
-
-    useEffect(()=>{
-       uzklausa(newlist, searchName);
-    },[pagination])
+        }, 300));
+    },[searchName, pagination])
 
     const addMessage = (text, type) => {
         const uuid = uuidv4();
@@ -37,7 +33,7 @@ export default function Settings({ auth, newlist, customers }) {
         setTimeout(() => {
             setMessages(m => m.filter(m => m.uuid !== uuid));
         }, 1000);
-        // success warning danger
+        // success warning danger < is messeages type :)
     }
 
     const makeSearch = (field, value) => {

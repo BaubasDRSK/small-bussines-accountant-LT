@@ -39,5 +39,23 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        foreach (range(1, 5) as $_) {
+            DB::table('products')->insert([
+                'name' => $faker->unique()->word,
+                'description' => $faker->paragraph,
+                'price' => $faker->numberBetween(1000, 9999),
+            ]);
+        }
+
+        foreach (range(1, 2) as $_) {
+            DB::table('invoices')->insert([
+                'invoice_number' => $faker->unique()->numberBetween(1000, 9999),
+                'description' => $faker->paragraph,
+                'customer_id' => $faker->numberBetween(1, 5),
+
+                'total' => $faker->numberBetween(1000, 9999),
+            ]);
+        }
+
     }
 }
