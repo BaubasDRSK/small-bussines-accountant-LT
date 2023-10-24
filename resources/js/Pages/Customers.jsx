@@ -8,9 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Settings({ auth, newlist, customers }) {
 
     const [messages, setMessages] = useState([]);
-    const [paginations, setPaginations] = useState(5);
     const [searchName, setSearchName] = useState('');
-    const [customersList, setCustomersList] = useState(customers);
+    const [customersList, setCustomersList] = useState(null);
     const [timer1, setTimer1] = useState(null);
     const [pagination, setPagination] = useState(2);
 
@@ -37,7 +36,7 @@ export default function Settings({ auth, newlist, customers }) {
         setMessages(m => [message, ...m]);
         setTimeout(() => {
             setMessages(m => m.filter(m => m.uuid !== uuid));
-        }, 2000);
+        }, 1000);
         // success warning danger
     }
 
@@ -52,7 +51,6 @@ export default function Settings({ auth, newlist, customers }) {
         axios.post(url, {
             'search':value,
             'pagination':pagination,
-            // 'page': pageNUmber,
         })
         .then(res => {
             if (res.status === 201) {
@@ -168,7 +166,7 @@ export default function Settings({ auth, newlist, customers }) {
                             </tbody>
                             </table>
                         <div className="flex justify-center items-end ">
-                            {customersList.links.map((item) => (
+                            {customersList !== null ? (customersList.links.map((item) => (
                             <p  key={item.label}
 
                                 onClick = {()=>{
@@ -178,7 +176,9 @@ export default function Settings({ auth, newlist, customers }) {
                                 className={`m-4 ${item.active && 'text-xl text-blue-500'} cursor-pointer`}
 
                             ></p>
-                            ))}
+                            ))): (
+                              <p className="m-4">Loading</p>
+                            )}
                         </div>
                     </div>
                 </div>
