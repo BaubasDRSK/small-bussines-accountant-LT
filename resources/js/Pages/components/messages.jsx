@@ -1,5 +1,5 @@
-
 export default function Messages({ messages }){
+
     return (
         <div className="flex flex-col gap-1" style={{position: 'fixed', top: '50px', left: '0px'}}>
                 {
@@ -15,3 +15,4 @@ export default function Messages({ messages }){
             </div>
     )
 }
+

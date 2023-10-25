@@ -87,29 +87,7 @@ export default function Settings({ auth, storeUrl, company }) {
                             </h3>
                         <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
                         {companyInfoKeys.map((key) => (
-                             key ==='isvat' ?
-                             (
-                                <div className="mb-4" key={key}>
-                                    <label
-                                        htmlFor={key}
-                                        className="block text-gray-600 font-bold mb-1"
-                                    >
-                                        Are You VAT registered?:
-                                    </label>
-                                    <input
-                                        id={key}
-                                        className="px-4 py-2 border border-gray-300 rounded "
-                                        type="checkbox"
-                                        checked={companyInfo[key]}
-                                        onChange={() =>
-                                            setComp({
-                                                ...companyInfo,
-                                                [key]: (companyInfo[key] === 1 ? 0 : 1),
-                                              })
-                                        }
-                                    />
-                                </div>
-                             ) : (
+
                                 <div className="mb-4" key={key}>
                                     {key === 'street' ?(<div>
                                         <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
@@ -146,7 +124,7 @@ export default function Settings({ auth, storeUrl, company }) {
                                         onChange={(e) => handleUpdateValue(key, e.target.value)}
                                     />
                                 </div>
-                              )
+
                             )
                         )}
 

@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
 
 
 class CompanyController extends Controller
@@ -22,7 +23,6 @@ class CompanyController extends Controller
             return [
                 'name' => $item['name'],
                 'code' => $item['code'],
-                'isvat' => $item['vat_status'],
                 'vatcode' => $item['vat_code'],
                 'street' => $item['street'],
                 'city' => $item['city'],
@@ -56,9 +56,26 @@ class CompanyController extends Controller
     {
         $company = Company::where('company_id', 1)->first();
 
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'regex:/^[A-Z][a-zA-Z]*$/'],
+            'code' => ['required', 'numeric'],
+            'vatcode' => ['required', 'string', 'regex:/^LT(\d{9}|\d{12})$/'],
+
+        ], [
+            'name.regex' => 'The first name must start with a capital letter and contain only letters.',
+            'vatcode.regex' => ['Check vat code again.', 'vatcode'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors(), 'type'=> 'warning',], 400);
+        }
+
+        // Validation passed, continue with your logic here
+
+        // return response()->json(['message' => 'Validation successful']);
+
         $company->name = $request->name ?? '';
         $company->code = $request->code ?? '';
-        $company->vat_status = $request->isvat ?? '';
         $company->vat_code = $request->vatcode ?? '';
         $company->street = $request->street ?? '';
         $company->city = $request->city ?? '';
