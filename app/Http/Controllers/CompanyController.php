@@ -59,8 +59,7 @@ class CompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'regex:/^[A-Z][a-zA-Z]*$/'],
             'code' => ['required', 'numeric'],
-            'vatcode' => ['required', 'string', 'regex:/^LT(\d{9}|\d{12})$/'],
-
+            'vatcode' => ['regex:/^$|^-$|^LT(\d{9}|\d{12})$/'],
         ], [
             'name.regex' => 'The first name must start with a capital letter and contain only letters.',
             'vatcode.regex' => ['Check vat code again.', 'vatcode'],
