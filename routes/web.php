@@ -32,9 +32,10 @@ Route::post('/settigs/store', [CompanyController::class, 'store'])->middleware([
 
 //customer routes
 Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')->group(function () {
-    Route::get('customers', [CustomerController::class,'index'])->name('index');
-    Route::post('customers-list', [CustomerController::class,'list'])->name('list');
-    Route::get('customer-new', [CustomerController::class, 'create'])->name('create');
+    Route::get('/', [CustomerController::class,'index'])->name('index');
+    Route::post('/list', [CustomerController::class,'list'])->name('list');
+    Route::get('/new', [CustomerController::class, 'create'])->name('create');
+    Route::post('/store', [CustomerController::class,'store'])->name('store');
 
 });
 

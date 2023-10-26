@@ -16,10 +16,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::paginate(5);
+
         return Inertia::render('Customers', [
-            'customers' => $customers,
-            'newlist' => route('customers-list'),
+                'newlist' => route('customers-list'),
         ]);
     }
 
@@ -47,7 +46,7 @@ class CustomerController extends Controller
     public function create()
     {
         return Inertia::render('NewCustomer', [
-
+            'storeRoute' => route('customers-store'),
         ]);
     }
 
@@ -56,7 +55,35 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newCustomer = new Customer;
+
+        $newCustomer->name = $request->newClient['name'];
+        $newCustomer->code = $request->newClient['code'];
+        $newCustomer->vat_code = $request->newClient['vat_code'];
+        $newCustomer->nickname = $request->newClient['nickname'];
+        $newCustomer->street = $request->newClient['street'];
+        $newCustomer->city = $request->newClient['city'];
+        $newCustomer->country = $request->newClient['country'];
+        $newCustomer->zip = $request->newClient['zip'];
+        $newCustomer->notes = $request->newClient['notes'];
+        $newCustomer->contact_name = $request->newClient['contact_name'];
+        $newCustomer->contact_phone = $request->newClient['contact_phone'];
+        $newCustomer->contact_email = $request->newClient['contact_email'];
+        $newCustomer->website = $request->newClient['website'];
+
+
+        $newCustomer->save();
+        return response()->json(
+            [
+                'message' => 'Customer stored successfully',
+                'type' => 'success',
+                'route' => route('customers-index'),
+                'aaa' => $request->newClient,
+
+            ],
+            201
+        );
+
     }
 
     /**

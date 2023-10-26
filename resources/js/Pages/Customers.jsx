@@ -8,14 +8,16 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Settings({ auth, newlist, customers }) {
 
     const [messages, setMessages] = useState([]);
-    const [searchName, setSearchName] = useState('');
+    const [searchName, setSearchName] = useState(localStorage.getItem('searchName'));
     const [customersList, setCustomersList] = useState(null);
     const [timer1, setTimer1] = useState(null);
-    const [pagination, setPagination] = useState(2);
+    const [pagination, setPagination] = useState(localStorage.getItem('pagination'));
 
 
 
     useEffect(()=>{
+        localStorage.setItem('pagination', pagination);
+        localStorage.setItem('searchName', searchName);
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
             uzklausa(newlist, searchName);
@@ -52,8 +54,6 @@ export default function Settings({ auth, newlist, customers }) {
             if (res.status === 201) {
                 addMessage(res.data.message, res.data.type);
                 setCustomersList(res.data.customers);
-                console.log(res.data.aaa);
-                console.log(res.data.customers);
             }
             else {
                 addMessage('Something went wrong', 'danger');

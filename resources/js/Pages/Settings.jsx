@@ -63,6 +63,7 @@ export default function Settings({ auth, storeUrl, company }) {
             ...companyInfoServer,
           })
         addMessage('Data restored', 'warning');
+        window.location.href = '/customers';
     }
 
     return (
