@@ -21,7 +21,7 @@ export default function Settings({ auth, newlist, customers }) {
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
             uzklausa(newlist, searchName);
-        }, 300));
+        }, 200));
     },[searchName, pagination])
 
     const addMessage = (text, type) => {
@@ -105,7 +105,7 @@ export default function Settings({ auth, newlist, customers }) {
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Record per page
-                                    <select onChange={e => setPagination(e.target.value)} className="rounded-md text-gray-500 ml-4 dark:bg-gray-500 dark:text-gray-300">
+                                    <select onChange={e => setPagination(e.target.value)} defaultValue={pagination} className="rounded-md text-gray-500 ml-4 dark:bg-gray-500 dark:text-gray-300">
                                         <option value={2}>2</option>
                                         <option value={3}>3</option>
                                         <option value={5}>5</option>
@@ -170,9 +170,7 @@ export default function Settings({ auth, newlist, customers }) {
                             {customersList !== null ? (customersList.links.map((item) => (
                             <p  key={item.label}
 
-                                onClick = {()=>{
-                                    console.log(item.url);
-                                    uzklausa(item.url, searchName);}}
+                                onClick = {()=>{uzklausa(item.url, searchName);}}
                                 dangerouslySetInnerHTML={{ __html: item.label }}
                                 className={`m-4 ${item.active && 'text-xl text-blue-500'} cursor-pointer`}
 

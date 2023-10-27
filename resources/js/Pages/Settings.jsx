@@ -33,7 +33,7 @@ export default function Settings({ auth, storeUrl, company }) {
         setMessages(m => [message, ...m]);
         setTimeout(() => {
             setMessages(m => m.filter(m => m.uuid !== uuid));
-        }, 2000);
+        }, 1500);
         // success warning danger
     }
 
