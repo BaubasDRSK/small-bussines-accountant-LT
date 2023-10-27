@@ -8,6 +8,8 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,13 +32,23 @@ Route::get('/', function () {
 Route::get('/settings', [CompanyController::class, 'index'])->middleware(['auth', 'verified'])->name('settings');
 Route::post('/settigs/store', [CompanyController::class, 'store'])->middleware(['auth', 'verified'])->name('settings-store');
 
-//customer routes
+//Client routes
 Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')->group(function () {
     Route::get('/', [CustomerController::class,'index'])->name('index');
     Route::post('/list', [CustomerController::class,'list'])->name('list');
     Route::get('/new', [CustomerController::class, 'create'])->name('create');
     Route::post('/store', [CustomerController::class,'store'])->name('store');
 
+});
+
+//Invoices routes
+Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->group(function () {
+    Route::get('/',[InvoiceController::class, 'index'])->name('index');
+});
+
+//Products routes
+Route::prefix('products')->middleware(['auth', 'verified'])->name('products-')->group(function () {
+    Route::get('/',[ProductController::class, 'index'])->name('index');
 });
 
 Route::middleware('auth')->group(function () {
