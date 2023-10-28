@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreInvoiceRequest;
-use App\Http\Requests\UpdateInvoiceRequest;
+use Illuminate\Http\Request;
 use App\Models\Invoice;
+use Inertia\Inertia;
 
 class InvoiceController extends Controller
 {
@@ -13,7 +13,27 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Invoices', [
+            'newlist' => route('invoices-list'),
+    ]);
+    }
+
+    public function list(Request $request)
+    {
+        $search = $request->search ?? '';
+        $pagination = $request->pagination;
+        $page = $request->page;
+        $invoices = Invoice::with('customer')->where('name','like', '%'.$search.'%')->orderBy('name', 'asc')->paginate($pagination);
+        return response()->json(
+            [
+                'message' => 'Invoices list renewed',
+                'type' => 'success',
+                'invoices' => $invoices,
+                'aaa' => $page,
+
+            ],
+            201
+        );
     }
 
     /**
@@ -27,7 +47,7 @@ class InvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreInvoiceRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -51,7 +71,7 @@ class InvoiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateInvoiceRequest $request, Invoice $invoice)
+    public function update(Request $request, Invoice $invoice)
     {
         //
     }

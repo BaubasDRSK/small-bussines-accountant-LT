@@ -27,13 +27,26 @@ class CustomerController extends Controller
         $search = $request->search ?? '';
         $pagination = $request->pagination;
         $page = $request->page;
-        $customers = Customer::where('name','like', '%'.$search.'%')->orderBy('name', 'asc')->paginate($pagination);
+        $customers = Customer::where(function($query) use ($search)
+        {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('nickname', 'like', '%' . $search . '%')
+                ->orWhere('code', 'like', '%' . $search . '%');
+        }
+        )->orderBy('name', 'asc')->paginate($pagination);
+
+        $customers->each(function ($customer) {
+            $customer->invoicesCount = $customer->invoices->count();
+            $customer->total = $customer->invoices->sum('total');
+        });
+
         return response()->json(
             [
                 'message' => 'Customer list renewed',
                 'type' => 'success',
                 'customers' => $customers,
                 'aaa' => $page,
+
 
             ],
             201
