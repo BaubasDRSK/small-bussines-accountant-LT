@@ -50,6 +50,16 @@ Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->
 //Products routes
 Route::prefix('products')->middleware(['auth', 'verified'])->name('products-')->group(function () {
     Route::get('/',[ProductController::class, 'index'])->name('index');
+    Route::post('/list', [ProductController::class,'list'])->name('list');
+    //show specific product
+    Route::get('/show/{id}', [ProductController::class,'show'])->name('show');
+    //edit product
+    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
+    //update product
+    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
+    //delete product
+    Route::post('/delete/{id}', [ProductController::class, 'destroy'])->name('delete');
+
 });
 
 Route::middleware('auth')->group(function () {

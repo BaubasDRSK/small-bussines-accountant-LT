@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+
+use Illuminate\Http\Request;
 use App\Models\Product;
+use Inertia\Inertia;
+
+
 
 class ProductController extends Controller
 {
@@ -13,7 +16,32 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Products', [
+            'newlist' => route('products-list'),
+    ]);
+    }
+
+
+    public function list(Request $request)
+    {
+        $search = $request->search ?? '';
+        $pagination = $request->pagination;
+        $page = $request->page;
+        $products = Product::where(function($query) use ($search)
+        {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('price', 'like', '%' . $search . '%');
+        }
+        )->orderBy('code', 'desc')->paginate($pagination);
+
+        return response()->json(
+            [
+                'message' => 'Invoices list renewed',
+                'type' => 'success',
+                'products' => $products,
+            ],
+            201
+        );
     }
 
     /**
@@ -27,7 +55,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -37,7 +65,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return Inertia::render('Products/Product', [
+            'storeRoute' => route('customers-store'),
+        ]);
     }
 
     /**
@@ -51,7 +81,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
         //
     }

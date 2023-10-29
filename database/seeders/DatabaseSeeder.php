@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
             DB::table('customers')->insert([
                 'code' => $faker->unique()->numberBetween(10000000, 99999999),
                 'vat_code' => $faker->unique()->numberBetween(10000000, 99999999),
-                'name' => $faker->name,
-                'nickname' => $faker->name,
+                'name' => $faker->company(),
+                'nickname' => $faker->company(),
                 'street' => $faker->streetAddress,
                 'city' => $faker->city,
                 'country' => $faker->country,
@@ -39,15 +39,16 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        foreach (range(1, 5) as $_) {
+        for ($i=1; $i<10; $i++){
             DB::table('products')->insert([
                 'name' => $faker->unique()->word,
+                'code' => "PRO-0000".$i,
                 'description' => $faker->paragraph,
-                'price' => $faker->numberBetween(1000, 9999),
+                'price' => $faker->numberBetween(100, 9999),
             ]);
         }
 
-        foreach (range(1, 25) as $_) {
+        foreach (range(1, 25) as $_){
             DB::table('invoices')->insert([
                 'invoice_number' => $faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,
