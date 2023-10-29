@@ -52,7 +52,7 @@ Route::prefix('products')->middleware(['auth', 'verified'])->name('products-')->
     Route::get('/',[ProductController::class, 'index'])->name('index');
     Route::post('/list', [ProductController::class,'list'])->name('list');
     //show specific product
-    Route::get('/show/{id}', [ProductController::class,'show'])->name('show');
+    Route::get('/show/{product}', [ProductController::class,'show'])->name('show');
     //edit product
     Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
     //update product

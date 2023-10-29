@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Messages from '../components/messages';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function Product({ auth, newlist }) {
+export default function Product({ auth, newlist, product }) {
 
     return (
         <AuthenticatedLayout
@@ -22,7 +22,9 @@ export default function Product({ auth, newlist }) {
             }
         >
             <Head title="Settings" />
-            <div className="py-12 ">
+            <div className="py-12 text-gray-50 ">
+                {console.log(product)}
+                {product.name} {'  '} {product.price/100} {' €'}
                 <p className='text-gray-300'>Hey Hey</p>
             </div>
             {/* <Messages

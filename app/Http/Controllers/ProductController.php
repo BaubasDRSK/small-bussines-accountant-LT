@@ -65,8 +65,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $productas = $product;
         return Inertia::render('Products/Product', [
             'storeRoute' => route('customers-store'),
+            'product' => $productas,
         ]);
     }
 
