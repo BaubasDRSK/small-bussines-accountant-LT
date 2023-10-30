@@ -13,4 +13,9 @@ class Customer extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function invoicesThisMonth()
+    {
+        return $this->hasMany(Invoice::class)->whereMonth('invoice_date', now()->month);
+    }
 }

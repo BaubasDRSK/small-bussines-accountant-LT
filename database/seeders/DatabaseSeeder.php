@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
+use DateTime;
 
 class DatabaseSeeder extends Seeder
 {
@@ -48,13 +49,42 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        function fakedateDue(){
+            $faker = Faker::create('lt_LT');
+            $currentDate = new DateTime();
+            $startOfRange = clone $currentDate;
+            $startOfRange->modify('-1 week');
+            $endOfRange = clone $currentDate;
+            $endOfRange->modify('+2 weeks');
+
+            $randomDate = $faker->dateTimeBetween($startOfRange, $endOfRange);
+
+            return $randomDate->format('Y-m-d');
+        }
+
+        function fakedate(){
+            $faker = Faker::create('lt_LT');
+            $currentDate = new DateTime();
+            $startOfRange = clone $currentDate;
+            $startOfRange->modify('-2 weeks');
+            $endOfRange = clone $currentDate;
+
+            $randomDate = $faker->dateTimeBetween($startOfRange, $endOfRange);
+
+            return $randomDate->format('Y-m-d');
+        }
+
+
+
         foreach (range(1, 25) as $_){
             DB::table('invoices')->insert([
                 'invoice_number' => $faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,
                 'customer_id' => $faker->numberBetween(1, 5),
-
+                'invoice_date' => fakedate(),
+                'invoice_due_date' => fakedateDue(),
                 'total' => $faker->numberBetween(1000, 9999),
+                'paid' => (bool) mt_rand(0, 1),
             ]);
         }
 

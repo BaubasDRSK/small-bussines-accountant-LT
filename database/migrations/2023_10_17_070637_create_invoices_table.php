@@ -19,7 +19,10 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->json('customer')->nullable();
             $table->json('products')->nullable();
-            $table->float('total', 8, 2);
+            $table->unsignedInteger('total')->defaul(0);
+            $table->date('invoice_date');
+            $table->date('invoice_due_date');
+            $table->boolean('paid')->default(false);
             $table->text('notes')->nullable();
             //payments info
             $table->timestamps();

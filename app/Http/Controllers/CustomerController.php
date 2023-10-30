@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 
 class CustomerController extends Controller
@@ -35,9 +36,15 @@ class CustomerController extends Controller
         }
         )->orderBy('name', 'asc')->paginate($pagination);
 
+
+
         $customers->each(function ($customer) {
+            $today = Carbon::now();
             $customer->invoicesCount = $customer->invoices->count();
+            $customer->invoiceThisMonth = $customer->invoicesThisMonth->count();
             $customer->total = $customer->invoices->sum('total');
+            $customer->overdue = $customer->invoices->where('invoice_due_date', '<', $today->toDateString())->where('paid', false)->sum('total');;
+            $customer->due = $customer->invoices->where('paid', false)->sum('total');
         });
 
         return response()->json(

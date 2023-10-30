@@ -87,18 +87,18 @@ export default function Settings({ auth, newlist, customers }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
 
-                        <div className='flex justify-between w-full text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+                        <div className='flex flex-wrap justify-between w-full text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                             <div className="flex px-6 py-3">
                                 <input
-                                    className=" flex min-w-[300px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
+                                    className=" flex min-w-[230px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
                                     type="text"
-                                    placeholder="Search by name / nicnamee or ID"
+                                    placeholder="Search by name / nickname or ID"
                                     onChange={(e) => makeSearch('name', e.target.value)}
                                     value={searchName}
                                 />
                             </div>
 
-                            <div scope="col" className=" flex px-6 py-3 justify-end">
+                            <div className=" flex px-6 py-3 justify-end">
                                 <div>
                                     Records per page
                                     <select onChange={e => setPagination(e.target.value)} defaultValue={pagination} className="rounded-md text-gray-500 ml-4 dark:bg-gray-500 dark:text-gray-300">
@@ -114,19 +114,16 @@ export default function Settings({ auth, newlist, customers }) {
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" className="px-6 py-3">
-                                        Company name
+                                        <p>Company name</p>
+                                        <p className=" text-xs text-gray-400">Nickname</p>
                                     </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Street
+                                    <th scope="col" className="px-6 py-3 hidden lg:table-cell">
+                                        <p>Invoices count</p>
+                                        <p className=" text-xs text-gray-400">Invoices this month</p>
                                     </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        City
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Action
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        <span className="sr-only">Edit</span>
+                                    <th scope="col" className="px-6 py-3 hidden lg:table-cell">
+                                        <p>Total sales</p>
+                                        <p className=" text-xs text-gray-400">Due / OverDue</p>
                                     </th>
                                 </tr>
                             </thead>
@@ -134,21 +131,21 @@ export default function Settings({ auth, newlist, customers }) {
                                 {customersList !== null ? (customersList.data.map((item) => (
 
                                     <tr key={item.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <p>{item.name}</p>
+                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <p>{item.name}{" / "}{item.id}</p>
                                             <p className=" text-xs text-gray-600">{item.nickname}</p>
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            {item.street}
+                                            <div className="block md:hidden">
+                                                <p className=" text-xs text-gray-600">{(item.total/100).toFixed(2)}{" €"}</p>
+                                                <p className=" text-xs text-gray-600">{(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 font-bold' : 'text-gray-500'}>{(item.overdue/100).toFixed(2)}{" €"}</span></p>
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            {item.city}
+                                        <td className="px-6 py-4 hidden lg:table-cell">
+                                            <p>{item.invoicesCount}</p>
+                                            <p className=" text-xs text-gray-600">{item.invoiceThisMonth ?? 0}</p>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            {item.invoicesCount}{" "}{item.total.toFixed(2)}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                        <td className="px-6 py-4 hidden lg:table-cell">
+                                            {(item.total/100).toFixed(2)}{" €"}
+                                            <p className=" text-xs text-gray-600">{(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 font-bold' : 'text-gray-500'}>{(item.overdue/100).toFixed(2)}{" €"}</span></p>
                                         </td>
                                     </tr>
                                 ))) : (
