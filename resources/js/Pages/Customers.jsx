@@ -130,9 +130,13 @@ export default function Settings({ auth, newlist, customers }) {
                             <tbody>
                                 {customersList !== null ? (customersList.data.map((item) => (
 
-                                    <tr key={item.code} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <tr
+                                        onClick={() => window.location.href = '/customers/show/'+item.id}
+                                        key={item.code}
+                                        className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                    >
                                         <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <p>{item.name}{" / "}{item.id}</p>
+                                            <p>{item.name}</p>
                                             <p className=" text-xs text-gray-600">{item.nickname}</p>
                                             <div className="block md:hidden">
                                                 <p className=" text-xs text-gray-600">{(item.total/100).toFixed(2)}{" €"}</p>

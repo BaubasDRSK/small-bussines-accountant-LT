@@ -38,6 +38,12 @@ Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')
     Route::post('/list', [CustomerController::class,'list'])->name('list');
     Route::get('/new', [CustomerController::class, 'create'])->name('create');
     Route::post('/store', [CustomerController::class,'store'])->name('store');
+    //show  by id
+    Route::get('/show/{customer}', [CustomerController::class,'show'])->name('show');
+    // Route::get('/edit/{id}', [CustomerController::class, 'edit'])->name('edit');
+    // Route::post('/update/{id}', [CustomerController::class, 'update'])->name('update');
+    // Route::post('/destroy/{id}', [CustomerController::class, 'destroy'])->name('destroy');
+
 
 });
 

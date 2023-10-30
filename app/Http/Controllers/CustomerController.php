@@ -111,7 +111,11 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        //
+        $actualCustomer = $customer;
+        return Inertia::render('Customers/Customer', [
+            'storeRoute' => route('customers-store'),
+            'customer' => $actualCustomer,
+        ]);
     }
 
     /**
