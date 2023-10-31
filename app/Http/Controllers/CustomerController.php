@@ -115,6 +115,7 @@ class CustomerController extends Controller
         return Inertia::render('Customers/Customer', [
             'storeRoute' => route('customers-store'),
             'customer' => $actualCustomer,
+            'invoices'  => $actualCustomer->invoices()->get(),
         ]);
     }
 
