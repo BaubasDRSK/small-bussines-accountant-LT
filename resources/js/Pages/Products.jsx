@@ -87,7 +87,7 @@ export default function Products({ auth, newlist }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
 
-                        <div className='flex justify-between w-full text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+                        <div className='flex justify-between w-full text-sm text-left text-gray-500  bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                             <div className="flex px-6 py-3">
                                 <input
                                     className=" flex min-w-[300px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"

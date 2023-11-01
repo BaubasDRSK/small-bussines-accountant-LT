@@ -76,22 +76,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $newCustomer = new Customer;
-
-        $newCustomer->name = $request->newClient['name'];
-        $newCustomer->code = $request->newClient['code'];
-        $newCustomer->vat_code = $request->newClient['vat_code'];
-        $newCustomer->nickname = $request->newClient['nickname'];
-        $newCustomer->street = $request->newClient['street'];
-        $newCustomer->city = $request->newClient['city'];
-        $newCustomer->country = $request->newClient['country'];
-        $newCustomer->zip = $request->newClient['zip'];
-        $newCustomer->notes = $request->newClient['notes'];
-        $newCustomer->contact_name = $request->newClient['contact_name'];
-        $newCustomer->contact_phone = $request->newClient['contact_phone'];
-        $newCustomer->contact_email = $request->newClient['contact_email'];
-        $newCustomer->website = $request->newClient['website'];
-
-
+        $newCustomer -> fill($request->newClient);
         $newCustomer->save();
         return response()->json(
             [
@@ -113,7 +98,7 @@ class CustomerController extends Controller
     {
         $actualCustomer = $customer;
         return Inertia::render('Customers/Customer', [
-            'storeRoute' => route('customers-store'),
+            'updateRoute' => route('customers-update', ['customer' => $actualCustomer->id]),
             'customer' => $actualCustomer,
             'invoices'  => $actualCustomer->invoices()->get(),
         ]);
@@ -132,7 +117,18 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        $customer -> update($request->updatedFields);
+
+        return response()->json(
+            [
+                'message' => 'Client data updated',
+                'type' => 'success',
+                // 'route' => route('customers-index'),
+                // 'aaa' => $request->newClient,
+
+            ],
+            201
+        );
     }
 
     /**

@@ -41,7 +41,7 @@ Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')
     //show  by id
     Route::get('/show/{customer}', [CustomerController::class,'show'])->name('show');
     // Route::get('/edit/{id}', [CustomerController::class, 'edit'])->name('edit');
-    // Route::post('/update/{id}', [CustomerController::class, 'update'])->name('update');
+    Route::post('/update/{customer}', [CustomerController::class, 'update'])->name('update');
     // Route::post('/destroy/{id}', [CustomerController::class, 'destroy'])->name('destroy');
 
 

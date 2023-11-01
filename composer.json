@@ -15,6 +15,7 @@
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
+        "beyondcode/laravel-dump-server": "^1.9",
         "laravel/breeze": "^1.25",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
