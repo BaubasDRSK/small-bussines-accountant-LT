@@ -100,7 +100,7 @@ class CustomerController extends Controller
         return Inertia::render('Customers/Customer', [
             'updateRoute' => route('customers-update', ['customer' => $actualCustomer->id]),
             'customer' => $actualCustomer,
-            'invoices'  => $actualCustomer->invoices()->get(),
+            'invoices'  => $actualCustomer->invoices()->orderBy('invoice_number', 'asc')->get(),
         ]);
     }
 
