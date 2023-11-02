@@ -98,13 +98,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                         <h2 className="mb-4 text-lg font-bold text-blue-600">Customer details</h2>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Client name:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Client name:"}</span>
                             {edit.name ? (
                                 <>
                                 <input className = "py-0 px-2 w-8/12 m-0" type="text" value={name}
                                 onChange={(e) => setName(e.target.value) }
                                 />
-                                <svg onClick={()=>{setEdit({...edit,'name':0}); updateField(); updateField()}} className=" w-1/12 h-8 text-green-400"  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
+                                <svg onClick={()=>{setEdit({...edit,'name':0}); updateField();}} className=" w-1/12 h-8 text-green-400"  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
                                 </>
                                 ):(
                                     <>
@@ -118,7 +118,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 )}
                         </div>
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Nickname:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Nickname:"}</span>
                             {edit.nickname ? (
                                 <>
                                 <input
@@ -132,13 +132,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{nickname}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'nickname':1}); console.log(edit)}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'nickname':1}); console.log(edit)}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Compnay code:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Compnay code:"}</span>
                             {edit.code ? (
                                 <>
                                 <input
@@ -152,13 +152,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{code}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'code':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'code':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"VAT code:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"VAT code:"}</span>
                             {edit.vat_code ? (
                                 <>
                                 <input
@@ -172,13 +172,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{vat_code}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'vat_code':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'vat_code':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Website:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Website:"}</span>
                             {edit.website ? (
                                 <>
                                 <input
@@ -192,7 +192,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{website}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'website':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'website':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
@@ -203,7 +203,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                         <h2 className="mb-4 text-lg font-bold text-blue-600">Address details</h2>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Address:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Address:"}</span>
                             {edit.street ? (
                                 <>
                                 <input
@@ -217,13 +217,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{street}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'street':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'street':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"City:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"City:"}</span>
                             {edit.city ? (
                                 <>
                                 <input
@@ -237,13 +237,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{city}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'city':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'city':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Country:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Country:"}</span>
                             {edit.country ? (
                                 <>
                                 <input
@@ -257,13 +257,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{country}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'country':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'country':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"ZIP:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"ZIP:"}</span>
                             {edit.zip ? (
                                 <>
                                 <input
@@ -277,7 +277,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{zip}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'zip':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'zip':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
@@ -290,7 +290,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                         <h2 className="mb-4 text-lg font-bold text-blue-600">Primary contat:</h2>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Name:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Name:"}</span>
                             {edit.cname ? (
                                 <>
                                 <input
@@ -304,13 +304,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{cname}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cname':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cname':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Phone:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Phone:"}</span>
                             {edit.cphone ? (
                                 <>
                                 <input
@@ -324,13 +324,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{cphone}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cphone':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cphone':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                            <span className="text-gray-500 text-sm self-center mr-4 w-3/12">{"Email:"}</span>
+                            <span className="py-2 text-gray-500 text-sm self-center mr-4 w-3/12">{"Email:"}</span>
                             {edit.cemail ? (
                                 <>
                                 <input
@@ -344,16 +344,19 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                 ):(
                                     <>
                                     <p className="my-1 py-0 px-2 w-8/12">{cemail}</p>
-                                    <svg className="ml-2  mt-2 inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cemail':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                    <svg className=" inline-block w-1/12 h-4 text-blue-500 hover:text-orange-400"  onClick={()=>{setEdit({...edit,'cemail':1})}}  width="12"  height="12"  viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                     </>
                                 )}
                         </div>
-
-
-
                     </div>
+                    <div className=" px-6 w-full">
+                    <h2 className="mb-4 text-lg font-bold text-blue-600">Notes:</h2>
+                            <label className="text-gray-500 text-sm " htmlFor="note">Notes about this customer:</label>
+                            <textarea className="w-full resize" name="" id="note" rows="8"></textarea>
 
+                        </div>
                 </div>
+
             </div>
 
             <Messages
