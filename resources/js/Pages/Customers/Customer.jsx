@@ -9,7 +9,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
 
     const [edit, setEdit] = useState({});
     const [messages, setMessages] = useState([]);
-
+    const [sort, setSort] = useState({sortDirection:'up', sortName:'due'});
 
     const [name, setName] = useState(customer.name);
     const [nickname, setNickname] = useState(customer.nickname);
@@ -28,7 +28,30 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
 
     const [company_notes, setCompanyNotes] = useState(customer.notes);
 
-    // const today = new Date();
+    const [invoicesList, setInvoicesList] = useState(invoices);
+
+    //use efdetc for sort
+    useEffect(()=>{
+        invoicesList.forEach((item) => {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const invoiceDue = new Date(item.invoice_due_date);
+            const maxDueDays = 1000;
+            const due = !item.paid ? (invoiceDue - today)/ (1000 * 60 * 60 * 24) : maxDueDays;
+            item.due = due;
+        });
+        const sortedList = [...invoicesList];
+        if (sort.sortDirection == 'up'){
+            sortedList.sort((a,b)=>a[sort.sortName]- b[sort.sortName]);
+        } else {
+            sortedList.sort((a,b)=>b[sort.sortName]- a[sort.sortName]);
+        }
+
+        setInvoicesList([...sortedList]);
+
+    },[sort]);
+
 
     const addMessage = (text, type) => {
         const uuid = uuidv4();
@@ -79,6 +102,16 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
             }
             );
     }
+
+    const doSort = n => {
+        setSort(s => {
+          switch (s.sortDirection) {
+              case 'down': return {sortDirection:'up', sortName:n};
+              case 'up': return {sortDirection:'down', sortName:n};
+            //   default: return {sortDirection:'default', sortName:n};
+          }
+        });
+      }
 
     return (
         <AuthenticatedLayout
@@ -363,27 +396,28 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                             id="note" rows="8" />
                     </div>
                 </div>
+                {/* invoices block */}
                 <div className="max-w-7xl mx-auto mt-3 pt-3 sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200">
                     <h2 className="mb-4 text-lg font-bold text-blue-600">Client invoices</h2>
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('invoice_number')}>
                                             Invoice number
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('name')}>
                                             Invoice name
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('total')}>
                                             Total
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3"onClick={()=>doSort('due')}>
                                             Due
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {invoices.length ? (invoices.map((item) => {
+                                    {invoicesList.length ? (invoicesList.map((item) => {
                                         const today = new Date();
                                         const yesterday = new Date(today);
                                         yesterday.setDate(today.getDate() - 1);
@@ -396,7 +430,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
 
                                         <tr key={item.invoice_number} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {item.invoice_number} {" "} {item.paid}
+                                                {item.invoice_number}
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.name}
@@ -415,9 +449,8 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                                     )}
                                 </tbody>
                             </table>
-
                 </div>
-
+                                        {console.log(sort)}
             </div>
 
             <Messages
