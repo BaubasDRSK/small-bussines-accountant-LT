@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
 
         $faker = Faker::create('lt_LT');
 
-        foreach (range(1, 12) as $_) {
+        foreach (range(1, 25) as $_) {
             DB::table('customers')->insert([
                 'code' => $faker->unique()->numberBetween(10000000, 99999999),
                 'vat_code' => $faker->unique()->numberBetween(10000000, 99999999),
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-        foreach (range(1, 25) as $_){
+        foreach (range(15, 105) as $_){
             DB::table('invoices')->insert([
                 'invoice_number' => $faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,

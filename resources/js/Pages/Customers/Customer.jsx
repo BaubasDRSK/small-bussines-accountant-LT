@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Messages from '../components/messages';
 import { v4 as uuidv4 } from 'uuid';
+import InvoicesList from "./InvoiceList";
 
 export default function Settings({ auth, updateRoute, customer, invoices }) {
 
@@ -397,60 +398,12 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                     </div>
                 </div>
                 {/* invoices block */}
-                <div className="max-w-7xl mx-auto mt-3 pt-3 sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200">
-                    <h2 className="mb-4 text-lg font-bold text-blue-600">Client invoices</h2>
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('invoice_number')}>
-                                            Invoice number
-                                        </th>
-                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('name')}>
-                                            Invoice name
-                                        </th>
-                                        <th scope="col" className="px-6 py-3" onClick={()=>doSort('total')}>
-                                            Total
-                                        </th>
-                                        <th scope="col" className="px-6 py-3"onClick={()=>doSort('due')}>
-                                            Due
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {invoicesList.length ? (invoicesList.map((item) => {
-                                        const today = new Date();
-                                        const yesterday = new Date(today);
-                                        yesterday.setDate(today.getDate() - 1);
-                                        const invoiceDue = new Date(item.invoice_due_date);
-                                        let textColor = item.paid ? "text-green-500" : "text-gray-500";
-                                        const isOverDue = invoiceDue < yesterday && !item.paid;
-                                        textColor = isOverDue ? "text-red-500" : textColor;
+               <InvoicesList
+                    invoicesList = {invoicesList}
+                    doSort = {doSort}
+                    setInvoicesList = {setInvoicesList}
 
-                                        return (
-
-                                        <tr key={item.invoice_number} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {item.invoice_number}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {item.name}
-                                            </td>
-                                            <td className={`px-6 py-4 ${textColor}`}>
-                                                {(item.total/100).toFixed(2)}{" €"}
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                {item.invoice_due_date}
-                                            </td>
-                                        </tr>
-                                    )})) : (
-                                        <tr>
-                                            <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">No invoices</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                </div>
-                                        {console.log(sort)}
+                />
             </div>
 
             <Messages
