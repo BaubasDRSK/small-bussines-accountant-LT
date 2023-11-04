@@ -33,7 +33,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
 
     //use efdetc for sort
     useEffect(()=>{
-        invoicesList.forEach((item) => {
+        sortInvoices();
+    },[sort]);
+
+    const  sortInvoices = (invoices) => {
+        console.log(sort);
+        invoices = invoices ?? invoicesList;
+        invoices.forEach((item) => {
             const today = new Date();
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
@@ -42,7 +48,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
             const due = !item.paid ? (invoiceDue - today)/ (1000 * 60 * 60 * 24) : maxDueDays;
             item.due = due;
         });
-        const sortedList = [...invoicesList];
+        const sortedList = [...invoices];
         if (sort.sortDirection == 'up'){
             sortedList.sort((a,b)=>a[sort.sortName]- b[sort.sortName]);
         } else {
@@ -50,8 +56,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
         }
 
         setInvoicesList([...sortedList]);
-
-    },[sort]);
+    };
 
 
     const addMessage = (text, type) => {
@@ -402,6 +407,7 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                     invoicesList = {invoicesList}
                     doSort = {doSort}
                     setInvoicesList = {setInvoicesList}
+                    sortInvoices = {sortInvoices}
 
                 />
             </div>
