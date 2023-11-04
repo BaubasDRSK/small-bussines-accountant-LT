@@ -73,7 +73,16 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
-        //
+        $invoice = Invoice::find($request->invoice);
+        $invoice->paid = $request->paid;
+        $invoice->save();
+        return response()->json(
+            [
+                'message' => 'Invoice status updated successfully',
+                'type' => 'success',
+            ],
+            201
+        );
     }
 
     /**

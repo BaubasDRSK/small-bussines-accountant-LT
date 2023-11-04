@@ -51,6 +51,7 @@ Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')
 Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->group(function () {
     Route::get('/',[InvoiceController::class, 'index'])->name('index');
     Route::post('/list', [InvoiceController::class,'list'])->name('list');
+    Route::post('/update', [InvoiceController::class,'update'])->name('update');
 });
 
 //Products routes

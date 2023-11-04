@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
 
         foreach (range(15, 105) as $_){
             DB::table('invoices')->insert([
-                'invoice_number' => $faker->unique()->numberBetween(1000, 9999),
+                'invoice_number' => "PSF-".$faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,
                 'customer_id' => $faker->numberBetween(1, 5),
                 'invoice_date' => fakedate(),

@@ -6,7 +6,7 @@ import Messages from '../components/messages';
 import { v4 as uuidv4 } from 'uuid';
 import InvoicesList from "./InvoiceList";
 
-export default function Settings({ auth, updateRoute, customer, invoices }) {
+export default function Settings({ auth, updateRoute, customer, invoices, updateInvoiceRoute }) {
 
     const [edit, setEdit] = useState({});
     const [messages, setMessages] = useState([]);
@@ -33,31 +33,46 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
 
     //use efdetc for sort
     useEffect(()=>{
-        sortInvoices();
+        invoicesList.forEach((item) => {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const invoiceDue = new Date(item.invoice_due_date);
+        const maxDueDays = 1000;
+        const due = !item.paid ? (invoiceDue - today)/ (1000 * 60 * 60 * 24) : maxDueDays;
+        item.due = due;
+        });
+    },[invoicesList]);
+
+    useEffect(()=>{
+        setInvoicesList(sortInvoices(invoicesList));
     },[sort]);
 
     const  sortInvoices = (invoices) => {
-        console.log(sort);
-        invoices = invoices ?? invoicesList;
-        invoices.forEach((item) => {
-            const today = new Date();
-            const yesterday = new Date(today);
-            yesterday.setDate(today.getDate() - 1);
-            const invoiceDue = new Date(item.invoice_due_date);
-            const maxDueDays = 1000;
-            const due = !item.paid ? (invoiceDue - today)/ (1000 * 60 * 60 * 24) : maxDueDays;
-            item.due = due;
-        });
         const sortedList = [...invoices];
         if (sort.sortDirection == 'up'){
-            sortedList.sort((a,b)=>a[sort.sortName]- b[sort.sortName]);
+            sortedList.sort((a,b)=>{
+            if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
+                return a[sort.sortName]- b[sort.sortName];
+            } else {
+                return a[sort.sortName].localeCompare(b[sort.sortName]);
+            }
+            });
         } else {
-            sortedList.sort((a,b)=>b[sort.sortName]- a[sort.sortName]);
+            sortedList.sort((a,b)=>{
+            if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
+                return b[sort.sortName]- a[sort.sortName];
+            } else {
+                return b[sort.sortName].localeCompare(a[sort.sortName]);
+            }
+            });
         }
-
-        setInvoicesList([...sortedList]);
+        return [...sortedList];
     };
 
+    // sortedList.sort((a,b)=>a[sort.sortName].localeCompare(b[sort.sortName]));
+    //     } else {
+    //         sortedList.sort((a,b)=>b[sort.sortName].localeCompare(a[sort.sortName]));
 
     const addMessage = (text, type) => {
         const uuid = uuidv4();
@@ -403,12 +418,13 @@ export default function Settings({ auth, updateRoute, customer, invoices }) {
                     </div>
                 </div>
                 {/* invoices block */}
-               <InvoicesList
+                <InvoicesList
                     invoicesList = {invoicesList}
                     doSort = {doSort}
                     setInvoicesList = {setInvoicesList}
                     sortInvoices = {sortInvoices}
-
+                    updateInvoiceRoute = {updateInvoiceRoute}
+                    addMessage = {addMessage}
                 />
             </div>
 
