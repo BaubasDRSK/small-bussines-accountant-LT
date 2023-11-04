@@ -23,7 +23,8 @@ class InvoiceController extends Controller
         $search = $request->search ?? '';
         $pagination = $request->pagination;
         $page = $request->page;
-        $invoices = Invoice::with('customer')->where('name','like', '%'.$search.'%')->orderBy('name', 'asc')->paginate($pagination);
+        $invoices = Invoice::with('customer')->where('name','like', '%'.$search.'%')->orderBy('invoice_number', 'desc')->paginate($pagination);
+
         return response()->json(
             [
                 'message' => 'Invoices list renewed',

@@ -4,13 +4,18 @@ import ModalYesCancel from '../components/modalYesCancel';
 export default function InvoicesList({ invoicesList, doSort, setInvoicesList, sortInvoices, updateInvoiceRoute, addMessage }){
 
     const [search, setSearch]= useState('');
-    const [invoicesFullList, setInvoicesFullList] = useState([...invoicesList]);
+    const [invoicesFullList, setInvoicesFullList] = useState([]);
 
     const [modalStatus, setModalStatus] = useState(false);
     const [modalItem, setModalItem] = useState('');
     const [modalTitle, setModalTitle] = useState('');
     const [modalMessage, setModalMessage] = useState('');
     const [modalAction, setModalAction] = useState(null);
+
+
+    useEffect (()=>{
+        invoicesList !== null ? setInvoicesFullList([...invoicesList.data]) : null;
+    },[invoicesList]);
 
     const  handlePaidStatusChange =  (invoice, ) =>{
             invoice.paid = invoice.paid ? 0 : 1;
@@ -108,7 +113,11 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {invoicesList.length ? (invoicesList.map((item) => {
+                                    {invoicesFullList === null ? (()=>{
+                                        <tr>
+                                            <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">Loading</td>
+                                        </tr>}
+                                        ) : ( invoicesFullList.length ? (invoicesFullList.map((item) => {
                                         const today = new Date();
                                         const yesterday = new Date(today);
                                         yesterday.setDate(today.getDate() - 1);
@@ -147,9 +156,9 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                                         </tr>
                                     )})) : (
                                         <tr>
-                                            <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">No invoices</td>
+                                            <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">Loading2</td>
                                         </tr>
-                                    )}
+                                    ))}
                                 </tbody>
                             </table>
                 <ModalYesCancel
