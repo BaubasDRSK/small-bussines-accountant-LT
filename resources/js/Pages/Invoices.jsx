@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
+import ModalYesCancel from './components/modalYesCancel';
 
 export default function Settings({ auth, newlist }) {
 
@@ -12,7 +13,13 @@ export default function Settings({ auth, newlist }) {
     const [invoicesList, setInvoicesList] = useState(null);
     const [timer1, setTimer1] = useState(null);
     const [pagination, setPagination] = useState(localStorage.getItem('pagination'));
-    const [sort, setSort] = useState({sortDirection:'up', sortName:'due'});
+    const [sort, setSort] = useState({sortDirection:'asc', sortName:'due'});
+
+    const [modalStatus, setModalStatus] = useState(false);
+    const [modalItem, setModalItem] = useState('');
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalAction, setModalAction] = useState(null);
 
 
 
@@ -47,12 +54,11 @@ export default function Settings({ auth, newlist }) {
     };
 
     const doSort = n => {
-        console.log(invoicesList);
         setSort(s => {
           switch (s.sortDirection) {
-              case 'down': return {sortDirection:'up', sortName:n};
-              case 'up': return {sortDirection:'down', sortName:n};
-            //   default: return {sortDirection:'default', sortName:n};
+              case 'desc': return {sortDirection:'asc', sortName:n};
+              case 'asc': return {sortDirection:'desc', sortName:n};
+              default: return {sortDirection:'asc', sortName:'due'};
           };
         });
       }
@@ -87,28 +93,48 @@ export default function Settings({ auth, newlist }) {
     };
 
     useEffect(()=>{
-        invoicesList !== null ? setInvoicesList(sortInvoices(invoicesList)) : null;
-
+        // invoicesList !== null ? setInvoicesList(sortInvoices(invoicesList)) : null;
+        uzklausa(newlist, searchName, sort);
     },[sort]);
 
-    const uzklausa = (url, value) => {
+    const  handlePaidStatusChange =  (invoice, ) =>{
+        invoice.paid = invoice.paid ? 0 : 1;
+        const updatedInvoicesList = invoicesList.map(item => {
+            if(item.id === invoice.id){
+                item.paid = invoice.paid;
+                return item;
+            }
+            return item;
+        });
+
+        setInvoicesList(updatedInvoicesList);
+        axios.post(updateInvoiceRoute, {invoice: invoice.id, paid: invoice.paid})
+        .then(res => {
+            if (res.status === 201) {
+                addMessage(res.data.message, res.data.type);
+                localStorage.setItem('searchName', newClient['name']);
+                window.location.href = res.data.route;
+            }
+            else {
+
+            }
+        }
+        )
+        .catch(e => {
+            console.log(e);
+        }
+        );
+};
+
+    const uzklausa = (url, value, sort) => {
         axios.post(url, {
             'search': value,
             'pagination': pagination,
+            'sort': sort,
         })
             .then(res => {
                 if (res.status === 201) {
                     addMessage(res.data.message, res.data.type);
-                    res.data.invoices !== null ? res.data.invoices.data.forEach((item) => {
-                        const today = new Date();
-                        const yesterday = new Date(today);
-                        yesterday.setDate(today.getDate() - 1);
-                        const invoiceDue = new Date(item.invoice_due_date);
-                        const maxDueDays = 1000;
-                        const due = !item.paid ? (invoiceDue - today) / (1000 * 60 * 60 * 24) : maxDueDays;
-                        item.due = due;
-                    }) : null;
-
                     setInvoicesList(res.data.invoices);
                 }
                 else {
@@ -152,7 +178,6 @@ export default function Settings({ auth, newlist }) {
                                     value={searchName}
                                 />
                             </div>
-
                             <div className=" flex px-6 py-3 justify-end">
                                 <div>
                                     Records per page
@@ -249,6 +274,15 @@ export default function Settings({ auth, newlist }) {
                     </div>
                 </div>
             </div>
+            <ModalYesCancel
+                    modalItem = {modalItem}
+                    modalStatus = {modalStatus}
+                    setModalStatus={setModalStatus}
+                    modalTitle = {modalTitle}
+                    modalMessage = {modalMessage}
+                    modalAction = {modalAction}
+                    >
+            </ModalYesCancel>
             <Messages
                 const messages={messages}
             />

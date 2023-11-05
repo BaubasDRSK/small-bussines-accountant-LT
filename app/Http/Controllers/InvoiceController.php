@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Invoice;
+use DateTime;
 use Inertia\Inertia;
+
 
 class InvoiceController extends Controller
 {
@@ -22,16 +24,46 @@ class InvoiceController extends Controller
     {
         $search = $request->search ?? '';
         $pagination = $request->pagination;
-        $page = $request->page;
-        $invoices = Invoice::with('customer')->where('name','like', '%'.$search.'%')->orderBy('invoice_number', 'desc')->paginate($pagination);
+        $sort = $request->sort ?? ['sortDirection' => 'asc', 'sortName' => 'due'];
+       if ($sort['sortName'] === 'due') {
+            $invoices = Invoice::with('customer')->where(function($query) use ($search)
+            {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('invoice_number', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                        $customerQuery->where('name', 'like', '%' . $search . '%');
+                    });
+            })->orderBy('paid', $sort['sortDirection'])
+            ->orderBy('invoice_due_date', $sort['sortDirection'])->paginate($pagination);
+       } else {
+            $invoices = Invoice::with('customer')->where(function($query) use ($search)
+            {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('invoice_number', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                        $customerQuery->where('name', 'like', '%' . $search . '%');
+                    });
+            })->orderBy($sort['sortName'], $sort['sortDirection'])->paginate($pagination);
+       }
 
+
+
+
+        if ($invoices) {
+            foreach ($invoices as $invoice) {
+                    $dueDate = new DateTime($invoice->invoice_due_date);
+                    $yesterday = new DateTime('yesterday');
+                    $interval = $yesterday->diff($dueDate);
+                    $due = $interval->invert ? ($interval->days * (-1)) : $interval->days;
+                    $due = $invoice->paid ? 1000 : $due;
+                    $invoice->due = $due;
+            }
+        }
         return response()->json(
             [
                 'message' => 'Invoices list renewed',
                 'type' => 'success',
                 'invoices' => $invoices,
-                'aaa' => $page,
-
             ],
             201
         );
