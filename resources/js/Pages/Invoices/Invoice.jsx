@@ -17,130 +17,20 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     const [products, setProducts] = useState(invoice.products ?? []);
 
 
-    // Sena info
 
-
-    // const [customerName, setCustomerName] = useState(customer.name);
-    // const [nickname, setNickname] = useState(customer.nickname);
-    // const [code, setCode] = useState(customer.code);
-    // const [vat_code, setVatCode] = useState(customer.vat_code);
-    // const [website, setWebsite] = useState(customer.website);
-
-    // const [street, setStreet] = useState(customer.street);
-    // const [city, setCity] = useState(customer.city);
-    // const [zip, setZip] = useState(customer.zip);
-    // const [country, setCountry] = useState(customer.country);
-
-    // const [cname, setCname] = useState(customer.contact_name);
-    // const [cphone, setCphone] = useState(customer.contact_phone);
-    // const [cemail, setCemail] = useState(customer.contact_email);
-
-    // const [company_notes, setCompanyNotes] = useState(customer.notes);
-
-    // const [invoicesList, setInvoicesList] = useState(invoices);
-
-    // //use efdetc for sort
-    // useEffect(()=>{
-    //     invoicesList.forEach((item) => {
-    //     const today = new Date();
-    //     const yesterday = new Date(today);
-    //     yesterday.setDate(today.getDate() - 1);
-    //     const invoiceDue = new Date(item.invoice_due_date);
-    //     const maxDueDays = 1000;
-    //     const due = !item.paid ? (invoiceDue - today)/ (1000 * 60 * 60 * 24) : maxDueDays;
-    //     item.due = due;
-    //     });
-    // },[invoicesList]);
-
-    // useEffect(()=>{
-    //     setInvoicesList(sortInvoices(invoicesList));
-    // },[sort]);
-
-    // const  sortInvoices = (invoices) => {
-    //     const sortedList = [...invoices];
-    //     if (sort.sortDirection == 'up'){
-    //         sortedList.sort((a,b)=>{
-    //         if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
-    //             return a[sort.sortName]- b[sort.sortName];
-    //         } else {
-    //             return a[sort.sortName].localeCompare(b[sort.sortName]);
-    //         }
-    //         });
-    //     } else {
-    //         sortedList.sort((a,b)=>{
-    //         if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
-    //             return b[sort.sortName]- a[sort.sortName];
-    //         } else {
-    //             return b[sort.sortName].localeCompare(a[sort.sortName]);
-    //         }
-    //         });
-    //     }
-    //     return [...sortedList];
-    // };
-
-    // // sortedList.sort((a,b)=>a[sort.sortName].localeCompare(b[sort.sortName]));
-    // //     } else {
-    // //         sortedList.sort((a,b)=>b[sort.sortName].localeCompare(a[sort.sortName]));
-
-    // const addMessage = (text, type) => {
-    //     const uuid = uuidv4();
-    //     const message = {
-    //         text,
-    //         type,
-    //         uuid
-    //     };
-    //     setMessages(m => [message, ...m]);
-    //     setTimeout(() => {
-    //         setMessages(m => m.filter(m => m.uuid !== uuid));
-    //     }, 1000);
-    //     // success warning danger < is messeages type :)
-    // }
-
-    // const updateField = () => {
-    //     console.log('letsupdate');
-    //     const updatedFields = {
-    //         'name': name,
-    //         'nickname': nickname,
-    //         'code': code,
-    //         'vat_code': vat_code,
-    //         'website': website,
-    //         'street': street,
-    //         'city': city,
-    //         'zip': zip,
-    //         'country': country,
-    //         'contact_name': cname,
-    //         'contact_phone': cphone,
-    //         'contact_email': cemail,
-    //         'notes': company_notes,
-    //     }
-
-    //     axios.post(updateRoute, { updatedFields })
-    //         .then(res => {
-    //             if (res.status === 201) {
-    //                 console.log('aaaa');
-    //                 addMessage(res.data.message, res.data.type);
-
-    //             }
-    //             else {
-
-    //             }
-    //         }
-    //         )
-    //         .catch(e => {
-    //             console.log(e);
-    //         }
-    //         );
-    // }
-
-    // const doSort = n => {
-    //     setSort(s => {
-    //       switch (s.sortDirection) {
-    //           case 'down': return {sortDirection:'up', sortName:n};
-    //           case 'up': return {sortDirection:'down', sortName:n};
-    //         //   default: return {sortDirection:'default', sortName:n};
-    //       }
-    //     });
-    //   }
+    const addMessage = (text, type) => {
+        const uuid = uuidv4();
+        const message = {
+            text,
+            type,
+            uuid
+        };
+        setMessages(m => [message, ...m]);
+        setTimeout(() => {
+            setMessages(m => m.filter(m => m.uuid !== uuid));
+        }, 1000);
+        // success warning danger < is messeages type :)
+    }
 
     return (
          <AuthenticatedLayout
@@ -317,13 +207,36 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                              id="note" rows="8" />
                      </div>
                  </div>
-                 {/* invoices block */}
                  <ProductsList
                      products = {products}
                      setProducts={setProducts}
                      allProducts = {allProducts}
                     //  addMessage = {addMessage}
                  />
+                 <div className="max-w-7xl mx-auto mt-3 py-4 sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-100 justify-end">
+                    <button className="bg-red-500 text-white hover:bg-red-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
+                        onClick={() => {
+                            const newID = products.reduce((largest, current) => {
+                                const itemId = current[0];
+                                return itemId > largest ? itemId : largest;
+                            }, 0);
+                            setProducts([...products, [newID+1, '', '', '', '', '', '', '']]);
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button className="bg-green-500 text-white hover:bg-green-600 hover:text-white px-4 py-2 rounded-md flex items-center"
+                        onClick={() => {
+                            const newID = products.reduce((largest, current) => {
+                                const itemId = current[0];
+                                return itemId > largest ? itemId : largest;
+                            }, 0);
+                            setProducts([...products, [newID+1, '', '', '', '', '', '', '']]);
+                        }}
+                    >
+                        Save invoice
+                    </button>
+                 </div>
              </div>
 
              <Messages
