@@ -6,10 +6,10 @@ import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
 import ModalYesCancel from './components/modalYesCancel';
 
-export default function Settings({ auth, newlist }) {
+export default function Settings({ auth, newlist, updateInvoiceRoute }) {
 
     const [messages, setMessages] = useState([]);
-    const [searchName, setSearchName] = useState(localStorage.getItem('searchName'));
+    const [searchName, setSearchName] = useState(localStorage.getItem('searchInvoiceName'));
     const [invoicesList, setInvoicesList] = useState(null);
     const [timer1, setTimer1] = useState(null);
     const [pagination, setPagination] = useState(localStorage.getItem('pagination'));
@@ -25,7 +25,7 @@ export default function Settings({ auth, newlist }) {
 
     useEffect(() => {
         localStorage.setItem('pagination', pagination);
-        localStorage.setItem('searchName', searchName);
+        localStorage.setItem('searchInvoiceName', searchName);
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
             uzklausa(newlist, searchName);
@@ -63,57 +63,18 @@ export default function Settings({ auth, newlist }) {
         });
       }
 
-    const  sortInvoices = (invoices) => {
-        const sortedList = [...invoices.data];
-        console.log(sortedList);
-        if (sort.sortDirection == 'up'){
-            console.log('up');
-            sortedList.sort((a,b)=>{
-            if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
-                return a[sort.sortName]- b[sort.sortName];
-            } else {
-                return a[sort.sortName].localeCompare(b[sort.sortName]);
-            }
-            });
-        } else {
-            console.log('down');
-            sortedList.sort((a,b)=>{
-            if (typeof a[sort.sortName] === 'number' && typeof b[sort.sortName] === 'number'){
-                console.log(b[sort.sortName], a[sort.sortName])
-                return b[sort.sortName]- a[sort.sortName];
-            } else {
-                console.log('down text');
-                return b[sort.sortName].localeCompare(a[sort.sortName]);
-            }
-            });
-        }
-        invoices['data'] = [...sortedList];
-        console.log(invoices);
-        return invoices;
-    };
 
     useEffect(()=>{
-        // invoicesList !== null ? setInvoicesList(sortInvoices(invoicesList)) : null;
         uzklausa(newlist, searchName, sort);
     },[sort]);
 
-    const  handlePaidStatusChange =  (invoice, ) =>{
+    const  handlePaidStatusChange =  (e, invoice) =>{
+        e.stopPropagation();
         invoice.paid = invoice.paid ? 0 : 1;
-        const updatedInvoicesList = invoicesList.map(item => {
-            if(item.id === invoice.id){
-                item.paid = invoice.paid;
-                return item;
-            }
-            return item;
-        });
-
-        setInvoicesList(updatedInvoicesList);
         axios.post(updateInvoiceRoute, {invoice: invoice.id, paid: invoice.paid})
         .then(res => {
             if (res.status === 201) {
                 addMessage(res.data.message, res.data.type);
-                localStorage.setItem('searchName', newClient['name']);
-                window.location.href = res.data.route;
             }
             else {
 
@@ -124,7 +85,7 @@ export default function Settings({ auth, newlist }) {
             console.log(e);
         }
         );
-};
+    };
 
     const uzklausa = (url, value, sort) => {
         axios.post(url, {
@@ -216,7 +177,9 @@ export default function Settings({ auth, newlist }) {
                                 {invoicesList !== null ? (invoicesList.data.map((item) => (
 
                                     <tr
-                                        // onClick={() => window.location.href = '/customers/show/' + item.id}
+                                        onClick={() => {
+                                            console.log('cia kur reikia');
+                                            window.location.href = '/invoices/show/'+item.id}}
                                         key={item.id}
                                         className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                                     >
@@ -238,11 +201,12 @@ export default function Settings({ auth, newlist }) {
                                         </td>
                                         <td className="px-6 py-4 hidden lg:table-cell">
                                             <input type="checkbox"
-                                                onChange={() => {
+                                                onChange={(e) => {
                                                     setModalStatus(true);
                                                     setModalItem(item);
                                                     setModalTitle('Check again!');
-                                                    setModalAction(() => handlePaidStatusChange);
+                                                    setModalAction(() => [handlePaidStatusChange, e]);
+                                                    console.log(modalAction);
                                                     setModalMessage(`Are You sure you want to change paid status for invoice  ${item.invoice_number}`);
                                                 }}
                                                 id="paidStatus" name="paidStatus" checked={item.paid === 1 ? true : false} />

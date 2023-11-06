@@ -68,7 +68,10 @@ export default function ModalYesCancel({modalItem, modalStatus, setModalStatus, 
                             data-te-ripple-init
                             data-te-ripple-color="light"
                             onClick = {()=>{
-                                modalAction(modalItem);
+                                const action = modalAction[0];
+                                const event = modalAction[1];
+                                // modalAction(modalItem);
+                                action (event, modalItem);
                                 setModalStatus(false);
                             }}>
                             Save changes

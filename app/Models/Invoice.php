@@ -9,6 +9,12 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'customer' => 'array',
+        'products' => 'array',
+    ];
+
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

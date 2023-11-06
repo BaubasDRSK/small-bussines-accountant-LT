@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
 use DateTime;
+use App\Models\Customer;
+use App\Models\Product;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,7 +30,7 @@ class DatabaseSeeder extends Seeder
         foreach (range(1, 25) as $_) {
             DB::table('customers')->insert([
                 'code' => $faker->unique()->numberBetween(10000000, 99999999),
-                'vat_code' => $faker->unique()->numberBetween(10000000, 99999999),
+                'vat_code' => "LT".$faker->unique()->numberBetween(10000000, 99999999),
                 'name' => $faker->company(),
                 'nickname' => $faker->company(),
                 'street' => $faker->streetAddress,
@@ -44,7 +46,7 @@ class DatabaseSeeder extends Seeder
             DB::table('products')->insert([
                 'name' => $faker->unique()->word,
                 'code' => "PRO-0000".$i,
-                'description' => $faker->paragraph,
+                'description' => $faker->sentence(),
                 'price' => $faker->numberBetween(100, 9999),
             ]);
         }
@@ -77,14 +79,39 @@ class DatabaseSeeder extends Seeder
 
 
         foreach (range(15, 105) as $_){
+
+            $customerID = rand(1,25);
+            $customer = Customer::find($customerID);
+            $customerData = json_encode([$customer->id, $customer->name, $customer->code, $customer->vat_code, $customer->street, $customer->city, $customer->country, $customer->zip]);
+
+            $total = 0;
+            $products = [];
+            $productsCount = rand(1,5);
+
+            for ($i=1; $i<=$productsCount; $i++) {
+            $productID = rand(1,9);
+            $product = Product::find($productID);
+            $quantity = rand(1,5);
+            $lineTotal = $quantity * $product->price;
+            $recordID = $i;
+            $productData = [$recordID, $product->id, $product->code, $product->name, $product->description, $product->price, $quantity, $lineTotal];
+            $products[] = $productData;
+            $total = $total + $product->price;
+            };
+
+            $products = json_encode($products);
+
             DB::table('invoices')->insert([
                 'invoice_number' => "PSF-".$faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,
-                'customer_id' => $faker->numberBetween(1, 5),
+                'customer_id' => $customerID,
+                'customer' => $customerData,
+                'products' => $products,
                 'invoice_date' => fakedate(),
                 'invoice_due_date' => fakedateDue(),
-                'total' => $faker->numberBetween(1000, 9999),
+                'total' => $total,
                 'paid' => (bool) mt_rand(0, 1),
+                'notes' => $faker->paragraph,
             ]);
         }
 

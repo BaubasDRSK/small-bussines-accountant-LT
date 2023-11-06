@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Invoice;
+use App\Models\Product;
 use DateTime;
 use Inertia\Inertia;
+
 
 
 class InvoiceController extends Controller
@@ -17,6 +19,7 @@ class InvoiceController extends Controller
     {
         return Inertia::render('Invoices', [
             'newlist' => route('invoices-list'),
+            'updateInvoiceRoute' => route('invoices-update'),
     ]);
     }
 
@@ -90,7 +93,15 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        //
+        $products = Product::all();
+        $actualInvoice = $invoice;
+
+        return Inertia::render('Invoices/Invoice', [
+            'updateRoute' => route('customers-update', ['customer' => $actualInvoice->id]),
+            'invoice' => $actualInvoice,
+            'updateInvoiceRoute' => route('invoices-update'),
+            'allProducts' => $products,
+        ]);
     }
 
     /**

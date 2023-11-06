@@ -158,7 +158,7 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                     setModalStatus={setModalStatus}
                     modalTitle = {modalTitle}
                     modalMessage = {modalMessage}
-                    modalAction = {modalAction}
+                    modalAction = {handlePaidStatusChange}
                     >
                 </ModalYesCancel>
                 </div>

@@ -8,7 +8,6 @@ use App\Models\Product;
 use Inertia\Inertia;
 
 
-
 class ProductController extends Controller
 {
     /**
