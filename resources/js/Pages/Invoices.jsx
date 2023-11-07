@@ -9,10 +9,10 @@ import ModalYesCancel from './components/modalYesCancel';
 export default function Settings({ auth, newlist, updateInvoiceRoute }) {
 
     const [messages, setMessages] = useState([]);
-    const [searchName, setSearchName] = useState(localStorage.getItem('searchInvoiceName'));
+    const [searchName, setSearchName] = useState(localStorage.getItem('searchInvoiceName')) ?? '';
     const [invoicesList, setInvoicesList] = useState(null);
     const [timer1, setTimer1] = useState(null);
-    const [pagination, setPagination] = useState(localStorage.getItem('pagination'));
+    const [pagination, setPagination] = useState(localStorage.getItem('pagination') ?? 15);
     const [sort, setSort] = useState({sortDirection:'asc', sortName:'due'});
 
     const [modalStatus, setModalStatus] = useState(false);
@@ -71,7 +71,8 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
     const  handlePaidStatusChange =  (e, invoice) =>{
         e.stopPropagation();
         invoice.paid = invoice.paid ? 0 : 1;
-        axios.post(updateInvoiceRoute, {invoice: invoice.id, paid: invoice.paid})
+        const fullInvoice = invoice;
+        axios.post(updateInvoiceRoute, {fullInvoice})
         .then(res => {
             if (res.status === 201) {
                 addMessage(res.data.message, res.data.type);
@@ -116,10 +117,10 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
             header={
                 <div className='flex justify-between'>
                     <h2 className=" flex-1 text-2xl leading-tight font-bold text-blue-500 dark:bg-gray-800 w-auto">
-                        Customers
+                        Invoices
                     </h2>
                     <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-                        <a href={route('customers-create')}>Add new client</a>
+                        <a href={route('customers-create')}>Add new invoice</a>
                     </button>
                 </div>
             }

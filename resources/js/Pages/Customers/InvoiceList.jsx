@@ -15,6 +15,7 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
     const  handlePaidStatusChange =  (e, invoice) =>{
             e.stopPropagation();
             invoice.paid = invoice.paid ? 0 : 1;
+            const fullInvoice = invoice;
             const updatedInvoicesList = invoicesList.map(item => {
                 if(item.id === invoice.id){
                     item.paid = invoice.paid;
@@ -24,7 +25,7 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
             });
 
             setInvoicesList(updatedInvoicesList);
-            axios.post(updateInvoiceRoute, {invoice: invoice.id, paid: invoice.paid})
+            axios.post(updateInvoiceRoute, {fullInvoice})
             .then(res => {
                 if (res.status === 201) {
                     addMessage(res.data.message, res.data.type);

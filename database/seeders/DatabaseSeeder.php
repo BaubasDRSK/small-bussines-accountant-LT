@@ -78,38 +78,39 @@ class DatabaseSeeder extends Seeder
 
 
 
-        foreach (range(15, 105) as $_){
-
-            $customerID = rand(1,25);
+        foreach (range(15, 105) as $_) {
+            $customerID = rand(1, 25);
             $customer = Customer::find($customerID);
             $customerData = json_encode([$customer->id, $customer->name, $customer->code, $customer->vat_code, $customer->street, $customer->city, $customer->country, $customer->zip]);
 
             $total = 0;
             $products = [];
-            $productsCount = rand(1,5);
+            $productsCount = rand(1, 5);
 
-            for ($i=1; $i<=$productsCount; $i++) {
-            $productID = rand(1,9);
-            $product = Product::find($productID);
-            $quantity = rand(1,5);
-            $lineTotal = $quantity * $product->price;
-            $recordID = $i;
-            $productData = [$recordID, $product->id, $product->code, $product->name, $product->description, $product->price, $quantity, $lineTotal];
-            $products[] = $productData;
-            $total = $total + $product->price;
-            };
+            for ($i = 1; $i <= $productsCount; $i++) {
+                $productID = rand(1, 9);
+                $product = Product::find($productID);
+                $quantity = rand(1, 5);
+                $lineTotal = $quantity * $product->price;
+                $recordID = $i;
+                $productData = [$recordID, $product->id, $product->code, $product->name, $product->description, $product->price, $quantity, $lineTotal];
+                $products[] = $productData;
+                $total += $lineTotal; // Calculate the total for this invoice by summing up the line totals
+            }
+
+            dump($total);
 
             $products = json_encode($products);
 
             DB::table('invoices')->insert([
-                'invoice_number' => "PSF-".$faker->unique()->numberBetween(1000, 9999),
+                'invoice_number' => "PSF-" . $faker->unique()->numberBetween(1000, 9999),
                 'name' => $faker->sentence,
                 'customer_id' => $customerID,
                 'customer' => $customerData,
                 'products' => $products,
                 'invoice_date' => fakedate(),
                 'invoice_due_date' => fakedateDue(),
-                'total' => $total,
+                'total' => $total, // Set the calculated total for this invoice
                 'paid' => (bool) mt_rand(0, 1),
                 'notes' => $faker->paragraph,
             ]);

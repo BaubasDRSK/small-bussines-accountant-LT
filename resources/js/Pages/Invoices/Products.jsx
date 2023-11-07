@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ModalYesCancel from '../components/modalYesCancel';
 import Select from 'react-select';
 
-export default function ProductsList({ products, setProducts, addMessage, allProducts }) {
+export default function ProductsList({ products, setProducts, addMessage, allProducts, invoiceTotal, setInvoiceTotal }) {
 
     const [modalStatus, setModalStatus] = useState(false);
     const [modalItem, setModalItem] = useState('');
@@ -10,79 +10,85 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
     const [modalMessage, setModalMessage] = useState('');
     const [modalAction, setModalAction] = useState(null);
 
-    // const options = [
-    //     { value: 1, label: 'Chocolate' },
-    //     { value: 2, label: 'Strawberry' },
-    //     { value: 3, label: 'Vanilla' }
-    //   ]
     const options = allProducts.map(product => {
         return({value: product.code, label: product.name})});
 
+        useEffect(() => {
+            totalSum(); // Calculate the invoice total first
+            console.log(products);
+            console.log(invoiceTotal); // Then log the invoice total
+        }, [products]);
 
-      const handleProductChange= (productCode,id) => {
-        console.log(productCode, id);
-        // [recodrID ,id, code, name, description, price, quantity, total]
-        const thisProduct = allProducts.filter(product => product.code === productCode );
-        const editedProducts = products.map(product => {
-            if (product[0] === id) {
-                product[0] = id;
-                product[1] = thisProduct[0]['id'];
-                product[2] = thisProduct[0]['code'];
-                product[3] = thisProduct[0]['name'];
-                product[4] = thisProduct[0]['description'];
-                product[5] = thisProduct[0]['price'];
-                product[6] = 1;
-                product[7] = product[6] * product[5];
-            }
-            return product;
-        });
-        setProducts([...editedProducts]);
-      };
+        const totalSum = () => {
+            const total = products.reduce((sum, product) => {
+                return sum + product[7];
+            }, 0);
+            console.log(total);
+            setInvoiceTotal(total);
+        };
 
-      const handleRecordEdit =  (e, recordID, recordIndex ) => {
-        const editedProducts = products.map(product => {
-            let newValue = e.target.value;
-            if (product[0] === recordID) {
-                if (recordIndex === 5) {
-                    newValue =newValue * 100;
-                }
-
-                product[recordIndex] = newValue;
-                product[7] = product[5] * product[6];
-            }
-            return product;
-        });
-        setProducts([...editedProducts]);
-      };
-
-    const handlePaidStatusChange = (invoice,) => {
-        invoice.paid = invoice.paid ? 0 : 1;
-        const updatedInvoicesList = invoicesList.map(item => {
-            if (item.id === invoice.id) {
-                item.paid = invoice.paid;
-                return item;
-            }
-            return item;
-        });
-
-        setInvoicesList(updatedInvoicesList);
-        axios.post(updateInvoiceRoute, { invoice: invoice.id, paid: invoice.paid })
-            .then(res => {
-                if (res.status === 201) {
-                    addMessage(res.data.message, res.data.type);
-                    localStorage.setItem('searchName', newClient['name']);
-                    window.location.href = res.data.route;
-                }
-                else {
-
-                }
-            }
-            )
-            .catch(e => {
-                console.log(e);
-            }
-            );
+    const handleProductChange= (productCode,id) => {
+    const thisProduct = allProducts.filter(product => product.code === productCode );
+    const editedProducts = products.map(product => {
+        if (product[0] === id) {
+            product[0] = id;
+            product[1] = thisProduct[0]['id'];
+            product[2] = thisProduct[0]['code'];
+            product[3] = thisProduct[0]['name'];
+            product[4] = thisProduct[0]['description'];
+            product[5] = thisProduct[0]['price'];
+            product[6] = 1;
+            product[7] = product[6] * product[5];
+        }
+        return product;
+    });
+    setProducts([...editedProducts]);
     };
+
+    const handleRecordEdit =  (e, recordID, recordIndex ) => {
+    const editedProducts = products.map(product => {
+        let newValue = e.target.value;
+        if (product[0] === recordID) {
+            if (recordIndex === 5) {
+                newValue =newValue * 100;
+            }
+
+            product[recordIndex] = newValue;
+            product[7] = product[5] * product[6];
+        }
+        return product;
+    });
+    setProducts([...editedProducts]);
+    };
+
+    // const handlePaidStatusChange = (invoice,) => {
+    //     invoice.paid = invoice.paid ? 0 : 1;
+    //     const updatedInvoicesList = invoicesList.map(item => {
+    //         if (item.id === invoice.id) {
+    //             item.paid = invoice.paid;
+    //             return item;
+    //         }
+    //         return item;
+    //     });
+
+    //     setInvoicesList(updatedInvoicesList);
+    //     axios.post(updateInvoiceRoute, { invoice: invoice.id, paid: invoice.paid })
+    //         .then(res => {
+    //             if (res.status === 201) {
+    //                 addMessage(res.data.message, res.data.type);
+    //                 localStorage.setItem('searchName', newClient['name']);
+    //                 window.location.href = res.data.route;
+    //             }
+    //             else {
+
+    //             }
+    //         }
+    //         )
+    //         .catch(e => {
+    //             console.log(e);
+    //         }
+    //         );
+    // };
 
 
     const searchInvoices = () => {
@@ -145,7 +151,7 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                         className="w-full rounded-md border-gray-200 pe-7 shadow-sm sm:text-sm"
                                         onChange = {(e)=> handleRecordEdit(e, product[0], 5) }
                                     />
-                                        <span class="pointer-events-none absolute inset-y-0 end-5 grid w-10 place-content-center text-gray-800"> € </span>
+                                        <span className="pointer-events-none absolute inset-y-0 end-5 grid w-10 place-content-center text-gray-800"> € </span>
                                 </td>
                                 <td className={`px-6 py-4`}>
                                 <label className="hidden" htmlFor="productQuantity"></label>
@@ -165,9 +171,6 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                         className= "text-red-500 w-8 h-8 rounded-full flex items-center justify-center  hover:text-red-700"
                                         onClick={() => {
                                             const filteredProducts = products.filter(p => {
-                                                console.log(p[0]);
-                                                console.log(product[0]);
-                                                console.log(p[0] === product[0]);
                                                 return p[0] !== product[0];
                                             });
                                             setProducts([...filteredProducts]);
@@ -200,8 +203,6 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                 >
                     <span className="text-lg font-bold mr-2">+</span> Add New Product
                 </button>
-                {console.log(products)}
-                {console.log(allProducts)}
             </div>
             <ModalYesCancel
                 modalItem={modalItem}

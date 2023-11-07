@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Products({ auth, newlist }) {
 
     const [messages, setMessages] = useState([]);
-    const [searchName, setSearchName] = useState(localStorage.getItem('searchName')) ?? '';
+    const [searchName, setSearchName] = useState(localStorage.getItem('searchItem')) ?? '';
     const [productsList, setProductsList] = useState(null);
     const [timer1, setTimer1] = useState(null);
     const [pagination, setPagination] = useState(localStorage.getItem('pagination')) ?? 15;
@@ -17,7 +17,7 @@ export default function Products({ auth, newlist }) {
 
     useEffect(() => {
         localStorage.setItem('pagination', pagination);
-        localStorage.setItem('searchName', searchName);
+        localStorage.setItem('searchItem', searchName);
         timer1 && clearTimeout(timer1);
         setTimer1(setTimeout(() => {
             uzklausa(newlist, searchName);
@@ -74,10 +74,10 @@ export default function Products({ auth, newlist }) {
             header={
                 <div className='flex justify-between'>
                     <h2 className=" flex-1 text-2xl leading-tight font-bold text-blue-500 dark:bg-gray-800 w-auto">
-                        Customers
+                        Products / Services
                     </h2>
                     <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-                        <a href={route('customers-create')}>Add new client</a>
+                        <a href={route('customers-create')}>Add new product</a>
                     </button>
                 </div>
             }

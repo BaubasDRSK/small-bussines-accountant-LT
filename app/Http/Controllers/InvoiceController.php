@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Product;
@@ -94,6 +95,7 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         $products = Product::all();
+        $customers = Customer::all();
         $actualInvoice = $invoice;
 
         return Inertia::render('Invoices/Invoice', [
@@ -101,6 +103,7 @@ class InvoiceController extends Controller
             'invoice' => $actualInvoice,
             'updateInvoiceRoute' => route('invoices-update'),
             'allProducts' => $products,
+            'allCustomers' => $customers,
         ]);
     }
 
@@ -117,8 +120,25 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
-        $invoice = Invoice::find($request->invoice);
-        $invoice->paid = $request->paid;
+        $fullInvoice =$request->input('fullInvoice');
+        dump($fullInvoice['invoice_date']);
+        $invoice = Invoice::find($fullInvoice['id']);
+
+        $invoice->id = $fullInvoice['id'];
+        $invoice->invoice_number = $fullInvoice['invoice_number'];
+        $invoice->name = $fullInvoice['name'];
+        $invoice->customer_id = $fullInvoice['customer_id'];
+        $invoice->customer = $fullInvoice['customer'];
+        $invoice->products = $fullInvoice['products'];
+        $invoice->total = $fullInvoice['total'];
+        $date = new DateTime($fullInvoice['invoice_date']);
+        $invoice->invoice_date = $date->format('Y-m-d');
+        $duedate = new DateTime($fullInvoice['invoice_due_date']);
+        $invoice->invoice_due_date = $duedate->format('Y-m-d');
+        $invoice->paid = $fullInvoice['paid'];
+        $invoice->notes = $fullInvoice['notes'];
+
+
         $invoice->save();
         return response()->json(
             [
