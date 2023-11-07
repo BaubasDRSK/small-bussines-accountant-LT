@@ -12,7 +12,8 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
     const [modalMessage, setModalMessage] = useState('');
     const [modalAction, setModalAction] = useState(null);
 
-    const  handlePaidStatusChange =  (invoice, ) =>{
+    const  handlePaidStatusChange =  (e, invoice) =>{
+            e.stopPropagation();
             invoice.paid = invoice.paid ? 0 : 1;
             const updatedInvoicesList = invoicesList.map(item => {
                 if(item.id === invoice.id){
@@ -120,28 +121,52 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                                         return (
 
                                         <tr key={item.invoice_number} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    console.log('cia kur reikia');
+                                                    window.location.href = '/invoices/show/'+item.id
+                                                }}
+                                            >
                                                 <p className="text-m">{item.invoice_number}</p>
                                                 <p className="text-xs">{item.invoice_date}</p>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    console.log('cia kur reikia');
+                                                    window.location.href = '/invoices/show/'+item.id
+                                                }}
+                                            >
                                                 {item.name}
                                             </td>
-                                            <td className={`px-6 py-4 ${textColor}`}>
+                                            <td className={`px-6 py-4 ${textColor}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    console.log('cia kur reikia');
+                                                    window.location.href = '/invoices/show/'+item.id
+                                                }}
+                                            >
                                                 {(item.total/100).toFixed(2)}{" €"}
                                             </td>
                                             <td className={`px-6 py-4 ${textColor}`}>
                                                 <input type="checkbox"
-                                                    onChange = {() => {
+                                                    onChange = {(e) => {
                                                         setModalStatus(true);
                                                         setModalItem(item);
                                                         setModalTitle('Check again!');
-                                                        setModalAction(() => handlePaidStatusChange);
+                                                        setModalAction(() => [handlePaidStatusChange, e]);
                                                         setModalMessage(`Are You sure you want to change paid status for invoice  ${item.invoice_number}`);
                                                     }}
                                                     id="paidStatus" name="paidStatus"  checked={item.paid === 1 ? true : false} />
                                             </td>
-                                            <td className={`px-6 py-4 ${textColor}`}>
+                                            <td className={`px-6 py-4 ${textColor}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    console.log('cia kur reikia');
+                                                    window.location.href = '/invoices/show/'+item.id
+                                                }}
+                                            >
                                                 {item.invoice_due_date}
                                             </td>
                                         </tr>
@@ -152,13 +177,14 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                                     )}
                                 </tbody>
                             </table>
+                            {console.log(modalAction)}
                 <ModalYesCancel
                     modalItem = {modalItem}
                     modalStatus = {modalStatus}
                     setModalStatus={setModalStatus}
                     modalTitle = {modalTitle}
                     modalMessage = {modalMessage}
-                    modalAction = {handlePaidStatusChange}
+                    modalAction = {modalAction}
                     >
                 </ModalYesCancel>
                 </div>

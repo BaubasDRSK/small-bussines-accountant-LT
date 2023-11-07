@@ -177,26 +177,41 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                                 {invoicesList !== null ? (invoicesList.data.map((item) => (
 
                                     <tr
-                                        onClick={() => {
-                                            console.log('cia kur reikia');
-                                            window.location.href = '/invoices/show/'+item.id}}
                                         key={item.id}
                                         className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                                     >
-                                        <td className="px-6 py-4 hidden lg:table-cell">
+                                        <td className="px-6 py-4 hidden lg:table-cell"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log('cia kur reikia');
+                                                window.location.href = '/invoices/show/'+item.id
+                                            }}
+                                        >
                                             <p className="text-m">{item.invoice_number}</p>
                                             <p className="text-xs">{item.invoice_date}</p>
 
                                         </td>
 
-                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log('cia kur reikia');
+                                                window.location.href = '/invoices/show/'+item.id
+                                            }}
+                                        >
                                             <p className="text-m">{item.name}</p>
                                             <p className=" text-xs text-gray-600">{item.customer.name}</p>
                                             <div className="block md:hidden">
                                                 <p className=" text-xs text-gray-600">{(item.total / 100).toFixed(2)}{" €"}</p>
                                             </div>
                                         </td>
-                                        <td className={`'px-6 py-4  hidden lg:table-cell ' ${item.paid ? 'text-green-700' : item.due < 0 ? 'text-red-500' : 'text-gray-500'}`}>
+                                        <td className={`'px-6 py-4  hidden lg:table-cell ' ${item.paid ? 'text-green-700' : item.due < 0 ? 'text-red-500' : 'text-gray-500'}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log('cia kur reikia');
+                                                window.location.href = '/invoices/show/'+item.id
+                                            }}
+                                        >
                                             <p>{(item.total / 100).toFixed(2)}{" €"}</p>
                                         </td>
                                         <td className="px-6 py-4 hidden lg:table-cell">
@@ -211,7 +226,13 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                                                 }}
                                                 id="paidStatus" name="paidStatus" checked={item.paid === 1 ? true : false} />
                                         </td>
-                                        <td className="px-6 py-4 hidden lg:table-cell">
+                                        <td className="px-6 py-4 hidden lg:table-cell"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log('cia kur reikia');
+                                                window.location.href = '/invoices/show/'+item.id
+                                            }}
+                                        >
                                             <p className={`${item.paid ? 'text-green-700' : item.due < 0 ? 'text-red-500' : 'text-gray-500'}`}>{item.invoice_due_date}</p>
                                         </td>
                                     </tr>
