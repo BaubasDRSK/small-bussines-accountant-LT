@@ -8,10 +8,10 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Settings({ auth, newlist, customers }) {
 
     const [messages, setMessages] = useState([]);
-    const [searchName, setSearchName] = useState(localStorage.getItem('searchName'));
+    const [searchName, setSearchName] = useState(localStorage.getItem('searchName') ?? '');
     const [customersList, setCustomersList] = useState(null);
     const [timer1, setTimer1] = useState(null);
-    const [pagination, setPagination] = useState(localStorage.getItem('pagination'));
+    const [pagination, setPagination] = useState(localStorage.getItem('pagination') ?? 15);
 
 
 
