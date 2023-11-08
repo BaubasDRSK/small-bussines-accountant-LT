@@ -125,28 +125,48 @@ export default function Products({ auth, newlist }) {
                                     <th scope="col" className="px-6 py-3 min-w-[130px]">
                                         Price
                                     </th>
+                                    <th scope="col" className="px-6 py-3 min-w-[130px]">
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {productsList !== null ? (productsList.data.map((item) => (
 
 
-                                        <tr key={item.id}
-                                            onClick={() => window.location.href = '/products/show/'+item.id}
-                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <p>{item.code}</p>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {item.name}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {item.description}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {(item.price/100).toFixed(2)} {" "} €
-                                            </td>
-                                        </tr>
+                                    <tr key={item.id}
+                                        // onClick={() => window.location.href = '/products/show/'+item.id}
+                                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <p>{item.code}</p>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <input
+                                                type="text"
+                                                class="border-none bg-transparent focus:outline-none"
+                                                value={item.name}
+                                            />
+
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item.description}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {(item.price / 100).toFixed(2)} {" "} €
+                                        </td>
+                                        <td className="px-6 py-4 flex gap-4">
+                                            <a href="#" className="text-red-500 hover:text-red-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current">
+                                                    <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+                                                </svg>
+                                            </a>
+                                            <a href="#" className="text-green-500 hover:text-green-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current">
+                                                    <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
 
                                 ))) : (
                                     <tr>

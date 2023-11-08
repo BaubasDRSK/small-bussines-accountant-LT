@@ -74,7 +74,7 @@ export default function Settings({ auth, newlist, customers }) {
             header={
                 <div className='flex justify-between'>
                     <h2 className=" flex-1 text-2xl leading-tight font-bold text-blue-500 dark:bg-gray-800 w-auto">
-                        Customers
+                        Clients
                     </h2>
                     <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
                         <a href={route('customers-create')}>Add new client</a>
@@ -90,7 +90,7 @@ export default function Settings({ auth, newlist, customers }) {
                         <div className='flex flex-wrap justify-between w-full text-sm text-left text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400'>
                             <div className="flex px-6 py-3">
                                 <input
-                                    className=" flex min-w-[230px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
+                                    className=" flex min-w-[300px] lg:min-w-[400px]  w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
                                     type="text"
                                     placeholder="Search by name / nickname or ID"
                                     onChange={(e) => makeSearch('name', e.target.value)}

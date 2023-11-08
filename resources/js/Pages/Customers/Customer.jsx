@@ -143,7 +143,7 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
                         Client details
                     </h2>
                     <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-                        <a href={route('customers-create')}>Add new invoice</a>
+                        <a href={route('invoices-create',[customer.id ])}>Add new invoice</a>
                     </button>
                 </div>
             }

@@ -102,6 +102,7 @@ class CustomerController extends Controller
             'customer' => $actualCustomer,
             'invoices'  => $actualCustomer->invoices()->orderBy('invoice_number', 'asc')->get(),
             'updateInvoiceRoute' => route('invoices-update'),
+            // 'newInvoiceRoute' => route('invoices-create'),
         ]);
     }
 
