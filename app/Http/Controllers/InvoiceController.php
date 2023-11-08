@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Product;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 
@@ -56,7 +57,7 @@ class InvoiceController extends Controller
         if ($invoices) {
             foreach ($invoices as $invoice) {
                     $dueDate = new DateTime($invoice->invoice_due_date);
-                    $yesterday = new DateTime('yesterday');
+                    $yesterday = now();
                     $interval = $yesterday->diff($dueDate);
                     $due = $interval->invert ? ($interval->days * (-1)) : $interval->days;
                     $due = $invoice->paid ? 1000 : $due;
@@ -76,9 +77,40 @@ class InvoiceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Int $id)
     {
-        //
+        if ($id === 0) {
+            $customer = [];
+        }else{
+            $dbcustomer = Customer::find($id);
+            $customer = [
+                $dbcustomer->id,
+                $dbcustomer->name,
+                $dbcustomer->code,
+                $dbcustomer->vat_code,
+                $dbcustomer->street,
+                $dbcustomer->city,
+                $dbcustomer->country,
+                $dbcustomer->zip,
+            ];
+        };
+
+
+
+        $products = Product::all();
+        $customers = Customer::all();
+        $actualInvoice = [
+            'invoice_number' => 0,
+            'customer' => $customer,
+    ];
+
+        return Inertia::render('Invoices/Invoice', [
+            'storeRoute' => route('invoices-store'),
+            'invoice' => $actualInvoice,
+            'updateInvoiceRoute' => route('invoices-update'),
+            'allProducts' => $products,
+            'allCustomers' => $customers,
+        ]);
     }
 
     /**
@@ -86,7 +118,46 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $lastInvoice = Invoice::select('invoice_number')
+        ->orderBy('invoice_number', 'desc')
+        ->first();
+
+        if ($lastInvoice) {
+            $lastInvoiceNumber = $lastInvoice->invoice_number;
+            $lastInvoiceNumber = str_replace('PSF-', '', $lastInvoiceNumber);
+            $lastInvoiceNumber = (int)$lastInvoiceNumber;
+        } else {
+            // If there are no previous invoices, start from a specific number, e.g., 0.
+            $lastInvoiceNumber = 0;
+        }
+        $nextInvoiceNumber = 'PSF-' . str_pad($lastInvoiceNumber + 1, 4, '0', STR_PAD_LEFT);
+
+        $fullInvoice =$request->input('fullInvoice');
+        dump($lastInvoice->invoice_number);
+        $invoice = new Invoice();
+
+        $invoice->invoice_number = $nextInvoiceNumber;
+        $invoice->name = 'nauja sf';
+        $invoice->customer_id = $fullInvoice['customer'][0];
+        $invoice->customer = $fullInvoice['customer'];
+        $invoice->products = $fullInvoice['products'];
+        $invoice->total = $fullInvoice['total'];
+        $date = new DateTime($fullInvoice['invoice_date']);
+        $invoice->invoice_date = $date->format('Y-m-d');
+        $duedate = new DateTime($fullInvoice['invoice_due_date']);
+        $invoice->invoice_due_date = $duedate->format('Y-m-d');
+        $invoice->paid = $fullInvoice['paid'];
+        $invoice->notes = $fullInvoice['notes'];
+
+
+        $invoice->save();
+        return response()->json(
+            [
+                'message' => 'Invoice '. $nextInvoiceNumber.' was stored.',
+                'type' => 'success',
+            ],
+            201
+        );
     }
 
     /**
@@ -104,6 +175,7 @@ class InvoiceController extends Controller
             'updateInvoiceRoute' => route('invoices-update'),
             'allProducts' => $products,
             'allCustomers' => $customers,
+
         ]);
     }
 
@@ -156,4 +228,41 @@ class InvoiceController extends Controller
     {
         //
     }
+
+    public function dashboard()
+    {
+        $totalSum = Invoice::all()->sum('total');
+        $totalSumOverdue = DB::table('invoices')
+        ->where('invoice_due_date', '<', now()->subDay()) // Due date is less than yesterday
+        ->where('paid', false) // Unpaid invoices
+        ->sum('total');
+
+        $totalSumThisMonth = DB::table('invoices')
+        ->whereBetween('invoice_date', [now()->startOfMonth(), now()->endOfMonth()])
+        ->sum('total');
+
+        $totalInvoicesThisMonth = DB::table('invoices')
+        ->whereBetween('invoice_date', [now()->startOfMonth(), now()->endOfMonth()])
+        ->count();
+
+        $totalDueThisMonth = DB::table('invoices')
+        ->whereBetween('invoice_due_date', [now()->startOfMonth(), now()->endOfMonth()])
+        ->where('paid', false)
+        ->sum('total');
+
+        return response()->json(
+            [
+                'message' => 'Customer list renewed',
+                'type' => 'success',
+                'totalSales' => $totalSum,
+                'totalOverdue' => $totalSumOverdue,
+                'totalSumThisMonth' => $totalSumThisMonth,
+                'totalInvoicesThisMonth' => $totalInvoicesThisMonth,
+                'totalDueThisMonth' => $totalDueThisMonth
+
+            ],
+            201
+        );
+    }
 }
+

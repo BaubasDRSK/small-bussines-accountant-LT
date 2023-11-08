@@ -139,4 +139,20 @@ class CustomerController extends Controller
     {
         //
     }
+
+    public function dashboard()
+    {
+        $totalCustomers = Customer::all()->count();
+
+        return response()->json(
+            [
+                'message' => 'Customer list renewed',
+                'type' => 'success',
+                'totalCustomers' => $totalCustomers,
+
+
+            ],
+            201
+        );
+    }
 }

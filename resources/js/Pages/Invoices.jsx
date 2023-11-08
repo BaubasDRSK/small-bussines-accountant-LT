@@ -133,9 +133,9 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                         <div className='flex flex-wrap justify-between w-full text-sm text-left text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400'>
                             <div className="flex px-6 py-3">
                                 <input
-                                    className=" flex min-w-[230px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
+                                    className=" flex min-w-[300px] lg:min-w-[400px] w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
                                     type="text"
-                                    placeholder="Search by name / nickname or ID"
+                                    placeholder="Search by invoice nr. or name or company"
                                     onChange={(e) => makeSearch('name', e.target.value)}
                                     value={searchName}
                                 />

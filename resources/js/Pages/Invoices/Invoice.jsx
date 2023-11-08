@@ -8,7 +8,7 @@ import ProductsList from "./Products";
 import Select from 'react-select';
 import Datepicker from "react-tailwindcss-datepicker";
 
-export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, allProducts, allCustomers }) {
+export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, allProducts, allCustomers, storeRoute }) {
 
     const [thisInvoice, setThisInvoice] = useState(invoice ?? null);
     const [invoiceDate, setInvoiceDate] = useState({
@@ -73,13 +73,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     };
 
     const handelSaveInvoice = () => {
-       console.log(thisInvoice, "Invoice");
-       console.log(invoiceDate, " Date");
-       console.log(invoiceDueDate, " Date");
-       console.log(paid, 'paid');
-       console.log(customer, 'customer');
-       console.log(products, 'producst');
-       console.log(invoiceNotes, 'invoiceNotes');
+
         //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
 
         const fullInvoice = thisInvoice;
@@ -87,6 +81,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         fullInvoice['invoice_due_date'] = invoiceDueDate['startDate'];
         fullInvoice['notes'] = invoiceNotes;
         fullInvoice['paid'] = paid ? true : false;
+        fullInvoice['customer_id'] = customer[0];
         fullInvoice['customer'] = customer;
         fullInvoice['products'] = products;
         fullInvoice['total'] = invoiceTotal;
@@ -110,6 +105,46 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
             }
             );
     };
+
+    const handelStoreInvoice = () => {
+        console.log(thisInvoice, "Invoice");
+        console.log(invoiceDate, " Date");
+        console.log(invoiceDueDate, " Date");
+        console.log(paid, 'paid');
+        console.log(customer, 'customer');
+        console.log(products, 'producst');
+        console.log(invoiceNotes, 'invoiceNotes');
+         //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
+
+         const fullInvoice = thisInvoice;
+         fullInvoice['invoice_date'] = invoiceDate['startDate'];
+         fullInvoice['invoice_due_date'] = invoiceDueDate['startDate'];
+         fullInvoice['notes'] = invoiceNotes;
+         fullInvoice['paid'] = paid ? true : false;
+         fullInvoice['customer'] = customer;
+         fullInvoice['products'] = products;
+         fullInvoice['total'] = invoiceTotal;
+         console.log(fullInvoice);
+
+
+        axios.post(storeRoute, { fullInvoice })
+             .then(res => {
+                 if (res.status === 201) {
+                     console.log('aaaa');
+                     addMessage(res.data.message, res.data.type);
+
+                 }
+                 else {
+
+                 }
+             }
+             )
+             .catch(e => {
+                 console.log(e);
+             }
+             );
+     };
+
 
 
     return (
@@ -351,7 +386,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         Cancel
                     </button>
                     <button className="bg-green-500 text-white hover:bg-green-600 hover:text-white px-4 py-2 rounded-md flex items-center"
-                        onClick={() => handelSaveInvoice()}
+                        onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
                     >
                         Save invoice
                     </button>
