@@ -7,14 +7,19 @@ import { v4 as uuidv4 } from 'uuid';
 import ProductsList from "./Products";
 import Select from 'react-select';
 import Datepicker from "react-tailwindcss-datepicker";
+import { Page, Text, Document, PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
+import Invoicepdf from '../components/invoicePDF';
 
-export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, allProducts, allCustomers, storeRoute }) {
+
+export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, allProducts, allCustomers, storeRoute, company }) {
 
     const [thisInvoice, setThisInvoice] = useState(invoice ?? null);
     const [invoiceDate, setInvoiceDate] = useState({
         startDate: new Date(invoice.invoice_date) ?? new Date('today'),
         endDate: new Date(invoice.invoice_date) ?? new Date('today')
     });
+
+    const [downloaded, setDownloaded] = useState(false);
 
     const [invoiceDueDate, setInvoiceDueDate] = useState({
         startDate: new Date(invoice.invoice_due_date) ?? new Date('today'),
@@ -23,6 +28,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     const [invoiceNotes, setInvoiceNotes] = useState(invoice.notes ?? '');
     const [paid, setPaid] = useState(invoice.paid) ?? false;
     const [invoiceTotal, setInvoiceTotal] = useState(invoice.total ?? 0);
+    const [invoiceTitle, setInvoiceTitle] = useState(invoice.name);
 
     const [edit, setEdit] = useState({});
     const [messages, setMessages] = useState([]);
@@ -72,11 +78,9 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         setInvoiceDueDate(date);
     };
 
-    const handelSaveInvoice = () => {
-
-        //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
-
+    useEffect(() => {
         const fullInvoice = thisInvoice;
+        fullInvoice['name'] = invoiceTitle;
         fullInvoice['invoice_date'] = invoiceDate['startDate'];
         fullInvoice['invoice_due_date'] = invoiceDueDate['startDate'];
         fullInvoice['notes'] = invoiceNotes;
@@ -85,10 +89,28 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         fullInvoice['customer'] = customer;
         fullInvoice['products'] = products;
         fullInvoice['total'] = invoiceTotal;
+        setThisInvoice(fullInvoice); //
         console.log(fullInvoice);
 
+    }, [
+        invoiceDate,
+        invoiceDueDate,
+        invoiceNotes,
+        invoiceTotal,
+        paid,
+        customer,
+        products,
+        invoiceTotal,
+        invoiceTitle,
+    ]);
 
-       axios.post(updateInvoiceRoute, { fullInvoice })
+    const handelSaveInvoice = () => {
+
+        //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
+
+        const fullInvoice = thisInvoice;
+
+        axios.post(updateInvoiceRoute, { fullInvoice })
             .then(res => {
                 if (res.status === 201) {
                     console.log('aaaa');
@@ -107,44 +129,45 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     };
 
     const handelStoreInvoice = () => {
-        console.log(thisInvoice, "Invoice");
-        console.log(invoiceDate, " Date");
-        console.log(invoiceDueDate, " Date");
-        console.log(paid, 'paid');
-        console.log(customer, 'customer');
-        console.log(products, 'producst');
-        console.log(invoiceNotes, 'invoiceNotes');
-         //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
 
-         const fullInvoice = thisInvoice;
-         fullInvoice['invoice_date'] = invoiceDate['startDate'];
-         fullInvoice['invoice_due_date'] = invoiceDueDate['startDate'];
-         fullInvoice['notes'] = invoiceNotes;
-         fullInvoice['paid'] = paid ? true : false;
-         fullInvoice['customer'] = customer;
-         fullInvoice['products'] = products;
-         fullInvoice['total'] = invoiceTotal;
-         console.log(fullInvoice);
+        //['invoice_number', 'name', 'customer_id', 'customer', 'products', 'total', 'invoice_date', 'invoice_due_date', 'paid', 'notes']
 
+        const fullInvoice = thisInvoice;
 
         axios.post(storeRoute, { fullInvoice })
-             .then(res => {
-                 if (res.status === 201) {
-                     console.log('aaaa');
-                     addMessage(res.data.message, res.data.type);
+            .then(res => {
+                if (res.status === 201) {
+                    console.log('aaaa');
+                    addMessage(res.data.message, res.data.type);
+                    window.location.href = '/invoices/show/' + res.data.invoice;
 
-                 }
-                 else {
+                }
+                else {
 
-                 }
-             }
-             )
-             .catch(e => {
-                 console.log(e);
-             }
-             );
-     };
+                }
+            }
+            )
+            .catch(e => {
+                console.log(e);
+            }
+            );
+    };
 
+    const [pdfBlob, setPdfBlob] = useState(null);
+
+    useEffect(() => {
+        if (pdfBlob) {
+            // Trigger the download only once
+            pdfBlob.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `invoice-${thisInvoice.invoice_number}.pdf`;
+                a.click();
+                setDownloaded(true); // Set downloaded to true after the download
+            });
+        }
+    }, [pdfBlob, thisInvoice.invoice_number]);
 
 
     return (
@@ -153,26 +176,72 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
             header={
                 <div className='flex justify-between'>
                     <h2 className=" flex-1 text-2xl leading-tight font-bold text-blue-500 dark:bg-gray-800 w-auto">
-                        Invoice {thisInvoice.invoice_number} details
+                        {thisInvoice.invoice_number ? 'Invoice ' + thisInvoice.invoice_number + ' details' : 'New invoice'}
+                        {/* Invoice {thisInvoice.invoice_number} details */}
                     </h2>
-                    <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
+                    {/* <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
                         <a href={route('customers-create')}>Add new client</a>
-                    </button>
+                    </button> */}
                 </div>
             }
         >
             <Head title="Client Info" />
             <div className="py-12 ">
+                <div className="max-w-7xl mx-auto mt-3 py-4 sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200 justify-end">
+                    <button className="bg-orange-500 text-white hover:bg-orange-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
+                        onClick={() => {
+                            window.location.href = '/invoices';
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button className="bg-green-500 text-white hover:bg-green-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
+                        onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
+                    >
+                        Save invoice
+                    </button>
+
+                    {thisInvoice.invoice_number ?
+                        <PDFDownloadLink document={<Invoicepdf invoice={thisInvoice} company={company} />} fileName={`invoice-${thisInvoice.invoice_number}.pdf`}>
+                            {({ blob, url, loading, error }) => (
+                                <button
+                                    className="bg-red-500 text-white hover:bg-red-600 hover:text-white px-4 py-2 rounded-md flex items-center"
+                                    disabled={loading}
+                                    onClick={() => {
+                                        setDownloaded(false); // Reset the downloaded state
+                                        const pdfBlob = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
+                                        setPdfBlob(pdfBlob);
+                                    }}
+                                >
+                                    {loading ? 'Generating PDF...' : 'Download PDF'}
+                                </button>
+                            )}
+                        </PDFDownloadLink>
+
+                        : null}
+
+                </div>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200 pt-5 ">
+                    <div className="w-full flex gap-6 flex-wrap px-5 mt-4">
+                        <div className='w-full md:w-1/3 flex items-center '>
+                            <h2 className="mb-1 text-lg font-bold text-blue-600 min-w-[100px] lg:min-w-[120px]"> Invoice title: </h2>
+                            <input type="text" className='min-w-[150px] lg:min-w-[600px]'
+                                onChange={(e) => {
+                                   setInvoiceTitle (e.target.value);
+
+                                }}
+                               value = {invoiceTitle} />
+                        </div>
+                    </div>
                     <div className="w-full flex gap-6 flex-wrap px-5 mt-4">
                         <div className='w-full md:w-1/3 flex items-center '>
                             <h2 className="mb-1 text-lg font-bold text-blue-600"> Invoice paid: </h2>
                             <input type="checkbox" className='w-5 h-5 ml-2'
-                                    onChange = {() => setPaid(()=> {
-                                        const newstatus = paid ? 0 : 1;
-                                        return newstatus;
-                                    })}
-                                    id="paidStatus" name="paidStatus"  checked={paid === 1 ? true : false} />
+                                onChange={() => setPaid(() => {
+                                    const newstatus = paid ? 0 : 1;
+                                    return newstatus;
+                                })}
+                                id="paidStatus" name="paidStatus" checked={paid === 1 ? true : false} />
                         </div>
                     </div>
                 </div>
@@ -188,27 +257,27 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                 </div>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200 pt-5 ">
                     <div className="w-full flex gap-6 flex-wrap px-5">
-                            <div className='w-full md:w-1/3'>
-                                <h2 className="mb-1 text-lg font-bold text-blue-600"> Invoice Date: </h2>
-                                <Datepicker
-                                    inputClassName="w-full rounded-md  font-normal "
-                                    containerClassName=""
-                                    asSingle={true}
-                                    value={invoiceDate}
-                                    onChange={handleInvoiceDateChange}
-                                />
-                            </div>
-                            <div className='w-full md:w-1/3'>
-                                <h2 className="mb-1 text-lg font-bold text-blue-600">Invoice Due Date:</h2>
-                                <Datepicker
-                                    inputClassName="w-full rounded-md  font-normal "
-                                    containerClassName=""
-                                    asSingle={true}
-                                    value={invoiceDueDate}
-                                    onChange={handleInvoiceDueDateChange}
-                                />
-                            </div>
+                        <div className='w-full md:w-1/3'>
+                            <h2 className="mb-1 text-lg font-bold text-blue-600"> Invoice Date: </h2>
+                            <Datepicker
+                                inputClassName="w-full rounded-md  font-normal "
+                                containerClassName=""
+                                asSingle={true}
+                                value={invoiceDate}
+                                onChange={handleInvoiceDateChange}
+                            />
                         </div>
+                        <div className='w-full md:w-1/3'>
+                            <h2 className="mb-1 text-lg font-bold text-blue-600">Invoice Due Date:</h2>
+                            <Datepicker
+                                inputClassName="w-full rounded-md  font-normal "
+                                containerClassName=""
+                                asSingle={true}
+                                value={invoiceDueDate}
+                                onChange={handleInvoiceDueDateChange}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-200">
                     <div className="flex-1 min-w-[300px] w-full md:w-1/2 bg-gray-200 p-6">
@@ -373,25 +442,54 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                     products={products}
                     setProducts={setProducts}
                     allProducts={allProducts}
-                    invoiceTotal = {invoiceTotal}
-                    setInvoiceTotal = {setInvoiceTotal}
+                    invoiceTotal={invoiceTotal}
+                    setInvoiceTotal={setInvoiceTotal}
                 //  addMessage = {addMessage}
                 />
-                <div className="max-w-7xl mx-auto mt-3 py-4 sm:px-6 lg:px-8 flex flex-wrap justify-items-center bg-gray-100 justify-end">
-                    <button className="bg-red-500 text-white hover:bg-red-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
+                <div className="max-w-7xl mx-auto mt-0  py-4 sm:px-6 lg:px-8 flex flex-wrap justify-items-center  bg-gray-200 justify-end">
+                    <button className="bg-orange-500 text-white hover:bg-orange-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
                         onClick={() => {
                             window.location.href = '/invoices';
+                            // ReactPDF.render(<Invoicepdf />, `${__dirname}/example.pdf`);
                         }}
                     >
                         Cancel
                     </button>
-                    <button className="bg-green-500 text-white hover:bg-green-600 hover:text-white px-4 py-2 rounded-md flex items-center"
+                    <button className="bg-green-500 text-white hover:bg-green-600 mr-4 hover:text-white px-4 py-2 rounded-md flex items-center"
                         onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
                     >
                         Save invoice
                     </button>
+
+                    {/* {thisInvoice.invoice_number ?
+                        <PDFDownloadLink document={<Invoicepdf invoice={thisInvoice} company={company} />} fileName={`invoice-${thisInvoice.invoice_number}.pdf`}>
+                            {({ blob, url, loading, error }) => (
+                                <button
+                                    className="bg-red-500 text-white hover:bg-red-600 hover:text-white px-4 py-2 rounded-md flex items-center"
+                                    disabled={loading}
+                                    onClick={() => {
+                                        if (!loading && !downloaded) {
+                                            // Trigger the download
+                                            const a = document.createElement('a');
+                                            a.href = url;
+                                            a.download = `invoice-${thisInvoice.invoice_number}.pdf`;
+                                            a.click();
+                                            setDownloaded(true);
+                                        }
+                                    }}
+                                >
+                                    {loading ? 'Generating PDF...' : 'Download PDF'}
+                                </button>
+                            )}
+                        </PDFDownloadLink>
+
+                        : null} */}
+
+
                 </div>
             </div>
+
+
 
             <Messages
                 const messages={messages}

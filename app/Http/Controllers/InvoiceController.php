@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
@@ -135,7 +136,6 @@ class InvoiceController extends Controller
         $nextInvoiceNumber = 'PSF-' . str_pad($lastInvoiceNumber + 1, 4, '0', STR_PAD_LEFT);
 
         $fullInvoice =$request->input('fullInvoice');
-        dump($lastInvoice->invoice_number);
         $invoice = new Invoice();
 
         $invoice->invoice_number = $nextInvoiceNumber;
@@ -153,10 +153,12 @@ class InvoiceController extends Controller
 
 
         $invoice->save();
+
         return response()->json(
             [
                 'message' => 'Invoice '. $nextInvoiceNumber.' was stored.',
                 'type' => 'success',
+                'invoice' => $invoice->id,
             ],
             201
         );
@@ -170,6 +172,7 @@ class InvoiceController extends Controller
         $products = Product::all();
         $customers = Customer::all();
         $actualInvoice = $invoice;
+        $company = Company::where('company_id', 1)->first();
 
         return Inertia::render('Invoices/Invoice', [
             'updateRoute' => route('customers-update', ['customer' => $actualInvoice->id]),
@@ -177,6 +180,7 @@ class InvoiceController extends Controller
             'updateInvoiceRoute' => route('invoices-update'),
             'allProducts' => $products,
             'allCustomers' => $customers,
+            'company' => $company,
 
         ]);
     }

@@ -96,7 +96,7 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
         })
             .then(res => {
                 if (res.status === 201) {
-                    addMessage(res.data.message, res.data.type);
+                    // addMessage(res.data.message, res.data.type);
                     setInvoicesList(res.data.invoices);
                 }
                 else {
@@ -120,7 +120,7 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                         Invoices
                     </h2>
                     <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-                        <a href={route('customers-create')}>Add new invoice</a>
+                        <a href={route('invoices-create',[1])}>Add new invoice</a>
                     </button>
                 </div>
             }
