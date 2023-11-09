@@ -36,7 +36,8 @@ class InvoiceController extends Controller
                 $query->where('name', 'like', '%' . $search . '%')
                     ->orWhere('invoice_number', 'like', '%' . $search . '%')
                     ->orWhereHas('customer', function ($customerQuery) use ($search) {
-                        $customerQuery->where('name', 'like', '%' . $search . '%');
+                        $customerQuery->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('nickname', 'like', '%' . $search . '%');;
                     });
             })->orderBy('paid', $sort['sortDirection'])
             ->orderBy('invoice_due_date', $sort['sortDirection'])->paginate($pagination);
@@ -46,7 +47,8 @@ class InvoiceController extends Controller
                 $query->where('name', 'like', '%' . $search . '%')
                     ->orWhere('invoice_number', 'like', '%' . $search . '%')
                     ->orWhereHas('customer', function ($customerQuery) use ($search) {
-                        $customerQuery->where('name', 'like', '%' . $search . '%');
+                        $customerQuery->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('nickname', 'like', '%' . $search . '%');
                     });
             })->orderBy($sort['sortName'], $sort['sortDirection'])->paginate($pagination);
        }
