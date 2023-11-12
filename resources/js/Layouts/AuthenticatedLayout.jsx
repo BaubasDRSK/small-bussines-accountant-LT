@@ -123,6 +123,16 @@ export default function Authenticated({ user, header, children }) {
                             Clients
                         </ResponsiveNavLink>
                     </div>
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('invoices-index')} active={route().current('invoices-index')}>
+                           Invoices
+                        </ResponsiveNavLink>
+                    </div>
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('products-index')} active={route().current('products-index')}>
+                           Products
+                        </ResponsiveNavLink>
+                    </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">

@@ -208,6 +208,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                     className="bg-red-500 text-white hover:bg-red-600 hover:text-white px-4 py-2 rounded-md flex items-center"
                                     disabled={loading}
                                     onClick={() => {
+                                        handelSaveInvoice();
                                         setDownloaded(false); // Reset the downloaded state
                                         const pdfBlob = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
                                         setPdfBlob(pdfBlob);
@@ -461,21 +462,17 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         Save invoice
                     </button>
 
-                    {/* {thisInvoice.invoice_number ?
+                    {thisInvoice.invoice_number ?
                         <PDFDownloadLink document={<Invoicepdf invoice={thisInvoice} company={company} />} fileName={`invoice-${thisInvoice.invoice_number}.pdf`}>
                             {({ blob, url, loading, error }) => (
                                 <button
                                     className="bg-red-500 text-white hover:bg-red-600 hover:text-white px-4 py-2 rounded-md flex items-center"
                                     disabled={loading}
                                     onClick={() => {
-                                        if (!loading && !downloaded) {
-                                            // Trigger the download
-                                            const a = document.createElement('a');
-                                            a.href = url;
-                                            a.download = `invoice-${thisInvoice.invoice_number}.pdf`;
-                                            a.click();
-                                            setDownloaded(true);
-                                        }
+                                        handelSaveInvoice();
+                                        setDownloaded(false); // Reset the downloaded state
+                                        const pdfBlob = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
+                                        setPdfBlob(pdfBlob);
                                     }}
                                 >
                                     {loading ? 'Generating PDF...' : 'Download PDF'}
@@ -483,7 +480,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                             )}
                         </PDFDownloadLink>
 
-                        : null} */}
+                        : null}
 
 
                 </div>
