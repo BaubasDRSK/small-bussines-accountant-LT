@@ -21,8 +21,8 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
-        console.log(companyInfo[key]);
-        nameValidation(value);
+        if (key === 'name'){ nameValidation(value)};
+        if (key === 'code'){ codeValidation(value)};
 
     };
 
@@ -37,12 +37,18 @@ export default function Settings({ auth, storeUrl, company }) {
         value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "Field is required"], })) : null;
         /\d/.test(value) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
         /^[a-zA-Z0-9-\s]*$/.test(value) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
-
     }
 
-    // const streetValidation = () =>{
-    //     /\d/.test(companyInfo['street']) ? setValidations({...valid
-    // };
+    const codeValidation = (value) => {
+        setValidations((prevValidations) => ({
+            ...prevValidations,
+            ['code']: [],
+        }));
+        console.log(value.length);
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "Field is required"], })) : null;
+        /\d/.test(value) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
+        /^[a-zA-Z0-9-\s]*$/.test(value) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
+    }
 
     function capitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
