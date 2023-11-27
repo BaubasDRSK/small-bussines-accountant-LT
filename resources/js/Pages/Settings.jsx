@@ -23,6 +23,7 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
+        console.log(key);
         const validationMsgs = inputValidation(key, value);
         setValidations({ ...validations, [validationMsgs[0]]: validationMsgs[1] });
     };
@@ -145,21 +146,21 @@ export default function Settings({ auth, storeUrl, company }) {
                                       {validations[key] ? (<div>
                                         {validations[key].length === 0 ?
                                             (
-                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 mt-2">
+                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-2 mt-2">
                                                     {/* <strong className="block font-medium text-green-800"> Check value again: </strong> */}
 
 
-                                                        <p className="mt-2 text-sm text-green-700">
+                                                        <p className=" text-sm text-green-700">
                                                             Field info is correct
                                                         </p>
 
                                                 </div>
                                             ) : (
-                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 p-4 mt-2">
+                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 p-2 mt-2">
                                                     {/* <strong className="block font-medium text-red-800"> Check value again: </strong> */}
 
                                                     {validations[key].map((msg) => (
-                                                        <p key={msg} className="mt-2 text-sm text-red-700">
+                                                        <p key={msg} className="text-sm text-red-700">
                                                             {msg}
                                                         </p>
                                                     ))}
