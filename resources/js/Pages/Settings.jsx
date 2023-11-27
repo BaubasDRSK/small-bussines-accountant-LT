@@ -4,6 +4,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
+import inputValidation from '../utilities/inputValidation.js';
+
 
 
 export default function Settings({ auth, storeUrl, company }) {
@@ -21,72 +23,13 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
-        console.log(key);
-        if (key === 'name'){ nameValidation(value)};
-        if (key === 'code'){ codeValidation(value)};
-        if (key === 'vatcode'){ vatcodeValidation(value)};
-        if (key === 'street'){ streetValidation(value)};
-        if (key === 'city'){ cityValidation(value)};
-        if (key === 'country'){ countryValidation(value)};
+        const validationMsgs = inputValidation(key, value);
+        setValidations({ ...validations, [validationMsgs[0]]: validationMsgs[1] });
     };
 
     // validations
 
-    const nameValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['name']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "Field is required"], })) : null;
-        /\d/.test(value.trim()) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
-        /^[a-zA-Z0-9-\s]*$/.test(value.trim()) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
-    }
 
-    const codeValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['code']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['code']: [...prevValidations['code'], "Field is required"], })) : null;
-        /[a-zA-Z]/.test(value.trim()) ? setValidations((prevValidations) => ({ ...prevValidations, ['code']: ["Code must be only numbers"], })) : null;
-        /^[a-zA-Z0-9]*$/.test(value.trim()) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['code']: [...prevValidations['code'], "No special characters allowed"], }));
-    }
-
-    const vatcodeValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['vatcode']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['vatcode']: ["Field is required"], })) : null;
-        (/^(LT\d{9}(?:\d{3})?|-)$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['vatcode']: [...prevValidations['vatcode'],"Check your VAT code"], }));
-        }
-
-    const streetValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['street']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['street']: ["Field is required"], })) : null;
-        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['street']: [...prevValidations['street'],"Check info again"], }));
-        }
-
-    const cityValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['city']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['city']: ["Field is required"], })) : null;
-        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['city']: [...prevValidations['city'],"Check info again"], }));
-        }
-
-    const countryValidation = (value) => {
-        setValidations((prevValidations) => ({
-            ...prevValidations,
-            ['country']: [],
-        }));
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['country']: ["Field is required"], })) : null;
-        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['country']: [...prevValidations['country'],"Check info again"], }));
-        }
 
 
     function capitalizeFirstLetter(str) {
