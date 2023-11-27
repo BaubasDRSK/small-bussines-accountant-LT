@@ -5,6 +5,9 @@ export default function inputValidation(type, value) {
     if (type === 'street'){ return [type, streetValidation(value)]};
     if (type === 'city'){ return [type, cityValidation(value)]};
     if (type === 'country'){ return [type, countryValidation(value)]};
+    if (type === 'phone'){ return [type, phoneValidation(value)]};
+    if (type === 'email'){ return [type, emailValidation(value)]};
+    if (type === 'web'){ return [type, webValidation(value)]};
 
 };
 
@@ -54,6 +57,31 @@ const countryValidation = (value) => {
     let validationMessages = [];
     value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
     !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check info again"] : null;
+
+    return validationMessages;
+    }
+
+const phoneValidation = (value) => {
+    let validationMessages = [];
+    value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
+    !(/^\+(?:[0-9]\s?){6,14}[0-9]$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check number"] : null;
+
+    return validationMessages;
+    }
+
+const emailValidation = (value) => {
+    let validationMessages = [];
+    value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
+    !(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check email again"] : null;
+
+    return validationMessages;
+    }
+
+
+const webValidation = (value) => {
+    let validationMessages = [];
+    value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
+    !(/^w*\.?[^\s]*\.[a-zA-Z]{2,4}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check web address again"] : null;
 
     return validationMessages;
     }
