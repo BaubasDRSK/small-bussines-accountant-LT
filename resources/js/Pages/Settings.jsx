@@ -21,9 +21,13 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
+        console.log(key);
         if (key === 'name'){ nameValidation(value)};
         if (key === 'code'){ codeValidation(value)};
-
+        if (key === 'vatcode'){ vatcodeValidation(value)};
+        if (key === 'street'){ streetValidation(value)};
+        if (key === 'city'){ cityValidation(value)};
+        if (key === 'country'){ countryValidation(value)};
     };
 
     // validations
@@ -33,10 +37,9 @@ export default function Settings({ auth, storeUrl, company }) {
             ...prevValidations,
             ['name']: [],
         }));
-        console.log(value.length);
         value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "Field is required"], })) : null;
-        /\d/.test(value) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
-        /^[a-zA-Z0-9-\s]*$/.test(value) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
+        /\d/.test(value.trim()) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
+        /^[a-zA-Z0-9-\s]*$/.test(value.trim()) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
     }
 
     const codeValidation = (value) => {
@@ -44,11 +47,47 @@ export default function Settings({ auth, storeUrl, company }) {
             ...prevValidations,
             ['code']: [],
         }));
-        console.log(value.length);
-        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "Field is required"], })) : null;
-        /\d/.test(value) ? setValidations((prevValidations) => ({ ...prevValidations, ['name']: ["No numbers allowed"], })) : null;
-        /^[a-zA-Z0-9-\s]*$/.test(value) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['name']: [...prevValidations['name'], "No special characters allowed"], }));
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['code']: [...prevValidations['code'], "Field is required"], })) : null;
+        /[a-zA-Z]/.test(value.trim()) ? setValidations((prevValidations) => ({ ...prevValidations, ['code']: ["Code must be only numbers"], })) : null;
+        /^[a-zA-Z0-9]*$/.test(value.trim()) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['code']: [...prevValidations['code'], "No special characters allowed"], }));
     }
+
+    const vatcodeValidation = (value) => {
+        setValidations((prevValidations) => ({
+            ...prevValidations,
+            ['vatcode']: [],
+        }));
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['vatcode']: ["Field is required"], })) : null;
+        (/^(LT\d{9}(?:\d{3})?|-)$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['vatcode']: [...prevValidations['vatcode'],"Check your VAT code"], }));
+        }
+
+    const streetValidation = (value) => {
+        setValidations((prevValidations) => ({
+            ...prevValidations,
+            ['street']: [],
+        }));
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['street']: ["Field is required"], })) : null;
+        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['street']: [...prevValidations['street'],"Check info again"], }));
+        }
+
+    const cityValidation = (value) => {
+        setValidations((prevValidations) => ({
+            ...prevValidations,
+            ['city']: [],
+        }));
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['city']: ["Field is required"], })) : null;
+        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['city']: [...prevValidations['city'],"Check info again"], }));
+        }
+
+    const countryValidation = (value) => {
+        setValidations((prevValidations) => ({
+            ...prevValidations,
+            ['country']: [],
+        }));
+        value.length === 0 ? setValidations((prevValidations) => ({ ...prevValidations, ['country']: ["Field is required"], })) : null;
+        (/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ? null : setValidations((prevValidations) => ({ ...prevValidations, ['country']: [...prevValidations['country'],"Check info again"], }));
+        }
+
 
     function capitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -148,36 +187,6 @@ export default function Settings({ auth, storeUrl, company }) {
                                     >
                                         {capitalizeFirstLetter(key)}:
                                     </label>
-                                    {/* validation alert */}
-
-                                    {validations[key] ? (<div>
-                                        {validations[key].length === 0 ?
-                                            (
-                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 mb-2">
-                                                    <strong className="block font-medium text-green-800"> Check value again: </strong>
-
-
-                                                        <p className="mt-2 text-sm text-green-700">
-                                                            Field info is correct
-                                                        </p>
-
-                                                </div>
-                                            ) : (
-                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 p-4 mb-2">
-                                                    <strong className="block font-medium text-red-800"> Check value again: </strong>
-
-                                                    {validations[key].map((msg) => (
-                                                        <p className="mt-2 text-sm text-red-700">
-                                                            {msg}
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            )
-
-                                        }
-
-                                    </div>) : (null)}
-                                    {/* validation alrt end */}
                                     <input
                                         id={key}
                                         className="px-4 py-2 border border-gray-300 rounded w-full"
@@ -188,6 +197,36 @@ export default function Settings({ auth, storeUrl, company }) {
                                             handleValidation(key, e.target.value);
                                         }}
                                     />
+                                      {/* validation alert */}
+                                      {/* {validations[key] ?? []} */}
+                                      {validations[key] ? (<div>
+                                        {validations[key].length === 0 ?
+                                            (
+                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-4 mt-2">
+                                                    {/* <strong className="block font-medium text-green-800"> Check value again: </strong> */}
+
+
+                                                        <p className="mt-2 text-sm text-green-700">
+                                                            Field info is correct
+                                                        </p>
+
+                                                </div>
+                                            ) : (
+                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 p-4 mt-2">
+                                                    {/* <strong className="block font-medium text-red-800"> Check value again: </strong> */}
+
+                                                    {validations[key].map((msg) => (
+                                                        <p key={msg} className="mt-2 text-sm text-red-700">
+                                                            {msg}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            )
+
+                                        }
+
+                                    </div>) : (null)}
+                                    {/* validation alrt end */}
                                 </div>
 
                             )
