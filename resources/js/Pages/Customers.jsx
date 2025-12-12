@@ -46,6 +46,7 @@ export default function Settings({ auth, newlist, customers }) {
     };
 
     const uzklausa = (url, value) => {
+        console.log(url);
         axios.post(url, {
             'search': value,
             'pagination': pagination,

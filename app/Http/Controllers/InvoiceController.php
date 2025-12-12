@@ -29,7 +29,7 @@ class InvoiceController extends Controller
     public function list(Request $request)
     {
         $search = $request->search ?? '';
-        $pagination = $request->pagination;
+        $pagination = (int)$request->pagination;
         $sort = $request->sort ?? ['sortDirection' => 'asc', 'sortName' => 'due'];
        if ($sort['sortName'] === 'due') {
             $invoices = Invoice::with('customer')->where(function($query) use ($search)

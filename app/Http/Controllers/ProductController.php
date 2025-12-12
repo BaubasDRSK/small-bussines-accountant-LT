@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function list(Request $request)
     {
         $search = $request->search ?? '';
-        $pagination = $request->pagination;
+        $pagination = (int)$request->pagination;
         $page = $request->page;
         $products = Product::where(function($query) use ($search)
         {
