@@ -172,7 +172,7 @@ class InvoiceController extends Controller
         $products = Product::all();
         $customers = Customer::all();
         $actualInvoice = $invoice;
-        $company = Company::where('company_id', 1)->first();
+        $company = Customer::where('id', $invoice->customer_id)->first();
 
         return Inertia::render('Invoices/Invoice', [
             'updateRoute' => route('customers-update', ['customer' => $actualInvoice->id]),

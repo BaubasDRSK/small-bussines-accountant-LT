@@ -1,6 +1,10 @@
 {
     "private": true,
     "type": "module",
+    "overrides": {
+        "axios": "^1.13.2"
+    },
+    
     "scripts": {
         "dev": "vite",
         "build": "vite build"
@@ -11,19 +15,21 @@
         "@tailwindcss/forms": "^0.5.3",
         "@vitejs/plugin-react": "^4.0.3",
         "autoprefixer": "^10.4.12",
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.8.0",
+        "axios": "^1.13.2",
+        "laravel-vite-plugin": "^2.0.1",
         "postcss": "^8.4.18",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.2.1",
-        "vite": "^4.0.0"
+        "vite": "^7.2.7"
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
         "@react-pdf/renderer": "^3.1.14",
+        "braces": "^3.0.3",
         "dayjs": "^1.11.10",
+        "inertia": "^0.0.7",
         "react-router-dom": "^6.18.0",
         "react-select": "^5.8.0",
         "react-tailwindcss-datepicker": "^1.6.6",
