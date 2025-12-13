@@ -14,7 +14,7 @@ export default function Settings({ auth, newlist, customers }) {
     const [pagination, setPagination] = useState(localStorage.getItem('pagination') ?? 15);
 
 
-
+    // ... (Your useEffect, addMessage, makeSearch, and uzklausa functions remain unchanged)
     useEffect(() => {
         localStorage.setItem('pagination', pagination);
         localStorage.setItem('searchName', searchName);
@@ -73,107 +73,141 @@ export default function Settings({ auth, newlist, customers }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className='flex justify-between'>
-                    <h2 className=" flex-1 text-2xl leading-tight font-bold text-blue-500 dark:bg-gray-800 w-auto">
+                // Updated header styling to match the dashboard's header look
+                <div className='flex justify-between items-center'>
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                         Clients
                     </h2>
-                    <button className=" w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
                         <a href={route('customers-create')}>Add new client</a>
                     </button>
                 </div>
             }
         >
-            <Head title="Settings" />
-            <div className="py-12 ">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <Head title="Clients" />
 
-                        <div className='flex flex-wrap justify-between w-full text-sm text-left text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400'>
-                            <div className="flex px-6 py-3">
-                                <input
-                                    className=" flex min-w-[270px] lg:min-w-[400px]  w-auto rounded-md placeholder-gray-300 dark:bg-gray-500 dark:placeholder-gray-300 dark:text-gray-300"
-                                    type="text"
-                                    placeholder="Search by name / nickname or ID"
-                                    onChange={(e) => makeSearch('name', e.target.value)}
-                                    value={searchName}
-                                />
-                            </div>
+            {/* Changed 'py-12' to 'py-10' and container classes */}
+            <div className="py-10">
+                {/* Adopted dashboard's max-width, centering, and padding classes */}
+                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10">
 
-                            <div className=" flex px-6 py-3 justify-end">
-                                <div>
-                                    Records per page
-                                    <select onChange={e => setPagination(e.target.value)} defaultValue={pagination} className="rounded-md text-gray-500 ml-4 dark:bg-gray-500 dark:text-gray-300">
+                    {/* CLIENTS TABLE SECTION */}
+                    <section className="w-full max-w-full">
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Client List
+                            </h3>
+                            <p className="mt-2 text-gray-500 dark:text-gray-400">
+                                Manage and view all registered clients.
+                            </p>
+                        </div>
+
+                        {/* Updated table container styling for a cleaner look */}
+                        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 dark:border-gray-700">
+
+                            {/* Search and Pagination Controls */}
+                            <div className='flex flex-col md:flex-row justify-between w-full p-4 border-b dark:border-gray-700'>
+                                <div className="flex mb-4 md:mb-0">
+                                    <input
+                                        className="min-w-0 md:min-w-[300px] lg:min-w-[400px] w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-300 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                        type="text"
+                                        placeholder="Search by name / nickname or ID"
+                                        onChange={(e) => makeSearch('name', e.target.value)}
+                                        value={searchName}
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-end text-sm text-gray-700 dark:text-gray-400">
+                                    <label htmlFor="pagination-select" className="mr-3 whitespace-nowrap">
+                                        Records per page
+                                    </label>
+                                    <select
+                                        id="pagination-select"
+                                        onChange={e => setPagination(e.target.value)}
+                                        defaultValue={pagination}
+                                        className="rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                    >
                                         <option value={15}>15</option>
                                         <option value={30}>30</option>
                                         <option value={50}>50</option>
                                     </select>
                                 </div>
                             </div>
-                        </div>
-
-                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        <p>Company name</p>
-                                        <p className=" text-xs text-gray-400">Nickname</p>
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 hidden lg:table-cell">
-                                        <p>Invoices count</p>
-                                        <p className=" text-xs text-gray-400">Invoices this month</p>
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 hidden lg:table-cell">
-                                        <p>Total sales</p>
-                                        <p className=" text-xs text-gray-400">Due / OverDue</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {customersList !== null ? (customersList.data.map((item) => (
-
-                                    <tr
-                                        onClick={() => window.location.href = '/customers/show/'+item.id}
-                                        key={item.code}
-                                        className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                                    >
-                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <p>{item.name}</p>
-                                            <p className=" text-xs text-gray-600">{item.nickname}</p>
-                                            <div className="block md:hidden">
-                                                <p className=" text-xs text-gray-600">{(item.total/100).toFixed(2)}{" €"}</p>
-                                                <p className=" text-xs text-gray-600">{(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 font-bold' : 'text-gray-500'}>{(item.overdue/100).toFixed(2)}{" €"}</span></p>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 hidden lg:table-cell">
-                                            <p>{item.invoicesCount}</p>
-                                            <p className=" text-xs text-gray-600">{item.invoiceThisMonth ?? 0}</p>
-                                        </td>
-                                        <td className="px-6 py-4 hidden lg:table-cell">
-                                            {(item.total/100).toFixed(2)}{" €"}
-                                            <p className=" text-xs text-gray-600">{(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 font-bold' : 'text-gray-500'}>{(item.overdue/100).toFixed(2)}{" €"}</span></p>
-                                        </td>
-                                    </tr>
-                                ))) : (
+                            
+                            {/* Clients Table */}
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <td colSpan="5" className="px-6 py-4 text-center text-sm font-medium text-gray-900 dark:text-gray-300">Loading</td>
+                                        <th scope="col" className="px-6 py-3">
+                                            <p>Company name</p>
+                                            <p className=" text-xs text-gray-400">Nickname</p>
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 hidden lg:table-cell">
+                                            <p>Invoices count</p>
+                                            <p className=" text-xs text-gray-400">Invoices this month</p>
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 hidden lg:table-cell">
+                                            <p>Total sales</p>
+                                            <p className=" text-xs text-gray-400">Due / Overdue</p>
+                                        </th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    {customersList !== null ? (customersList.data.map((item) => (
+
+                                        <tr
+                                            onClick={() => window.location.href = '/customers/show/'+item.id}
+                                            key={item.code}
+                                            className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150 ease-in-out"
+                                        >
+                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <p>{item.name}</p>
+                                                <p className=" text-xs text-gray-600 dark:text-gray-400">{item.nickname}</p>
+                                                {/* Mobile summary */}
+                                                <div className="block md:hidden mt-2 text-xs">
+                                                    <p className=" text-gray-700 dark:text-gray-300">Total: {(item.total/100).toFixed(2)}{" €"}</p>
+                                                    <p className=" text-gray-700 dark:text-gray-300">Due: {(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 dark:text-red-400 font-bold' : 'text-gray-500 dark:text-gray-400'}>Overdue: {(item.overdue/100).toFixed(2)}{" €"}</span></p>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 hidden lg:table-cell">
+                                                <p className="text-gray-900 dark:text-white">{item.invoicesCount}</p>
+                                                <p className=" text-xs text-gray-600 dark:text-gray-400">{item.invoiceThisMonth ?? 0}</p>
+                                            </td>
+                                            <td className="px-6 py-4 hidden lg:table-cell">
+                                                <p className="text-gray-900 dark:text-white">{(item.total/100).toFixed(2)}{" €"}</p>
+                                                <p className=" text-xs text-gray-600 dark:text-gray-400">{(item.due/100).toFixed(2)}{" €"}{" / "}<span className = {item.overdue > 0 ? 'text-red-600 dark:text-red-400 font-bold' : 'text-gray-500 dark:text-gray-400'}>{(item.overdue/100).toFixed(2)}{" €"}</span></p>
+                                            </td>
+                                        </tr>
+                                    ))) : (
+                                        <tr>
+                                            <td colSpan="5" className="px-6 py-4 text-center text-base font-medium text-gray-900 dark:text-gray-300">Loading clients...</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+
+                            {/* Pagination Links */}
+                            <div className="flex justify-center items-center py-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+                                {customersList !== null ? (customersList.links.map((item) => (
+                                    <button
+                                        key={item.label}
+                                        onClick={() => { if(item.url) uzklausa(item.url, searchName); }}
+                                        dangerouslySetInnerHTML={{ __html: item.label }}
+                                        className={`mx-1 p-2 min-w-[32px] text-center rounded-lg transition duration-150 ease-in-out ${
+                                            item.active
+                                                ? 'bg-blue-600 text-white font-bold text-base'
+                                                : item.url
+                                                    ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer'
+                                                    : 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                        }`}
+                                        disabled={!item.url}
+                                    />
+                                ))) : (
+                                    <p className="m-4 text-gray-700 dark:text-gray-300">Loading pagination...</p>
                                 )}
-                            </tbody>
-                        </table>
-                        <div className="flex justify-center items-end ">
-                            {customersList !== null ? (customersList.links.map((item) => (
-                                <p key={item.label}
-
-                                    onClick={() => { uzklausa(item.url, searchName); }}
-                                    dangerouslySetInnerHTML={{ __html: item.label }}
-                                    className={`m-4 ${item.active && 'text-xl text-blue-500'} cursor-pointer`}
-
-                                ></p>
-                            ))) : (
-                                <p className="m-4">Loading</p>
-                            )}
+                            </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
             </div>
             <Messages
@@ -182,4 +216,3 @@ export default function Settings({ auth, newlist, customers }) {
         </AuthenticatedLayout>
     );
 }
-// ???
