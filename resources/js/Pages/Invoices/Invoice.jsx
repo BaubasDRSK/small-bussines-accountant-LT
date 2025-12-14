@@ -317,7 +317,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 <h2 className="mb-1 text-gray-500 dark:text-gray-400 text-sm font-medium">Invoice Date:</h2>
                                 <Datepicker
                                     inputClassName={inputClass}
-                                    containerClassName="w-full"
+                                    containerClassName="w-full relative"
                                     asSingle={true}
                                     value={invoiceDate}
                                     onChange={handleInvoiceDateChange}
@@ -329,7 +329,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 <h2 className="mb-1 text-gray-500 dark:text-gray-400 text-sm font-medium">Invoice Due Date:</h2>
                                 <Datepicker
                                     inputClassName={inputClass}
-                                    containerClassName="w-full"
+                                    containerClassName="w-full relative"
                                     asSingle={true}
                                     value={invoiceDueDate}
                                     onChange={handleInvoiceDueDateChange}

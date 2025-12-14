@@ -196,6 +196,7 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                             value={product[5] / 100} 
                                             className={`${inputClass} pr-8 text-right`}
                                             onChange={(e) => handleRecordEdit(e, product[0], 5)}
+                                            onFocus={(e) => e.target.select()}
                                         />
                                         <span className="pointer-events-none absolute inset-y-0 end-0 grid w-8 place-content-center text-gray-500 dark:text-gray-400"> € </span>
                                     </div>
@@ -211,6 +212,7 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                         value={product[6] || 1}
                                         className={`${inputClass} text-center`}
                                         onChange={(e) => handleRecordEdit(e, product[0], 6)}
+                                        onFocus={(e) => e.target.select()}
                                     />
                                 </td>
                                 

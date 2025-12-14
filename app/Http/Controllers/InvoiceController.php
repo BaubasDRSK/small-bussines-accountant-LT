@@ -139,7 +139,7 @@ class InvoiceController extends Controller
         $invoice = new Invoice();
 
         $invoice->invoice_number = $nextInvoiceNumber;
-        $invoice->name = 'nauja sf';
+        $invoice->name = $fullInvoice['name'];
         $invoice->customer_id = $fullInvoice['customer'][0];
         $invoice->customer = $fullInvoice['customer'];
         $invoice->products = $fullInvoice['products'];

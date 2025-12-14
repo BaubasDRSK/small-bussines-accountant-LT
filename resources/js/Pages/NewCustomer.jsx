@@ -3,15 +3,62 @@ import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { useState } from "react";
 import Messages from './components/messages';
-import { v4 as uuidv4 } from 'uuid'; // uuidv4 is imported but not used in the original component logic, keeping it for potential future use or consistency if 'messages' are needed.
+import { v4 as uuidv4 } from 'uuid';
+
+// ------------------------------------------------------------------
+// ** SOLUTION: MOVE InputField OUTSIDE the main component **
+// ------------------------------------------------------------------
+
+/**
+ * Helper component for rendering input fields
+ */
+const InputField = ({ label, id, value, onChange, isTextArea = false }) => {
+    const inputClasses = "mt-1 block w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out";
+    
+    // Note: The onChange handler uses the provided 'id' and 'e.target.value'
+    // to correctly update the specific field in the parent state.
+    const handleChange = (e) => onChange(id, e.target.value);
+    
+    return (
+        <div className='my-4'>
+            <label
+                htmlFor={id}
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+                {label}
+            </label>
+            {isTextArea ? (
+                <textarea
+                    id={id}
+                    rows="4"
+                    className={`${inputClasses} resize-none`}
+                    value={value}
+                    onChange={handleChange}
+                ></textarea>
+            ) : (
+                <input
+                    id={id}
+                    type="text"
+                    className={inputClasses}
+                    value={value}
+                    onChange={handleChange}
+                />
+            )}
+        </div>
+    );
+};
+
+// ------------------------------------------------------------------
+// ** The main component **
+// ------------------------------------------------------------------
 
 export default function Settings({ auth, storeRoute }) {
+    // ... (rest of your component logic remains here)
     const [messages, setMessages] = useState([]);
 
     const companyDetails = [['name', 'Company name (Required)'], ['nickname', 'Company nickname (Brand, optional)'], ['code', 'Company Reg. Code'], ['vat_code', 'Company VAT Code (If applicable)']];
     const companyAddress = [['street', 'Street, House, Flat'], ['city', 'City'], ['country', 'Country'], ['zip', 'Postal Code']];
     const companyContact = [['contact_name', 'Primary Contact Name'], ['contact_phone', 'Primary Contact Phone'], ['contact_email', 'Primary Contact Email'], ['website', 'Company Website']];
-    // const companyNotes = ['notes']; // Not needed as an array of strings since it's a textarea
 
     const initialClientState = {
         name: '',
@@ -31,6 +78,8 @@ export default function Settings({ auth, storeRoute }) {
 
     const [newClient, setNewClient] = useState(initialClientState);
 
+    // ... (rest of addMessage, handleUpdateValue, and store functions)
+
     const addMessage = (text, type) => {
         const uuid = uuidv4();
         const message = {
@@ -41,7 +90,7 @@ export default function Settings({ auth, storeRoute }) {
         setMessages(m => [message, ...m]);
         setTimeout(() => {
             setMessages(m => m.filter(m => m.uuid !== uuid));
-        }, 3000); // Increased timeout for better visibility
+        }, 3000);
     }
 
     const handleUpdateValue = (key, newValue) => {
@@ -61,13 +110,10 @@ export default function Settings({ auth, storeRoute }) {
             .then(res => {
                 if (res.status === 201) {
                     addMessage(res.data.message || 'Client created successfully!', 'success');
-                    // Store the name and redirect, as per original logic
                     localStorage.setItem('searchName', newClient['name']);
-                    // Use Inertia's visit or standard location redirect for navigation
                     if (res.data.route) {
                         window.location.href = res.data.route;
                     } else {
-                         // Fallback to customers index if no specific route is returned
                         window.location.href = route('customers-index');
                     }
                 }
@@ -79,57 +125,22 @@ export default function Settings({ auth, storeRoute }) {
             });
     };
 
-    // Helper component for rendering input fields
-    const InputField = ({ label, id, value, onChange, isTextArea = false }) => {
-        const inputClasses = "mt-1 block w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out";
-        
-        return (
-            <div className='my-4'>
-                <label
-                    htmlFor={id}
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                    {label}
-                </label>
-                {isTextArea ? (
-                    <textarea
-                        id={id}
-                        rows="4"
-                        className={`${inputClasses} resize-none`}
-                        value={value}
-                        onChange={(e) => onChange(id, e.target.value)}
-                    ></textarea>
-                ) : (
-                    <input
-                        id={id}
-                        type="text"
-                        className={inputClasses}
-                        value={value}
-                        onChange={(e) => onChange(id, e.target.value)}
-                    />
-                )}
-            </div>
-        );
-    };
-
     return (
+        // ... (your JSX rendering)
         <AuthenticatedLayout
             user={auth.user}
             header={
-                // Updated header styling to match the consistent design
                 <div className='flex justify-between items-center'>
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                         New Client
                     </h2>
                     <div className="flex gap-3">
-                         {/* Save Button */}
                         <button 
                             onClick={store}
                             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
                         >
                             Save Client
                         </button>
-                        {/* Cancel Button */}
                         <a 
                             href={route('customers-index')} 
                             className="inline-flex items-center bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
@@ -150,7 +161,6 @@ export default function Settings({ auth, storeRoute }) {
                             Client Details
                         </h3>
 
-                        {/* Form Grid Layout - Using flex-wrap for responsiveness */}
                         <div className="flex flex-col md:flex-row flex-wrap gap-x-8 gap-y-6 justify-between w-full">
                             
                             {/* === Column 1: Company Details === */}
@@ -195,7 +205,6 @@ export default function Settings({ auth, storeRoute }) {
                                         key={item[0]}
                                         id={item[0]}
                                         label={item[1]}
-                                        // Note: item[1] in the original code had an extra space and index which is removed here for clarity.
                                         value={newClient[item[0]]}
                                         onChange={handleUpdateValue}
                                     />

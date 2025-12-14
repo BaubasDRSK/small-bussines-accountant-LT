@@ -82,9 +82,8 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
         
         axios.post(updateInvoiceRoute, { fullInvoice: updatedInvoice })
             .then(res => {
-                if (res.status === 201) {
+                if (res.status === 200 || res.status === 201) {
                     addMessage(res.data.message, res.data.type);
-                    // Update the list locally if successful to reflect the change
                     setInvoicesList(prevList => ({
                         ...prevList,
                         data: prevList.data.map(item =>
@@ -110,7 +109,7 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
         })
             .then(res => {
                 if (res.status === 201) {
-                    // addMessage(res.data.message, res.data.type); // Keeping this commented out as per your original logic
+                    addMessage(res.data.message, res.data.type); 
                     setInvoicesList(res.data.invoices);
                 }
                 else {
@@ -289,8 +288,12 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                                                 {(item.total / 100).toFixed(2)}{" €"}
                                             </td>
 
-                                            <td className="px-6 py-4 hidden lg:table-cell">
-                                                <label htmlFor={`paidStatusLarge-${item.id}`} className="inline-flex items-center cursor-pointer">
+                                            <td className="px-6 py-4 hidden lg:table-cell"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <label htmlFor={`paidStatusLarge-${item.id}`} className="inline-flex items-center cursor-pointer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                >
                                                     <input type="checkbox"
                                                         onChange={(e) => {
                                                             e.stopPropagation();
@@ -364,7 +367,7 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
             >
             </ModalYesCancel>
             <Messages
-                messages={messages}
+               const messages={messages}
             />
         </AuthenticatedLayout>
     );

@@ -7,9 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 import inputValidation from '../utilities/inputValidation.js';
 
 
-
 export default function Settings({ auth, storeUrl, company }) {
-    const [companyInfoServer, setCompanyInfoServer] = useState(company[0]);
+    const [companyInfoServer, setCompanyInfoServer] = useState(company);
     const companyInfoKeys = Object.keys(companyInfoServer);
     const [companyInfo, setComp] = useState(companyInfoServer);
     const [messages, setMessages] = useState([]);
@@ -23,15 +22,11 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
-        console.log(key);
         const validationMsgs = inputValidation(key, value);
         setValidations({ ...validations, [validationMsgs[0]]: validationMsgs[1] });
     };
 
     // validations
-
-
-
 
     function capitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -77,120 +72,182 @@ export default function Settings({ auth, storeUrl, company }) {
             ...companyInfoServer,
         })
         addMessage('Data restored', 'warning');
-        window.location.href = '/customers';
+        window.location.href = '/customers'; // Assuming you want to go back to customers page
     }
+
+    // Determine if any value has changed to enable/disable buttons
+    const isDirty = JSON.stringify(companyInfo) !== JSON.stringify(companyInfoServer);
+
+    // Determine if there are any validation errors to disable save button
+    const hasErrors = Object.values(validations).some(msgs => msgs.length > 0);
+
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="text-2xl leading-tight font-bold text-blue-500">
-                    Settings
-                </h2>
+                // Updated header styling to match the dashboard's header look
+                <div className='flex justify-between items-center'>
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                        Settings
+                    </h2>
+                    {/* Action buttons moved to the header for consistency and quick access */}
+                    <div className="flex space-x-3">
+                        <button 
+                            onClick={cancel} 
+                            className={`py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out font-semibold ${
+                                isDirty
+                                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                                    : 'bg-gray-400 text-gray-600 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400'
+                            }`}
+                            disabled={!isDirty}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={store} 
+                            className={`py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out font-semibold ${
+                                isDirty && !hasErrors
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    : 'bg-gray-400 text-gray-600 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400'
+                            }`}
+                            disabled={!isDirty || hasErrors}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </div>
             }
         >
             <Head title="Settings" />
-            <div className="py-12 ">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-2xl font-bold text-blue-500 w-auto mx-auto text-center">
-                            Settings of your company
-                        </div>
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900 sm:w-full md:w-10/12 lg:w-1/2 mx-auto">
-                            <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
-                                Company details:
+            
+            {/* Changed 'py-12' to 'py-10' and container classes */}
+            <div className="py-10">
+                {/* Adopted dashboard's max-width, centering, and padding classes */}
+                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10">
+
+                    {/* SETTINGS FORM SECTION */}
+                    <section className="w-full max-w-full">
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Company Settings
                             </h3>
-                            <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                            {companyInfoKeys.map((key) => (
+                            <p className="mt-2 text-gray-500 dark:text-gray-400">
+                                Update the core details, address, and contact information for your company.
+                            </p>
+                        </div>
 
-                                <div className="mb-4" key={key}>
-                                    {key === 'street' ? (<div>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
-                                            Address details:
-                                        </h3>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                    </div>) : (null)}
-                                    {key === 'phone' ? (<div>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
-                                            Contact details:
-                                        </h3>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                    </div>) : (null)}
-                                    {key === 'bank' ? (<div>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                        <h3 className="text-xl font-bold text-blue-500 bg-gray-100 pl-5 pr-5 rounded-t">
-                                            Bank details:
-                                        </h3>
-                                        <div className="border-t border-gray-300 mb-3"></div> {/* Hairline top */}
-                                    </div>) : (null)}
-                                    <label
-                                        htmlFor={key}
-                                        className="block text-gray-600 font-bold mb-1"
+                        {/* Updated container styling for a cleaner look and dark mode */}
+                        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                            
+                            <div className="sm:w-full md:w-8/12 lg:w-3/5 mx-auto">
+                                
+                                {/* Section: Company details */}
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">
+                                    Company Details
+                                </h3>
+                                
+                                {companyInfoKeys.map((key) => {
+                                    const label = capitalizeFirstLetter(key.replace(/_/g, ' '));
+                                    
+                                    let sectionHeader = null;
+                                    if (key === 'street') {
+                                        sectionHeader = (
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 mt-6">
+                                                Address Details
+                                            </h3>
+                                        );
+                                    } else if (key === 'phone') {
+                                        sectionHeader = (
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 mt-6">
+                                                Contact Details
+                                            </h3>
+                                        );
+                                    } else if (key === 'bank') {
+                                        sectionHeader = (
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 mt-6">
+                                                Bank Details
+                                            </h3>
+                                        );
+                                    }
+                                    
+                                    return (
+                                        <div key={key}>
+                                            {sectionHeader}
+                                            <div className="mb-4">
+                                                <label
+                                                    htmlFor={key}
+                                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                >
+                                                    {label}:
+                                                </label>
+                                                <input
+                                                    id={key}
+                                                    className="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-300 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out text-sm"
+                                                    type="text"
+                                                    value={companyInfo[key]}
+                                                    onChange={(e) => {
+                                                        handleUpdateValue(key, e.target.value);
+                                                        handleValidation(key, e.target.value);
+                                                    }}
+                                                />
+                                                {/* validation alert */}
+                                                {validations[key] ? (
+                                                    <div className="mt-2">
+                                                        {validations[key].length === 0 ? (
+                                                            <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 dark:bg-green-900/50 p-2">
+                                                                <p className="text-sm text-green-700 dark:text-green-300">
+                                                                    Field info is correct
+                                                                </p>
+                                                            </div>
+                                                        ) : (
+                                                            <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 dark:bg-red-900/50 p-2">
+                                                                {validations[key].map((msg) => (
+                                                                    <p key={msg} className="text-sm text-red-700 dark:text-red-300">
+                                                                        {msg}
+                                                                    </p>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : (null)}
+                                                {/* validation alrt end */}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+
+                                {/* Action buttons at the bottom of the card - kept for good UX when the header buttons are out of view */}
+                                <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6 flex justify-center space-x-4">
+                                    <button 
+                                        onClick={store} 
+                                        className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out ${
+                                            !isDirty || hasErrors ? 'opacity-50 cursor-not-allowed' : ''
+                                        }`}
+                                        disabled={!isDirty || hasErrors}
                                     >
-                                        {capitalizeFirstLetter(key)}:
-                                    </label>
-                                    <input
-                                        id={key}
-                                        className="px-4 py-2 border border-gray-300 rounded w-full"
-                                        type="text"
-                                        value={companyInfo[key]}
-                                        onChange={(e) => {
-                                            handleUpdateValue(key, e.target.value); //str.trim();
-                                            handleValidation(key, e.target.value);
-                                        }}
-                                    />
-                                      {/* validation alert */}
-                                      {/* {validations[key] ?? []} */}
-                                      {validations[key] ? (<div>
-                                        {validations[key].length === 0 ?
-                                            (
-                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 p-2 mt-2">
-                                                    {/* <strong className="block font-medium text-green-800"> Check value again: </strong> */}
-
-
-                                                        <p className=" text-sm text-green-700">
-                                                            Field info is correct
-                                                        </p>
-
-                                                </div>
-                                            ) : (
-                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 p-2 mt-2">
-                                                    {/* <strong className="block font-medium text-red-800"> Check value again: </strong> */}
-
-                                                    {validations[key].map((msg) => (
-                                                        <p key={msg} className="text-sm text-red-700">
-                                                            {msg}
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            )
-
-                                        }
-
-                                    </div>) : (null)}
-                                    {/* validation alrt end */}
+                                        Save Changes
+                                    </button>
+                                    <button 
+                                        onClick={cancel} 
+                                        className={`bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out ${
+                                            !isDirty ? 'opacity-50 cursor-not-allowed' : ''
+                                        }`}
+                                        disabled={!isDirty}
+                                    >
+                                        Cancel Changes
+                                    </button>
                                 </div>
-
-                            )
-                            )}
-
-                            <div className="border-t border-gray-300 mt-3"></div> {/* Hairline bottom */}
-                            <div className="flex justify-center">
-                                <button onClick={store} className="mt-5 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" >Save</button>
-                                <button onClick={cancel} className="mt-5 ml-5 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" >Cancel</button>
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
-                <Messages
-                    const messages={messages}
-
-
-                />
             </div>
+            <Messages
+                messages={messages}
+            />
         </AuthenticatedLayout>
     );
 }
+
 // ???
