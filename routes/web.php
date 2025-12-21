@@ -56,7 +56,7 @@ Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->
     Route::post('/update', [InvoiceController::class,'update'])->name('update');
     Route::get('/show/{invoice}', [InvoiceController::class,'show'])->name('show');
     Route::get('/dashboard', [InvoiceController::class, 'dashboard'])->name('dashboard');
-    Route::get('/new/{id}', [InvoiceController::class, 'create'])->name('create');
+    Route::get('/new/{invoice}', [InvoiceController::class, 'create'])->name('create');
     Route::post('/store', [InvoiceController::class,'store'])->name('store');
 });
 
@@ -64,12 +64,30 @@ Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->
 Route::prefix('products')->middleware(['auth', 'verified'])->name('products-')->group(function () {
     Route::get('/',[ProductController::class, 'index'])->name('index');
     Route::post('/list', [ProductController::class,'list'])->name('list');
+    Route::get('/new', [ProductController::class, 'create'])->name('create');
+    Route::post('/store', [ProductController::class,'store'])->name('store');
     Route::get('/show/{product}', [ProductController::class,'show'])->name('show');
-    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
-    Route::post('/delete/{id}', [ProductController::class, 'destroy'])->name('delete');
+    Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
+    Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
+    Route::delete('/delete/{product}', [ProductController::class, 'destroy'])->name('delete');
 
 });
+
+// Assuming you have a route group for authenticated users and correct namespace
+
+
+// Route::get('/products/list', [ProductController::class, 'list'])->name('products-list');
+// // Use Route::resource for the standard CRUD operations
+// Route::resource('products', ProductController::class)
+//     ->names([
+//         'index' => 'products-index',
+//         'create' => 'products-create',
+//         'store' => 'products-store',
+//         'show' => 'products-show',
+//         'edit' => 'products-edit',
+//         'update' => 'products-update',
+//         'destroy' => 'products-destroy',
+//     ]);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

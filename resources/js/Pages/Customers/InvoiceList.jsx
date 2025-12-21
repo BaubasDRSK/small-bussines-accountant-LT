@@ -20,6 +20,7 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
 
     const handlePaidStatusChange = (e, invoice) =>{
         e.stopPropagation();
+        console.log("siunciam");
         invoice.paid = invoice.paid ? 0 : 1;
         const fullInvoice = invoice;
         const updatedInvoicesList = invoicesList.map(item => {
@@ -131,7 +132,6 @@ export default function InvoicesList({ invoicesList, doSort, setInvoicesList, so
                         };
 
                         return (
-                            // Row styles already contain dark:bg-gray-800
                             <tr key={item.invoice_number} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
                                     onClick={handleRowClick}

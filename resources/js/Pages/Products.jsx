@@ -5,8 +5,9 @@ import { useEffect, useState, useCallback } from "react";
 import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { router } from '@inertiajs/react';
 
-export default function Products({ auth, newlist }) {
+export default function Products({ auth, newlist, addNewItem, editItem, deleteItem }) {
 
     const [messages, setMessages] = useState([]);
     const [searchName, setSearchName] = useState(localStorage.getItem('searchItem') || '');
@@ -38,7 +39,7 @@ export default function Products({ auth, newlist }) {
             'pagination': pagination,
         })
         .then(res => {
-            if (res.status === 201) {
+            if (res.status === 200 || res.status === 201) {
                 addMessage(res.data.message, res.data.type);
                 setProductsList(res.data.products);
                 console.log(res.data.products);
@@ -77,6 +78,21 @@ export default function Products({ auth, newlist }) {
         };
     }, [searchName, pagination, newlist, uzklausa]); // dependencies: searchName, pagination, newlist, uzklausa
 
+    const handleDelete = (id) => {
+        const confirmed = window.confirm("Are you sure you want to delete this product?");
+        if (confirmed) {
+            router.delete(`${deleteItem}/${id}`, {
+            onSuccess: () => {
+                uzklausa(newlist, searchName);
+                addMessage('Product deleted successfully', 'success');
+            },
+        });
+        }
+    };
+
+    const handleEdit = (id) => {
+        router.get(`${editItem}/${id}`);
+    };
 
     const makeSearch = (field, value) => {
         if (field === 'name') {
@@ -91,106 +107,138 @@ export default function Products({ auth, newlist }) {
             user={auth.user}
             header={
                 <div className='flex justify-between items-center'>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                        📦 Products / Services
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                        Products / Services
                     </h2>
                     <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
-                        <a href="#">Add new product</a>
+                        <a href={addNewItem}>Add new product</a>
                     </button>
                 </div>
             }
         >
             <Head title="Products" />
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
 
-                        {/* Search and Pagination Controls */}
-                        <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-t-lg'>
-                            <div className="flex-1 min-w-0 mb-4 sm:mb-0">
-                                <input
-                                    className="w-full sm:min-w-[300px] rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
-                                    type="text"
-                                    placeholder="Search by name / description or price"
-                                    onChange={(e) => makeSearch('name', e.target.value)}
-                                    value={searchName}
-                                />
-                            </div>
-
-                            <div className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 sm:ml-4">
-                                <label htmlFor="pagination-select" className="mr-2 hidden md:inline">
-                                    Records per page:
-                                </label>
-                                <select 
-                                    id="pagination-select"
-                                    onChange={e => setPagination(e.target.value)} 
-                                    value={pagination} 
-                                    className="rounded-lg border-gray-300 dark:bg-gray-600 dark:border-gray-600 dark:text-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                >
-                                    <option value="15">15</option>
-                                    <option value="30">30</option>
-                                    <option value="50">50</option>
-                                </select>
-                            </div>
+            <div className="py-10">
+                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10">
+                    
+                    {/* SECTION HEADER */}
+                    <section className="w-full max-w-full">
+                        <div className="mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                📦 Product List
+                            </h3>
+                            <p className="mt-2 text-gray-500 dark:text-gray-400">
+                                Manage your inventory, services, and pricing.
+                            </p>
                         </div>
 
-                        {/* Products Table (omitted for brevity) */}
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead className="bg-gray-50 dark:bg-gray-700">
+                        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 dark:border-gray-700">
+                            
+                            {/* Search and Pagination Controls */}
+                            <div className='flex flex-col md:flex-row justify-between w-full p-4 border-b dark:border-gray-700'>
+                                <div className="flex mb-4 md:mb-0">
+                                    <input
+                                        className="min-w-0 md:min-w-[300px] lg:min-w-[400px] w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-300 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                        type="text"
+                                        placeholder="Search by name / description or price"
+                                        onChange={(e) => makeSearch('name', e.target.value)}
+                                        value={searchName}
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-end text-sm text-gray-700 dark:text-gray-400">
+                                    <label htmlFor="pagination-select" className="mr-3 whitespace-nowrap">
+                                        Records per page
+                                    </label>
+                                    <select 
+                                        id="pagination-select"
+                                        onChange={e => setPagination(e.target.value)} 
+                                        value={pagination} 
+                                        className="rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                    >
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Products Table */}
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 w-1/12">ID</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 w-3/12">Product (service) name</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 w-4/12">Description</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 w-2/12">Price</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300 w-2/12">Action</th>
+                                        <th scope="col" className="px-6 py-3 font-semibold">Product info</th>
+                                        <th scope="col" className="px-6 py-3 hidden md:table-cell font-semibold">Description</th>
+                                        <th scope="col" className="px-6 py-3 font-semibold text-right md:text-left">Price & Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                                     {productsList !== null && productsList.data.length > 0 ? (
                                         productsList.data.map((item) => (
-                                            <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.code || '-'}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{item.name}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">{item.description || '-'}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">{(item.price / 100).toFixed(2)} €</td>
-                                                <td className="px-6 py-4 flex gap-4">
-                                                    <a href="#" className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600" title="Edit"> 
-                                                         <PencilSquareIcon className="w-5 h-5" />
-                                                    </a>
-                                                    <a href="#" className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-600" title="Delete">
-                                                        <TrashIcon className="w-5 h-5" />
-                                                    </a>
+                                            <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150">
+                                                {/* Combined Code and Name for Mobile Friendliness */}
+                                                <td className="px-6 py-4">
+                                                    <p className="text-xs font-mono text-gray-400">{item.code || 'NO-CODE'}</p>
+                                                    <p className="text-base font-semibold text-blue-600 dark:text-blue-400">{item.name}</p>
+                                                    {/* Mobile only description */}
+                                                    <p className="md:hidden mt-1 text-xs text-gray-500 line-clamp-2">{item.description}</p>
+                                                </td>
+                                                
+                                                <td className="px-6 py-4 hidden md:table-cell text-gray-600 dark:text-gray-300">
+                                                    <div className="max-w-xs truncate" title={item.description}>
+                                                        {item.description || '-'}
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                                        <span className="text-base font-bold text-gray-900 dark:text-white text-right md:text-left">
+                                                            {(item.price / 100).toFixed(2)} €
+                                                        </span>
+                                                        <div className="flex justify-end gap-4">
+                                                            <a onClick={() => handleEdit(item.id)} className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600 transition-colors" title="Edit"> 
+                                                                <PencilSquareIcon className="w-5 h-5" />
+                                                            </a>
+                                                            <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-600 transition-colors" title="Delete">
+                                                                <TrashIcon className="w-5 h-5" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" className="px-6 py-10 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                                            <td colSpan="3" className="px-6 py-10 text-center text-base font-medium text-gray-900 dark:text-gray-300">
                                                 {productsList === null ? 'Loading products...' : 'No products found.'}
                                             </td>
                                         </tr>
                                     )}
                                 </tbody>
                             </table>
-                        </div>
 
-                        {/* Pagination Links (omitted for brevity) */}
-                        {productsList?.links && productsList.links.length > 3 && (
-                            <div className="flex justify-center items-center py-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-lg">
-                                {productsList.links.map((item, index) => (
-                                    <span 
-                                        key={index}
-                                        onClick={() => { item.url && uzklausa(item.url, searchName); }}
-                                        dangerouslySetInnerHTML={{ __html: item.label.replace('Previous', '«').replace('Next', '»') }}
-                                        className={`mx-2 px-3 py-1 cursor-pointer rounded-lg text-sm transition duration-150 ease-in-out
-                                            ${item.url ? 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'}
-                                            ${item.active ? 'bg-blue-500 text-white dark:bg-blue-600 hover:bg-blue-500 dark:hover:bg-blue-600 font-bold' : ''}`}
-                                    ></span>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                            {/* Pagination */}
+                            {productsList?.links && productsList.links.length > 3 && (
+                                <div className="flex justify-center items-center py-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+                                    {productsList.links.map((item, index) => (
+                                        <button 
+                                            key={index}
+                                            onClick={() => { item.url && uzklausa(item.url, searchName); }}
+                                            dangerouslySetInnerHTML={{ __html: item.label.replace('Previous', '«').replace('Next', '»') }}
+                                            className={`mx-1 p-2 min-w-[32px] text-center rounded-lg transition duration-150 ease-in-out
+                                                ${item.active 
+                                                    ? 'bg-blue-600 text-white font-bold text-base' 
+                                                    : item.url 
+                                                        ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer' 
+                                                        : 'text-gray-400 dark:text-gray-500 cursor-not-allowed'}
+                                            `}
+                                            disabled={!item.url}
+                                        ></button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </section>
                 </div>
             </div>
             

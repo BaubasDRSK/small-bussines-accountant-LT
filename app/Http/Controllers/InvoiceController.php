@@ -199,9 +199,7 @@ class InvoiceController extends Controller
     public function update(Request $request, Invoice $invoice)
     {
         $fullInvoice =$request->input('fullInvoice');
-        dump($fullInvoice['invoice_date']);
         $invoice = Invoice::find($fullInvoice['id']);
-
         $invoice->id = $fullInvoice['id'];
         $invoice->invoice_number = $fullInvoice['invoice_number'];
         $invoice->name = $fullInvoice['name'];

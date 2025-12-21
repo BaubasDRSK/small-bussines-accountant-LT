@@ -139,11 +139,11 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                         <th scope="col" className="px-6 py-3 w-4/12" >
                             Description
                         </th>
-                        <th scope="col" className="px-6 py-3 w-2/12 text-right">
-                            Price (€)
-                        </th>
                         <th scope="col" className="px-6 py-3 w-1/12 text-center" >
                             Qty
+                        </th>
+                         <th scope="col" className="px-6 py-3 w-2/12 text-right">
+                            Price (€)
                         </th>
                         <th scope="col" className="px-6 py-3 w-2/12 text-right" >
                             Total (€)
@@ -184,6 +184,20 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                     />
                                 </td>
                                 
+                                {/* Quantity Input (index 6) */}
+                                <td className={`px-4 py-3`}>
+                                    <label className="sr-only" htmlFor={`productQuantity-${product[0]}`}>Quantity</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        id={`productQuantity-${product[0]}`}
+                                        value={product[6] || 1}
+                                        className={`${inputClass} text-center`}
+                                        onChange={(e) => handleRecordEdit(e, product[0], 6)}
+                                        onFocus={(e) => e.target.select()}
+                                    />
+                                </td>
+
                                 {/* Price Input (index 5) - FIX APPLIED HERE */}
                                 <td className={`px-4 py-3`}>
                                     <div className="relative">
@@ -201,20 +215,7 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                         <span className="pointer-events-none absolute inset-y-0 end-0 grid w-8 place-content-center text-gray-500 dark:text-gray-400"> € </span>
                                     </div>
                                 </td>
-                                
-                                {/* Quantity Input (index 6) */}
-                                <td className={`px-4 py-3`}>
-                                    <label className="sr-only" htmlFor={`productQuantity-${product[0]}`}>Quantity</label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        id={`productQuantity-${product[0]}`}
-                                        value={product[6] || 1}
-                                        className={`${inputClass} text-center`}
-                                        onChange={(e) => handleRecordEdit(e, product[0], 6)}
-                                        onFocus={(e) => e.target.select()}
-                                    />
-                                </td>
+
                                 
                                 {/* Total Display (index 7) */}
                                 <td className={`px-6 py-3 text-right font-semibold`}>
