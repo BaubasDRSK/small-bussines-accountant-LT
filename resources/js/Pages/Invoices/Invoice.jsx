@@ -9,6 +9,8 @@ import Select from 'react-select';
 import Datepicker from "react-tailwindcss-datepicker";
 import { Page, Text, Document, PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import Invoicepdf from '../components/invoicePDF';
+import { pdf } from '@react-pdf/renderer';
+import saveAs from 'file-saver';
 // 👇 ADDED IMPORTS FOR STYLE CONSISTENCY (Heroicons)
 import { PencilSquareIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
@@ -235,11 +237,26 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         }
     }, [pdfBlob, thisInvoice.invoice_number, downloaded]);
 
-    const handleDownloadPdf = () => {
-        handelSaveInvoice();
-        setDownloaded(false); // Reset the downloaded state
-        const pdfPromise = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
-        setPdfBlob(pdfPromise);
+    // const handleDownloadPdf = () => {
+    //     handelSaveInvoice();
+    //     setDownloaded(false); // Reset the downloaded state
+    //     const pdfPromise = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
+    //     setPdfBlob(pdfPromise);
+    // };
+
+    const handleDownloadPdf = async () => {
+        setDownloaded(false);
+        
+        // 1. Create the PDF instance
+        const doc = <Invoicepdf invoice={thisInvoice} company={company} />;
+        
+        // 2. Generate the blob
+        const blob = await pdf(doc).toBlob();
+        
+        // 3. Trigger the download (using file-saver or a manual link)
+        saveAs(blob, `Invoice_${thisInvoice.invoice_number}.pdf`);
+        
+        setDownloaded(true);
     };
 
     return (

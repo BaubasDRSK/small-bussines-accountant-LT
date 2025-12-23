@@ -2,205 +2,222 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import openSans from './OpenSans.ttf';
 
-
 Font.register({
     family: 'openSans',
-    fonts: [
-        {
-            src: openSans
-        }
-    ]
+    fonts: [{ src: openSans }]
 });
 
 const styles = StyleSheet.create({
     page: {
-        flexDirection: 'column',
-        padding: 20,
-        paddingTop: 25,
+        padding: 40,
         fontFamily: 'openSans',
+        fontSize: 10,
+        color: '#374151',
     },
-    image: {
-        width: 48,
-        height: 48,
-        marginBottom: 20,
-
-    },
+    // Modern Header
     header: {
-        padding: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
-        backgroundColor: '#D4F0FF',
+        alignItems: 'center',
+        marginBottom: 30,
+        borderBottom: 2,
+        borderBottomColor: '#6366f1',
+        paddingBottom: 20,
     },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    addressContainer: {
+    logoSection: {
         flexDirection: 'column',
-        alignItems: 'flex-end',
     },
-    address: {
-        fontSize: 10,
-        marginBottom: 5,
+    image: {
+        width: 60,
+        height: 60,
+        marginBottom: 8,
     },
-    section: {
-        marginBottom: 20,
-    },
-    label: {
+    brandName: {
+        fontSize: 18,
         fontWeight: 'bold',
-        fontSize: 12,
+        color: '#1e1b4b',
     },
-    value: {
-        fontSize: 10,
+    invoiceMeta: {
+        textAlign: 'right',
     },
+    invoiceTitle: {
+        fontSize: 22,
+        color: '#6366f1',
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    // Addresses
+    addressContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 30,
+    },
+    addressGroup: {
+        width: '45%',
+    },
+    sectionLabel: {
+        fontSize: 8,
+        textTransform: 'uppercase',
+        color: '#9ca3af',
+        marginBottom: 4,
+        fontWeight: 'bold',
+    },
+    entityName: {
+        fontSize: 11,
+        fontWeight: 'bold',
+        marginBottom: 2,
+        color: '#111827',
+    },
+    // Table
     table: {
-        width: '100%',
-        borderWidth: 1,
-        borderColor: '#333',
-        borderStyle: 'solid',
-        marginBottom: 20,
-        fontSize: 10,
+        marginTop: 10,
     },
     tableHeader: {
         flexDirection: 'row',
-        backgroundColor: '#333',
-        color: '#fff',
+        backgroundColor: '#f9fafb',
+        borderBottomColor: '#6366f1',
+        borderBottomWidth: 2,
+        alignItems: 'center',
+        height: 30,
     },
     tableRow: {
         flexDirection: 'row',
+        borderBottomColor: '#f3f4f6',
         borderBottomWidth: 1,
-        borderBottomColor: '#333',
-        borderBottomStyle: 'solid',
-        paddingVertical: 10,
+        alignItems: 'center',
+        minHeight: 35,
     },
-    tableCell: {
-        width: '20%',
-        paddingLeft: 8,
+    // Column widths
+    colNr: { width: '10%', paddingLeft: 8 },
+    colDesc: { width: '50%', paddingLeft: 8 },
+    colQty: { width: '10%', textAlign: 'center' },
+    colPrice: { width: '15%', textAlign: 'right' },
+    colTotal: { width: '15%', textAlign: 'right', paddingRight: 8 },
+    
+    headerCell: {
+        fontWeight: 'bold',
+        color: '#4b5563',
+        fontSize: 9,
     },
-    total: {
+    // Summary
+    summaryContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        alignItems: 'center',
         marginTop: 20,
+    },
+    summaryBox: {
+        width: '35%',
+    },
+    totalRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderTopWidth: 1,
+        borderTopColor: '#e5e7eb',
+        marginTop: 10,
+        paddingTop: 10,
+    },
+    totalText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#6366f1',
     },
     footer: {
-        marginTop: 20,
-        fontSize: 10,
-    },
+        marginTop: 50,
+        paddingTop: 20,
+        borderTopWidth: 1,
+        borderTopColor: '#f3f4f6',
+    }
 });
 
-const invoiceData = {
-    invoiceDate: '2023 15 15',
-    invoiceNumber: 'PRS-10221',
-    clientDetails: 'Client',
-    issueWithDetails: 'Company',
-    products: [
-        {
-            name: 'Product 1',
-            price: 10.00,
-            qty: 5,
-        },
-        {
-            name: 'Product 2',
-            price: 15.00,
-            qty: 3,
-        },
-        {
-            name: 'Product 3',
-            price: 20.00,
-            qty: 2,
-        },
-
-    ],
-    total: 180,
-    invoiceNotes: 'notes',
-    footer: 'footer',
-}
-
 const formatDate = (date) => {
-    if (!date) return ''; // Handle cases where date is undefined or null
-
+    if (!date) return '';
     const formattedDate = new Date(date);
-
-    if (isNaN(formattedDate)) return ''; // Handle cases where date is not a valid date
-
+    if (isNaN(formattedDate)) return '';
     const year = formattedDate.getFullYear();
     const month = String(formattedDate.getMonth() + 1).padStart(2, '0');
     const day = String(formattedDate.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
 };
-
 
 const Invoicepdf = ({ invoice, company }) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <Image style={styles.image} src='http://accountant.fun/img/logo.png' />
+                {/* Header Section */}
                 <View style={styles.header}>
-                    <Text style={styles.title}>Invoice {invoice.invoice_number} </Text>
-                    <View style={styles.addressContainer}>
-                        <Text style={styles.address}>{company.name}</Text>
-                        <Text style={styles.address}>Code: {company.code} / VAT code:{company.vat_code}</Text>
-                        <Text style={styles.address}>{company.street}, {company.city}, {company.country} </Text>
-                        <Text style={styles.address}>{company.phone}, {company.email}</Text>
-                        <Text style={styles.address}>{company.web}</Text>
+                    <View style={styles.logoSection}>
+                        <Image style={styles.image} src='http://accountant.fun/img/logo.png' />
+                        <Text style={styles.brandName}>{company.name}</Text>
+                    </View>
+                    <View style={styles.invoiceMeta}>
+                        <Text style={styles.invoiceTitle}>INVOICE</Text>
+                        <Text style={{ fontWeight: 'bold' }}>#{invoice.invoice_number}</Text>
+                        <Text>Date: {formatDate(invoice.invoice_date)}</Text>
+                        <Text style={{ color: '#ef4444' }}>Due: {formatDate(invoice.invoice_due_date)}</Text>
                     </View>
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.label}>Bill To:</Text>
-                    <Text style={styles.value}>
-                        <Text style={{ color: '#666' }}>Company:</Text> {invoice.customer[1]}
-                    </Text>
-                    <Text style={styles.value}>
-                        <Text style={{ color: '#666' }}>Code:</Text> {invoice.customer[2]}
-                    </Text>
-                    <Text style={styles.value}>
-                        <Text style={{ color: '#666' }}>VAT:</Text> {invoice.customer[3]}
-                    </Text>
-                    <Text style={styles.value}>
-                        <Text style={{ color: '#666' }}>Address:</Text> {invoice.customer[4]}, {invoice.customer[5]}, {invoice.customer[6]} {invoice.customer[7]}
-                    </Text>
+                {/* Seller & Buyer Details */}
+                <View style={styles.addressContainer}>
+                    <View style={styles.addressGroup}>
+                        <Text style={styles.sectionLabel}>From</Text>
+                        <Text style={styles.entityName}>{company.name}</Text>
+                        <Text>Code: {company.code}</Text>
+                        <Text>VAT: {company.vat_code}</Text>
+                        <Text>{company.street}, {company.city}, {company.country}</Text>
+                        <Text>{company.web}</Text>
+                    </View>
+                    <View style={styles.addressGroup}>
+                        <Text style={styles.sectionLabel}>Bill To</Text>
+                        <Text style={styles.entityName}>{invoice.customer[1]}</Text>
+                        <Text>Code: {invoice.customer[2]}</Text>
+                        <Text>VAT: {invoice.customer[3]}</Text>
+                        <Text>{invoice.customer[4]}, {invoice.customer[5]}, {invoice.customer[6]}</Text>
+                    </View>
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={{ fontSize: 12 }}>Invoice date: {formatDate(invoice.invoice_date)}</Text>
-                    <Text style={{ fontSize: 12 }}>Invoice due date: {formatDate(invoice.invoice_due_date)}</Text>
-
-                </View>
-
+                {/* Table */}
                 <View style={styles.table}>
-                    {/* Table Header */}
-                    <View style={styles.tableHeader}>
-                        <Text style={styles.tableCell}>Nr.</Text>
-                        <Text style={styles.tableCell}>Description</Text>
-                        <Text style={styles.tableCell}>Quantity</Text>
-                        <Text style={styles.tableCell}>Unit Price</Text>
-                        <Text style={styles.tableCell}>Total</Text>
+                    <View style={[styles.tableRow, styles.tableHeader]}>
+                        <Text style={[styles.colNr, styles.headerCell]}>Nr.</Text>
+                        <Text style={[styles.colDesc, styles.headerCell]}>Description</Text>
+                        <Text style={[styles.colQty, styles.headerCell]}>Qty</Text>
+                        <Text style={[styles.colPrice, styles.headerCell]}>Unit Price</Text>
+                        <Text style={[styles.colTotal, styles.headerCell]}>Total</Text>
                     </View>
 
-                    {/* Table Rows */}
                     {invoice.products.map((product, index) => (
                         <View style={styles.tableRow} key={index}>
-                            <Text style={styles.tableCell}>{index+1}</Text>
-                            <Text style={styles.tableCell}>{product[4]}</Text>
-                            <Text style={styles.tableCell}>{product[6]}</Text>
-                            <Text style={styles.tableCell}>{(product[5]/100).toFixed(2)}</Text>
-                            <Text style={styles.tableCell}>{(product[7]/100).toFixed(2)}</Text>
+                            <Text style={styles.colNr}>{index + 1}</Text>
+                            <Text style={styles.colDesc}>{product[4]}</Text>
+                            <Text style={styles.colQty}>{product[6]}</Text>
+                            <Text style={styles.colPrice}>{(product[5] / 100).toFixed(2)}</Text>
+                            <Text style={styles.colTotal}>{(product[7] / 100).toFixed(2)}</Text>
                         </View>
                     ))}
                 </View>
 
-                <View style={styles.total}>
-                    <Text style={{ ...styles.label, fontSize: 12 }}>Total:</Text>
-                    <Text style={{ ...styles.value, fontSize: 12 }}>
-                        {(invoice.total/100).toFixed(2)} €
-                    </Text>
+                {/* Summary */}
+                <View style={styles.summaryContainer}>
+                    <View style={styles.summaryBox}>
+                        <View style={styles.totalRow}>
+                            <Text style={styles.totalText}>Total Amount:</Text>
+                            <Text style={styles.totalText}>{(invoice.total / 100).toFixed(2)} €</Text>
+                        </View>
+                    </View>
                 </View>
 
-                <Text style={styles.footer}>Thank you for your business!</Text>
+                {/* Footer Section */}
+                <View style={styles.footer}>
+                    <Text style={styles.sectionLabel}>Payment Details</Text>
+                    <Text style={{ marginBottom: 4 }}>Bank: {company.bank_name || 'Swedbank AB'}</Text>
+                    <Text>Account: {company.bank_account || 'LT7300002252255'}</Text>
+                    
+                    <Text style={[styles.sectionLabel, { marginTop: 15 }]}>Notes</Text>
+                    <Text style={{ fontSize: 9, color: '#6b7280', fontStyle: 'italic' }}>
+                        {invoice.invoice_notes || 'Thank you for your business!'}
+                    </Text>
+                </View>
             </Page>
         </Document>
     );
