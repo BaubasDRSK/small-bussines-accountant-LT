@@ -24,19 +24,17 @@ class CompanyStoreUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Moved validation rules from the Controller
             'name' => ['required', 'string'],
             'code' => ['required', 'numeric'],
-            // Assuming vatcode is optional if empty/null, but must match the regex if present
-            'vatcode' => ['nullable', 'regex:/^(LT(\d{9}|\d{12})|[- ])$/'],
+            'vat_code' => ['nullable', 'regex:/^(LT(\d{9}|\d{12})|[- ])$/'],
             'street' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
-            'web' => ['nullable', 'url', 'max:255'],
-            'bank' => ['nullable', 'string', 'max:255'],
-            'bankaccount' => ['nullable', 'string', 'max:255'],
+            'web' => ['nullable', 'string', 'max:255'],
+            'bank_name' => ['nullable', 'string', 'max:255'],
+            'bank_account' => ['nullable', 'string', 'max:255'],
         ];
     }
     

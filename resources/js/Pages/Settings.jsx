@@ -22,6 +22,7 @@ export default function Settings({ auth, storeUrl, company }) {
     };
 
     const handleValidation = (key, value) => {
+        console.log(key, value);
         const validationMsgs = inputValidation(key, value);
         setValidations({ ...validations, [validationMsgs[0]]: validationMsgs[1] });
     };
@@ -173,47 +174,51 @@ export default function Settings({ auth, storeUrl, company }) {
                                     
                                     return (
                                         <div key={key}>
-                                            {sectionHeader}
-                                            <div className="mb-4">
-                                                <label
-                                                    htmlFor={key}
-                                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                                                >
-                                                    {label}:
-                                                </label>
-                                                <input
-                                                    id={key}
-                                                    className="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-300 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out text-sm"
-                                                    type="text"
-                                                    value={companyInfo[key]}
-                                                    onChange={(e) => {
-                                                        handleUpdateValue(key, e.target.value);
-                                                        handleValidation(key, e.target.value);
-                                                    }}
-                                                />
-                                                {/* validation alert */}
-                                                {validations[key] ? (
-                                                    <div className="mt-2">
-                                                        {validations[key].length === 0 ? (
-                                                            <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 dark:bg-green-900/50 p-2">
-                                                                <p className="text-sm text-green-700 dark:text-green-300">
-                                                                    Field info is correct
-                                                                </p>
-                                                            </div>
-                                                        ) : (
-                                                            <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 dark:bg-red-900/50 p-2">
-                                                                {validations[key].map((msg) => (
-                                                                    <p key={msg} className="text-sm text-red-700 dark:text-red-300">
-                                                                        {msg}
+                                        {key !== "id" && key !== "company_id" && (
+                                            <>
+                                                {sectionHeader}
+                                                <div className="mb-4">
+                                                    <label
+                                                        htmlFor={key}
+                                                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                                    >
+                                                        {label}:
+                                                    </label>
+                                                    <input
+                                                        id={key}
+                                                        className="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-300 dark:text-gray-200 focus:border-blue-500 focus:ring-blue-500 transition duration-150 ease-in-out text-sm"
+                                                        type="text"
+                                                        value={companyInfo[key]}
+                                                        onChange={(e) => {
+                                                            handleUpdateValue(key, e.target.value);
+                                                            handleValidation(key, e.target.value);
+                                                        }}
+                                                    />
+                                                    {/* validation alert */}
+                                                    {validations[key] ? (
+                                                        <div className="mt-2">
+                                                            {validations[key].length === 0 ? (
+                                                                <div role="alert" className="rounded border-s-4 border-green-500 bg-green-50 dark:bg-green-900/50 p-2">
+                                                                    <p className="text-sm text-green-700 dark:text-green-300">
+                                                                        Field info is correct
                                                                     </p>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (null)}
-                                                {/* validation alrt end */}
-                                            </div>
-                                        </div>
+                                                                </div>
+                                                            ) : (
+                                                                <div role="alert" className="rounded border-s-4 border-red-500 bg-red-50 dark:bg-red-900/50 p-2">
+                                                                    {validations[key].map((msg) => (
+                                                                        <p key={msg} className="text-sm text-red-700 dark:text-red-300">
+                                                                            {msg}
+                                                                        </p>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ) : null}
+                                                    {/* validation alrt end */}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                     )
                                 })}
 

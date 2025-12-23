@@ -1,20 +1,28 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
-import openSans from './OpenSans.ttf';
+import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 
-Font.register({
-    family: 'openSans',
-    fonts: [{ src: openSans }]
-});
+// 1. Stable Font Registration (Using static .ttf files)
+// Font.register({
+//     family: 'openSans',
+//     fonts: [
+//         { 
+//             src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/opensans/static/OpenSans-Regular.ttf', 
+//             fontWeight: 400 
+//         },
+//         { 
+//             src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/opensans/static/OpenSans-Bold.ttf', 
+//             fontWeight: 700 
+//         }
+//     ]
+// });
 
 const styles = StyleSheet.create({
     page: {
         padding: 40,
-        fontFamily: 'openSans',
+        fontFamily: 'Helvetica',
         fontSize: 10,
         color: '#374151',
     },
-    // Modern Header
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -24,17 +32,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#6366f1',
         paddingBottom: 20,
     },
-    logoSection: {
-        flexDirection: 'column',
-    },
-    image: {
-        width: 60,
-        height: 60,
-        marginBottom: 8,
-    },
     brandName: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: 700,
         color: '#1e1b4b',
     },
     invoiceMeta: {
@@ -43,10 +43,9 @@ const styles = StyleSheet.create({
     invoiceTitle: {
         fontSize: 22,
         color: '#6366f1',
-        fontWeight: 'bold',
+        fontWeight: 700,
         marginBottom: 4,
     },
-    // Addresses
     addressContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -60,15 +59,14 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         color: '#9ca3af',
         marginBottom: 4,
-        fontWeight: 'bold',
+        fontWeight: 700,
     },
     entityName: {
         fontSize: 11,
-        fontWeight: 'bold',
+        fontWeight: 700,
         marginBottom: 2,
         color: '#111827',
     },
-    // Table
     table: {
         marginTop: 10,
     },
@@ -87,19 +85,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         minHeight: 35,
     },
-    // Column widths
     colNr: { width: '10%', paddingLeft: 8 },
     colDesc: { width: '50%', paddingLeft: 8 },
     colQty: { width: '10%', textAlign: 'center' },
     colPrice: { width: '15%', textAlign: 'right' },
     colTotal: { width: '15%', textAlign: 'right', paddingRight: 8 },
-    
     headerCell: {
-        fontWeight: 'bold',
+        fontWeight: 700,
         color: '#4b5563',
         fontSize: 9,
     },
-    // Summary
     summaryContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -118,7 +113,7 @@ const styles = StyleSheet.create({
     },
     totalText: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: 700,
         color: '#6366f1',
     },
     footer: {
@@ -129,50 +124,46 @@ const styles = StyleSheet.create({
     }
 });
 
-const formatDate = (date) => {
-    if (!date) return '';
-    const formattedDate = new Date(date);
-    if (isNaN(formattedDate)) return '';
-    const year = formattedDate.getFullYear();
-    const month = String(formattedDate.getMonth() + 1).padStart(2, '0');
-    const day = String(formattedDate.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+// Helper to ensure we always return a string for the PDF renderer
+const formatDate = (dateValue) => {
+    if (!dateValue) return '';
+    const d = new Date(dateValue);
+    if (isNaN(d.getTime())) return String(dateValue);
+    return d.toISOString().split('T')[0];
 };
 
 const Invoicepdf = ({ invoice, company }) => {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                {/* Header Section */}
+                {/* Header */}
                 <View style={styles.header}>
-                    <View style={styles.logoSection}>
-                        <Image style={styles.image} src='http://accountant.fun/img/logo.png' />
-                        <Text style={styles.brandName}>{company.name}</Text>
+                    <View>
+                        <Text style={styles.brandName}>{String(company?.name || '')}</Text>
                     </View>
                     <View style={styles.invoiceMeta}>
                         <Text style={styles.invoiceTitle}>INVOICE</Text>
-                        <Text style={{ fontWeight: 'bold' }}>#{invoice.invoice_number}</Text>
-                        <Text>Date: {formatDate(invoice.invoice_date)}</Text>
-                        <Text style={{ color: '#ef4444' }}>Due: {formatDate(invoice.invoice_due_date)}</Text>
+                        <Text style={{ fontWeight: 700 }}>#{String(invoice?.invoice_number || '')}</Text>
+                        <Text>Date: {formatDate(invoice?.invoice_date)}</Text>
+                        <Text style={{ color: '#ef4444' }}>Due: {formatDate(invoice?.invoice_due_date)}</Text>
                     </View>
                 </View>
 
-                {/* Seller & Buyer Details */}
+                {/* Seller & Buyer */}
                 <View style={styles.addressContainer}>
                     <View style={styles.addressGroup}>
                         <Text style={styles.sectionLabel}>From</Text>
-                        <Text style={styles.entityName}>{company.name}</Text>
-                        <Text>Code: {company.code}</Text>
-                        <Text>VAT: {company.vat_code}</Text>
-                        <Text>{company.street}, {company.city}, {company.country}</Text>
-                        <Text>{company.web}</Text>
+                        <Text style={styles.entityName}>{String(company?.name || '')}</Text>
+                        <Text>Code: {String(company?.code || '')}</Text>
+                        <Text>VAT: {String(company?.vat_code || '')}</Text>
+                        <Text>{String(company?.street || '')}, {String(company?.city || '')}</Text>
                     </View>
                     <View style={styles.addressGroup}>
                         <Text style={styles.sectionLabel}>Bill To</Text>
-                        <Text style={styles.entityName}>{invoice.customer[1]}</Text>
-                        <Text>Code: {invoice.customer[2]}</Text>
-                        <Text>VAT: {invoice.customer[3]}</Text>
-                        <Text>{invoice.customer[4]}, {invoice.customer[5]}, {invoice.customer[6]}</Text>
+                        <Text style={styles.entityName}>{String(invoice?.customer?.[1] || '')}</Text>
+                        <Text>Code: {String(invoice?.customer?.[2] || '')}</Text>
+                        <Text>VAT: {String(invoice?.customer?.[3] || '')}</Text>
+                        <Text>{String(invoice?.customer?.[4] || '')}, {String(invoice?.customer?.[5] || '')}</Text>
                     </View>
                 </View>
 
@@ -182,17 +173,17 @@ const Invoicepdf = ({ invoice, company }) => {
                         <Text style={[styles.colNr, styles.headerCell]}>Nr.</Text>
                         <Text style={[styles.colDesc, styles.headerCell]}>Description</Text>
                         <Text style={[styles.colQty, styles.headerCell]}>Qty</Text>
-                        <Text style={[styles.colPrice, styles.headerCell]}>Unit Price</Text>
+                        <Text style={[styles.colPrice, styles.headerCell]}>Price</Text>
                         <Text style={[styles.colTotal, styles.headerCell]}>Total</Text>
                     </View>
 
-                    {invoice.products.map((product, index) => (
+                    {(invoice?.products || []).map((product, index) => (
                         <View style={styles.tableRow} key={index}>
-                            <Text style={styles.colNr}>{index + 1}</Text>
-                            <Text style={styles.colDesc}>{product[4]}</Text>
-                            <Text style={styles.colQty}>{product[6]}</Text>
-                            <Text style={styles.colPrice}>{(product[5] / 100).toFixed(2)}</Text>
-                            <Text style={styles.colTotal}>{(product[7] / 100).toFixed(2)}</Text>
+                            <Text style={styles.colNr}>{String(index + 1)}</Text>
+                            <Text style={styles.colDesc}>{String(product[4] || '')}</Text>
+                            <Text style={styles.colQty}>{String(product[6] || '0')}</Text>
+                            <Text style={styles.colPrice}>{((product[5] || 0) / 100).toFixed(2)}</Text>
+                            <Text style={styles.colTotal}>{((product[7] || 0) / 100).toFixed(2)}</Text>
                         </View>
                     ))}
                 </View>
@@ -201,22 +192,17 @@ const Invoicepdf = ({ invoice, company }) => {
                 <View style={styles.summaryContainer}>
                     <View style={styles.summaryBox}>
                         <View style={styles.totalRow}>
-                            <Text style={styles.totalText}>Total Amount:</Text>
-                            <Text style={styles.totalText}>{(invoice.total / 100).toFixed(2)} €</Text>
+                            <Text style={styles.totalText}>Total:</Text>
+                            <Text style={styles.totalText}>{((invoice?.total || 0) / 100).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </View>
 
-                {/* Footer Section */}
+                {/* Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.sectionLabel}>Payment Details</Text>
-                    <Text style={{ marginBottom: 4 }}>Bank: {company.bank_name || 'Swedbank AB'}</Text>
-                    <Text>Account: {company.bank_account || 'LT7300002252255'}</Text>
-                    
-                    <Text style={[styles.sectionLabel, { marginTop: 15 }]}>Notes</Text>
-                    <Text style={{ fontSize: 9, color: '#6b7280', fontStyle: 'italic' }}>
-                        {invoice.invoice_notes || 'Thank you for your business!'}
-                    </Text>
+                    <Text>Bank: {String(company?.bank_name || 'N/A')}</Text>
+                    <Text>Account: {String(company?.bank_account || 'N/A')}</Text>
                 </View>
             </Page>
         </Document>

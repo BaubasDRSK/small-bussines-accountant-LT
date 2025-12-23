@@ -9,7 +9,6 @@ import Select from 'react-select';
 import Datepicker from "react-tailwindcss-datepicker";
 import { Page, Text, Document, PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import Invoicepdf from '../components/invoicePDF';
-import { pdf } from '@react-pdf/renderer';
 import saveAs from 'file-saver';
 // 👇 ADDED IMPORTS FOR STYLE CONSISTENCY (Heroicons)
 import { PencilSquareIcon, CheckCircleIcon } from "@heroicons/react/24/outline";

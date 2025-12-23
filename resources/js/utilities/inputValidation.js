@@ -8,13 +8,12 @@ export default function inputValidation(type, value) {
     if (type === 'phone'){ return [type, phoneValidation(value)]};
     if (type === 'email'){ return [type, emailValidation(value)]};
     if (type === 'web'){ return [type, webValidation(value)]};
-
+    
 };
 
 const nameValidation = (value) => {
     let validationMessages = [];
     value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
-    /\d/.test(value.trim()) ? validationMessages = [...validationMessages, "No numbers allowed"] : null;
     !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ0-9-\s]*$/.test(value.trim())) ? validationMessages = [...validationMessages, "No special characters allowed"]: null;
 
     return validationMessages;
@@ -40,7 +39,7 @@ const vatcodeValidation = (value) => {
 const streetValidation = (value) => {
     let validationMessages = [];
     value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
-    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.\s-]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check info again"] : null;
+    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.,\s-]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check info again"] : null;
 
     return validationMessages;
     }
@@ -48,7 +47,7 @@ const streetValidation = (value) => {
 const cityValidation = (value) => {
     let validationMessages = [];
     value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
-    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ? validationMessages = [...validationMessages, "Check info again"] : null;
+    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.,\s-]{2,}$/.test(value.trim())) ? validationMessages = [...validationMessages, "Check info again"] : null;
 
     return validationMessages;
     }
@@ -56,7 +55,7 @@ const cityValidation = (value) => {
 const countryValidation = (value) => {
     let validationMessages = [];
     value.length === 0 ? validationMessages= [...validationMessages, "Field is required"] : null;
-    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\s-]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check info again"] : null;
+    !(/^[a-zA-ZąčęėįšųūžĄČĘĖĮŠŲŪŽ\d.,\s-]{2,}$/.test(value.trim())) ?  validationMessages = [...validationMessages, "Check info again"] : null;
 
     return validationMessages;
     }
