@@ -30,8 +30,7 @@ class CompanyController extends Controller
         ]);
     }
 
-    // ... create() method remains empty or can be removed if unused
-
+    
     /**
      * Store a newly created resource in storage.
      * Uses CompanyStoreUpdateRequest for automatic validation.

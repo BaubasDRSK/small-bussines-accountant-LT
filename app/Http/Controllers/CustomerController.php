@@ -8,10 +8,18 @@ use App\Models\Customer;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Repositories\CustomerRepository;
 
 
 class CustomerController extends Controller
 {
+     protected $customerRepository;
+
+     public function __construct(CustomerRepository $customerRepository)
+     {
+         $this->customerRepository = $customerRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -25,36 +33,15 @@ class CustomerController extends Controller
 
     public function list(Request $request)
     {
-        $search = $request->search ?? '';
-        $pagination = (int) $request->pagination;
-        $page = $request->page;
-        $customers = Customer::where(function($query) use ($search)
-        {
-            $query->where('name', 'like', '%' . $search . '%')
-                ->orWhere('nickname', 'like', '%' . $search . '%')
-                ->orWhere('code', 'like', '%' . $search . '%');
-        }
-        )->orderBy('name', 'asc')->paginate($pagination);
+        $page = $request->page ?? 1;
 
-
-
-        $customers->each(function ($customer) {
-            $today = Carbon::now();
-            $customer->invoicesCount = $customer->invoices->count();
-            $customer->invoiceThisMonth = $customer->invoicesThisMonth->count();
-            $customer->total = $customer->invoices->sum('total');
-            $customer->overdue = $customer->invoices->where('invoice_due_date', '<', $today->toDateString())->where('paid', false)->sum('total');;
-            $customer->due = $customer->invoices->where('paid', false)->sum('total');
-        });
-
+        $customers = $this->customerRepository->customersList($request);
         return response()->json(
             [
                 'message' => 'Customer list renewed',
                 'type' => 'success',
                 'customers' => $customers,
                 'aaa' => $page,
-
-
             ],
             201
         );
@@ -75,16 +62,13 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $newCustomer = new Customer;
-        $newCustomer -> fill($request->newClient);
-        $newCustomer->save();
+        $this->customerRepository->createCustomer($request);
+
         return response()->json(
             [
                 'message' => 'Customer stored successfully',
                 'type' => 'success',
                 'route' => route('customers-index'),
-                'aaa' => $request->newClient,
-
             ],
             201
         );
@@ -96,13 +80,11 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        $actualCustomer = $customer;
         return Inertia::render('Customers/Customer', [
-            'updateRoute' => route('customers-update', ['customer' => $actualCustomer->id]),
-            'customer' => $actualCustomer,
-            'invoices'  => $actualCustomer->invoices()->orderBy('invoice_number', 'asc')->get(),
+            'updateRoute' => route('customers-update', ['customer' => $customer->id]),
+            'customer' => $customer,
+            'invoices'  => $customer->invoices()->orderBy('invoice_number', 'asc')->get(),
             'updateInvoiceRoute' => route('invoices-update'),
-            // 'newInvoiceRoute' => route('invoices-create'),
         ]);
     }
 
@@ -125,9 +107,6 @@ class CustomerController extends Controller
             [
                 'message' => 'Client data updated',
                 'type' => 'success',
-                // 'route' => route('customers-index'),
-                // 'aaa' => $request->newClient,
-
             ],
             201
         );
