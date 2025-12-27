@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -70,8 +71,20 @@ Route::prefix('products')->middleware(['auth', 'verified'])->name('products-')->
     Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
     Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
     Route::delete('/delete/{product}', [ProductController::class, 'destroy'])->name('delete');
-
 });
+
+//Expenses routes
+Route::prefix('expenses')->middleware(['auth', 'verified'])->name('expenses-')->group(function () {
+    Route::get('/',[ExpenseController::class, 'index'])->name('index');
+    Route::post('/list', [ExpenseController::class,'list'])->name('list');
+    Route::post('/update', [ExpenseController::class,'update'])->name('update');
+    Route::get('/show/{expense}', [ExpenseController::class,'show'])->name('show');
+    Route::get('/dashboard', [ExpenseController::class, 'dashboard'])->name('dashboard');
+    Route::get('/new/{expense}', [ExpenseController::class, 'create'])->name('create');
+    Route::post('/store', [ExpenseController::class,'store'])->name('store');
+});
+
+
 
 // Assuming you have a route group for authenticated users and correct namespace
 
