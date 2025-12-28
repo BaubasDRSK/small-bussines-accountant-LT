@@ -1,11 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import InvoicesList from "./InvoiceList";
+import ExpensesList from "./ExpensesList";
+import Messages from '../components/messages';
+
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Messages from '../components/messages';
 import { v4 as uuidv4 } from 'uuid';
-import InvoicesList from "./InvoiceList";
-// Import modern icons for Edit and Save
+
 import { PencilSquareIcon, CheckCircleIcon } from "@heroicons/react/24/outline"; 
 
 // A consistent, modern input style for Tailwind/Inertia
@@ -49,11 +51,11 @@ const EditableField = ({ label, value, stateKey, isEditing, setEditState, setVal
 };
 
 
-export default function Settings({ auth, updateRoute, customer, invoices, updateInvoiceRoute }) {
-
+export default function Customer({ auth, updateRoute, customer, invoices, expenses, updateInvoiceRoute, updateExpenseRoute }) {
+    
     const [edit, setEdit] = useState({});
     const [messages, setMessages] = useState([]);
-    const [sort, setSort] = useState({sortDirection:'up', sortName:'due'});
+    const [sort, setSort] = useState({sortDirection:'up', sortName:'due', sortItems:'invoices'});
 
     // Customer Details
     const [name, setName] = useState(customer.name);
@@ -61,24 +63,21 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
     const [code, setCode] = useState(customer.code);
     const [vat_code, setVatCode] = useState(customer.vat_code);
     const [website, setWebsite] = useState(customer.website);
-
     // Address Details
     const [street, setStreet] = useState(customer.street);
     const [city, setCity] = useState(customer.city);
     const [zip, setZip] = useState(customer.zip);
     const [country, setCountry] = useState(customer.country);
-
     // Contact Details
     const [cname, setCname] = useState(customer.contact_name);
     const [cphone, setCphone] = useState(customer.contact_phone);
     const [cemail, setCemail] = useState(customer.contact_email);
-
     // Notes
     const [company_notes, setCompanyNotes] = useState(customer.notes);
 
     const [invoicesList, setInvoicesList] = useState(invoices);
+    const [expensesList, setExpensesList] = useState(expenses);
 
-    // use efdetc for sort
     useEffect(()=>{
         invoicesList.forEach((item) => {
         const today = new Date();
@@ -91,10 +90,19 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
     },[invoicesList]);
 
     useEffect(()=>{
-        // The array is shallow copied in sortInvoices, but React might warn about setting state
-        // with the same array reference. Using the functional update here is safer.
-        setInvoicesList(prevList => sortInvoices(prevList));
-    },[sort]);
+       switch (sort.sortItems) {
+        case 'invoices':
+            console.log(sort);
+            setInvoicesList(prevList => sortInvoices(prevList));
+            break;
+        case 'expenses':
+            console.log(sort);
+            setExpensesList(prevList => sortInvoices(prevList));
+            break;
+        default:
+            break;
+       }
+    },[sort]);      
 
     const sortInvoices = (invoices) => {
         const sortedList = [...invoices];
@@ -135,7 +143,6 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
     }
 
     const updateField = () => {
-        console.log('letsupdate');
         const updatedFields = {
             'name': name,
             'nickname': nickname,
@@ -167,12 +174,12 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
             );
     }
 
-    const doSort = n => {
+    const doSort = (name, itemsType) => {
         setSort(s => {
           switch (s.sortDirection) {
-              case 'down': return {sortDirection:'up', sortName:n};
-              case 'up': return {sortDirection:'down', sortName:n};
-              default: return {sortDirection:'up', sortName:n}; // Added default case for safety
+              case 'down': return {sortDirection:'up', sortName:name, sortItems: itemsType};
+              case 'up': return {sortDirection:'down', sortName:name, sortItems: itemsType};
+              default: return {sortDirection:'up', sortName:name, sortItems: itemsType}; 
           }
         });
     }
@@ -233,7 +240,7 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
                         <textarea 
                             className={`${inputClass} resize-y h-32`}
                             onBlur={() => { updateField(); }} // Call updateField when textarea loses focus
-                            value={company_notes}
+                            value={company_notes || ''}
                             onChange={(event) => { setCompanyNotes(event.target.value); }}
                             id="note"
                             rows="8"
@@ -248,6 +255,17 @@ export default function Settings({ auth, updateRoute, customer, invoices, update
                             setInvoicesList={setInvoicesList}
                             sortInvoices={sortInvoices}
                             updateInvoiceRoute={updateInvoiceRoute}
+                            addMessage={addMessage}
+                        />
+                    </div>
+
+                     <div className="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden mt-4">
+                        <ExpensesList
+                            expensesList={expensesList}
+                            doSort={doSort}
+                            setInvoicesList={setExpensesList}
+                            sortExpenses={sortInvoices}
+                            updateExpenseRoute={updateExpenseRoute}
                             addMessage={addMessage}
                         />
                     </div>
