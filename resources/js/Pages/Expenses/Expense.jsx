@@ -21,6 +21,26 @@ const inputClass = "w-full rounded-md border-gray-300 dark:bg-gray-700 dark:bord
 const displayClass = "text-gray-700 dark:text-gray-300 text-sm py-1.5 px-3";
 // Adjusted label width to maintain alignment in the two-column grid
 const labelClass = "text-gray-500 dark:text-gray-400 text-sm font-medium w-4/12 md:w-3/12 self-center min-w-[100px]";
+const dropDownClassNames = {
+  control: (state) => 
+    `pl-4 !min-h-[34px] !bg-white dark:!bg-gray-700 !border-gray-300 dark:!border-gray-600 !rounded-md ${
+      state.isFocused ? '!border-blue-500 !ring-1 !ring-blue-500' : ''
+    }`,
+  singleValue: () => "text-sm dark:text-gray-100",
+  menu: () => "mt-1 bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md shadow-lg overflow-hidden",
+  option: (state) => 
+    `px-4 py-2 text-sm ${
+      state.isSelected 
+        ? 'bg-blue-500 text-white' 
+        : state.isFocused 
+          ? 'bg-gray-100 dark:bg-gray-600 dark:text-gray-100' 
+          : 'text-gray-900 dark:text-gray-100'
+    }`,
+  // Optional: adds padding to the container inside the control
+  valueContainer: () => "p-0", 
+  input: () => "text-sm dark:text-gray-100",
+  placeholder: () => "text-sm text-gray-400",
+};
 
 /**
  * Helper component for a single editable field (Refactored from Customer page)
@@ -380,32 +400,12 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                             <div className="mb-4">
                                 <label className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1 block">Select customer for expense:</label>
                                 <Select
+                                    unstyled
                                     options={customersOptions}
                                     value={{ value: customer[0], label: customer[1] }}
                                     onChange={(selectedOption) => handleCustomerChange(selectedOption.value)}
                                     // Use custom styles to ensure compatibility with dark mode
-                                    styles={{
-                                        control: (base, state) => ({
-                                            ...base,
-                                            backgroundColor: 'rgb(55 65 81 / var(--tw-bg-opacity))',
-                                            borderColor: state.isFocused ? 'rgb(59 130 246 / var(--tw-border-opacity))' : 'rgb(75 85 99 / var(--tw-border-opacity))',
-                                            minHeight: '38px',
-                                            boxShadow: state.isFocused ? '0 0 0 1px rgb(59 130 246 / var(--tw-ring-opacity))' : 'none',
-                                        }),
-                                        singleValue: (base) => ({
-                                            ...base,
-                                            color: 'rgb(243 244 246 / var(--tw-text-opacity))',
-                                        }),
-                                        menu: (base) => ({
-                                            ...base,
-                                            backgroundColor: 'rgb(55 65 81 / var(--tw-bg-opacity))',
-                                        }),
-                                        option: (base, state) => ({
-                                            ...base,
-                                            backgroundColor: state.isFocused ? 'rgb(31 41 55 / var(--tw-bg-opacity))' : state.isSelected ? 'rgb(59 130 246 / var(--tw-bg-opacity))' : 'rgb(55 65 81 / var(--tw-bg-opacity))',
-                                            color: 'rgb(243 244 246 / var(--tw-text-opacity))',
-                                        }),
-                                    }}
+                                    classNames={dropDownClassNames}
                                 />
                             </div>
                             
@@ -446,11 +446,13 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                     {/* Products List Block */}
                     <div className="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden mb-8">
                         <ProductsList
+                            unstyled
                             products={products}
                             setProducts={setProducts}
                             allProducts={allProducts}
                             expenseTotal={expenseTotal}
                             setExpenseTotal={setExpenseTotal}
+                            dropDownClassNames={dropDownClassNames}
                         />
                     </div>
 

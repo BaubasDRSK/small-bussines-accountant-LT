@@ -6,7 +6,7 @@ import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 // --- STYLE CONSTANTS ---
 const inputClass = "w-full rounded-md border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-1.5 px-3";
 
-export default function ProductsList({ products, setProducts, addMessage, allProducts, invoiceTotal, setInvoiceTotal }) {
+export default function ProductsList({ products, setProducts, addMessage, allProducts, invoiceTotal, setInvoiceTotal, dropDownClassNames }) {
 
     // Removed unused modal state variables for cleaner code
     // const [modalStatus, setModalStatus] = useState(false);
@@ -165,10 +165,11 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
                                 {/* Product Select */}
                                 <td scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <Select
+                                        unstyled
                                         options={options}
                                         value={options.find(opt => opt.value === product[2]) || null}
                                         onChange={(selectedOption) => handleProductChange(selectedOption.value, product[0])}
-                                        styles={customSelectStyles}
+                                        classNames={dropDownClassNames}
                                     />
                                 </td>
                                 
