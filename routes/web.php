@@ -82,6 +82,7 @@ Route::prefix('expenses')->middleware(['auth', 'verified'])->name('expenses-')->
     Route::get('/dashboard', [ExpenseController::class, 'dashboard'])->name('dashboard');
     Route::get('/new/{expense}', [ExpenseController::class, 'create'])->name('create');
     Route::post('/store', [ExpenseController::class,'store'])->name('store');
+    Route::get('/{expense}/download', [ExpenseController::class, 'downloadAttachment'])->name('download');
 });
 
 

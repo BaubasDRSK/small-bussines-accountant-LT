@@ -90,8 +90,7 @@ const EditableField = ({ label, value, stateKey, isEditing, setEditState, setVal
 // -------------------------------------------------------------------------
 
 
-export default function Expense({ auth, updateRoute, expense, updateExpenseRoute, allProducts, allCustomers, storeRoute, company }) {
-    console.log(expense);
+export default function Expense({ auth, updateRoute, expense, updateExpenseRoute, allProducts, allCustomers, storeRoute, company, downloadAttachmentRoute }) {
     // Initialize state with props or defaults
     const [thisExpense, setThisExpense] = useState(expense ?? null);
     const [expenseDate, setExpenseDate] = useState({
@@ -122,6 +121,9 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
     const customersOptions = allCustomers.map(customer => {
         return ({ value: customer.id, label: customer.name })
     });
+
+    const [selectedFile, setSelectedFile] = useState(null); 
+    const [hasAttachment, setHasAttachment] = useState(!!expense.attachment_path);
 
     // Helper function to update a specific index in the customer array
     const setCustomerField = (index) => (value) => {
@@ -173,18 +175,25 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
     
     // Function to handle saving changes to the expense
     const handelSaveExpense = () => {
-        const fullExpense = thisExpense;
-            console.log(fullExpense);
-        axios.post(updateExpenseRoute, { fullExpense })
-            .then(res => {
-                if (res.status === 200 || res.status === 201) {
-                    addMessage(res.data.message, res.data.type);
-                }
-            })
-            .catch(e => {
-                console.error("Error saving expense:", e);
-                addMessage('Failed to save expense.', 'danger');
-            });
+        
+        const formData = new FormData();
+        formData.append('fullExpense', JSON.stringify(thisExpense));
+        if (selectedFile) {
+            formData.append('file', selectedFile);
+        }
+
+        axios.post(updateExpenseRoute, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(res => {
+            addMessage(res.data.message, res.data.type);
+        })
+        .catch(err => {
+            console.error(err);
+            addMessage('Failed to save expense.', 'danger');
+        });
     };
     
     // Re-use save function for field updates
@@ -194,20 +203,28 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
     }
 
     const handelStoreExpense = () => {
-        const fullExpense = thisExpense;
+        const formData = new FormData();
+        formData.append('fullExpense', JSON.stringify(thisExpense));
+        if (selectedFile) {
+            formData.append('file', selectedFile);
+        }
 
-        axios.post(storeRoute, { fullExpense })
-            .then(res => {
-                if (res.status === 201) {
-                    addMessage(res.data.message, res.data.type);
-                    // Redirect to the newly created expense page
-                    window.location.href = '/expenses/show/' + res.data.expense;
-                }
-            })
-            .catch(e => {
-                console.error("Error storing expense:", e);
-                addMessage('Failed to create new expense.', 'danger');
-            });
+        axios.post(storeRoute, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(res => {
+            if (res.status === 201) {
+                addMessage(res.data.message, res.data.type);
+                // Redirect to the newly created expense page
+                window.location.href = '/expenses/show/' + res.data.expense;
+            }
+        })
+        .catch(e => {
+            console.error("Error storing expense:", e);
+            addMessage('Failed to create new expense.', 'danger');
+        })
     };
 
     // Effect to update the complete thisExpense object whenever dependencies change
@@ -225,6 +242,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
         fullExpense['customer'] = customer;
         fullExpense['products'] = products;
         fullExpense['total'] = expenseTotal;
+        fullExpense['file'] = selectedFile;
         
         setThisExpense(fullExpense);
 
@@ -238,6 +256,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
         products,
         expenseTotal,
         expenseTitle,
+        selectedFile
     ]);
 
     // PDF Download logic
@@ -441,6 +460,58 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                             id="note"
                             rows="8"
                         />
+                    </div>
+
+                    {/* File Attachment Section */}
+                    <div className="mb-8 p-6 bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg">
+                        <h3 className="mb-4 text-xl font-bold text-blue-600 dark:text-blue-400 border-b pb-2 border-gray-200 dark:border-gray-700">
+                            Attachment (Secure Storage)
+                        </h3>
+                        
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="flex-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Upload Receipt (PDF or Image)
+                                </label>
+                                <input 
+                                    type="file" 
+                                    accept=".pdf,image/*"
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                    className="block w-full text-sm text-gray-500 dark:text-gray-400
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-md file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-blue-50 file:text-blue-700
+                                        hover:file:bg-blue-100 dark:file:bg-gray-700 dark:file:text-gray-200"
+                                />
+                                {selectedFile && (
+                                    <p className="mt-2 text-xs text-orange-500 font-bold">
+                                        File selected: {selectedFile.name} (Save to upload)
+                                    </p>
+                                )}
+                            </div>
+
+                            {hasAttachment && (
+                                <div className="flex items-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (thisExpense.id) {
+                                                window.location.href = downloadAttachmentRoute;
+                                            } else {
+                                                addMessage("Save the expense first to download the attachment.", "warning");
+                                            }
+                                        }}
+                                        className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                                    >
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download Current File
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     
                     {/* Products List Block */}

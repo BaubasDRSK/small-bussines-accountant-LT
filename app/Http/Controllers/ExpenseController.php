@@ -11,7 +11,8 @@ use App\Models\Product;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExpenseController extends Controller
 {
@@ -121,7 +122,7 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         
-        $fullExpense =$request->input('fullExpense');
+        $fullExpense =json_decode($request->input('fullExpense'), true);
         $expense = new Expense();
 
         $expense->expense_number = $fullExpense['expense_number'];
@@ -137,6 +138,12 @@ class ExpenseController extends Controller
         $expense->paid = $fullExpense['paid'];
         $expense->notes = $fullExpense['notes'];
 
+         if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('expenses', 'private');
+            $expense->attachment_path = $path;
+        } else {
+            $expense->attachment_path = null;
+        }
 
         $expense->save();
 
@@ -167,6 +174,7 @@ class ExpenseController extends Controller
             'allProducts' => $products,
             'allCustomers' => $customers,
             'company' => $company,
+            'downloadAttachmentRoute' => route('expenses-download', ['expense' => $actualExpense->id]),
 
         ]);
     }
@@ -184,7 +192,8 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, Expense $expense)
     {
-        $fullExpense =$request->input('fullExpense');
+        $fullExpense =json_decode($request->input('fullExpense'), true);
+
         $expense = Expense::find($fullExpense['id']);
         $expense->id = $fullExpense['id'];
         $expense->expense_number = $fullExpense['expense_number'];
@@ -200,6 +209,13 @@ class ExpenseController extends Controller
         $expense->paid = $fullExpense['paid'];
         $expense->notes = $fullExpense['notes'];
 
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('expenses', 'private');
+            $expense->attachment_path = $path;
+        } else {
+            $expense->attachment_path = null;
+        }
+
 
         $expense->save();
         return response()->json(
@@ -208,6 +224,26 @@ class ExpenseController extends Controller
                 'type' => 'success',
             ],
             201
+        );
+    }
+
+    public function downloadAttachment(Expense $expense)
+{
+        // 1. Verify the file path exists in the database
+        if (!$expense->attachment_path) {
+            return back()->with('error', 'No attachment found for this expense.');
+        }
+
+        // 2. Check if the file actually exists in the private storage/app folder
+        if (!Storage::disk('private')->exists($expense->attachment_path)) {
+            abort(404, 'The physical file was not found on the server.');
+        }
+
+        // 3. Return the download response
+        // The second parameter is the filename the user will see (optional)
+        return Storage::disk('private')->download(
+            $expense->attachment_path, 
+            'Receipt-' . $expense->expense_number . '.' . pathinfo($expense->attachment_path, PATHINFO_EXTENSION)
         );
     }
 
