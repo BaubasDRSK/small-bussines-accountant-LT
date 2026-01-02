@@ -85,24 +85,6 @@ Route::prefix('expenses')->middleware(['auth', 'verified'])->name('expenses-')->
     Route::get('/{expense}/download', [ExpenseController::class, 'downloadAttachment'])->name('download');
 });
 
-
-
-// Assuming you have a route group for authenticated users and correct namespace
-
-
-// Route::get('/products/list', [ProductController::class, 'list'])->name('products-list');
-// // Use Route::resource for the standard CRUD operations
-// Route::resource('products', ProductController::class)
-//     ->names([
-//         'index' => 'products-index',
-//         'create' => 'products-create',
-//         'store' => 'products-store',
-//         'show' => 'products-show',
-//         'edit' => 'products-edit',
-//         'update' => 'products-update',
-//         'destroy' => 'products-destroy',
-//     ]);
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

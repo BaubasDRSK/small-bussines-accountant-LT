@@ -1,27 +1,31 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Font, Image as PDFImage } from '@react-pdf/renderer';
 
-// 1. Stable Font Registration (Using static .ttf files)
-// Font.register({
-//     family: 'openSans',
-//     fonts: [
-//         { 
-//             src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/opensans/static/OpenSans-Regular.ttf', 
-//             fontWeight: 400 
-//         },
-//         { 
-//             src: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/opensans/static/OpenSans-Bold.ttf', 
-//             fontWeight: 700 
-//         }
-//     ]
-// });
+import logo from './invoicePDF/logo.png';
+
+// Registering Roboto with working URLs
+Font.register({
+    family: 'Roboto',
+    fonts: [
+        { 
+            src: 'https://cdn.jsdelivr.net/gh/google/fonts@master/apache/roboto/static/Roboto-Regular.ttf' 
+        },
+        { 
+            src: 'https://cdn.jsdelivr.net/gh/google/fonts@master/apache/roboto/static/Roboto-Bold.ttf', 
+            fontWeight: 700 
+        },
+    ],
+});
 
 const styles = StyleSheet.create({
     page: {
         padding: 40,
-        fontFamily: 'Helvetica',
+        fontFamily: 'Roboto', // Applied Roboto globally to the page
         fontSize: 10,
         color: '#374151',
+    },
+    logo: {
+        height: 80,        
     },
     header: {
         flexDirection: 'row',
@@ -31,11 +35,6 @@ const styles = StyleSheet.create({
         borderBottom: 2,
         borderBottomColor: '#6366f1',
         paddingBottom: 20,
-    },
-    brandName: {
-        fontSize: 18,
-        fontWeight: 700,
-        color: '#1e1b4b',
     },
     invoiceMeta: {
         textAlign: 'right',
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
     }
 });
 
-// Helper to ensure we always return a string for the PDF renderer
 const formatDate = (dateValue) => {
     if (!dateValue) return '';
     const d = new Date(dateValue);
@@ -139,13 +137,23 @@ const Invoicepdf = ({ invoice, company }) => {
                 {/* Header */}
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.brandName}>{String(company?.name || '')}</Text>
+                        {/* Using PDFImage alias to prevent 'Failed to construct Image' error */}
+                        <PDFImage
+                            style={styles.logo}
+                            src={logo}
+                        />
                     </View>
                     <View style={styles.invoiceMeta}>
-                        <Text style={styles.invoiceTitle}>INVOICE</Text>
-                        <Text style={{ fontWeight: 700 }}>#{String(invoice?.invoice_number || '')}</Text>
-                        <Text>Date: {formatDate(invoice?.invoice_date)}</Text>
-                        <Text style={{ color: '#ef4444' }}>Due: {formatDate(invoice?.invoice_due_date)}</Text>
+                        <Text style={styles.invoiceTitle}>SĄSKAITA</Text>
+                        {/* Increased Font Size for Invoice Number */}
+                        <Text style={{ fontWeight: 700, fontSize: 16 }}>
+                            #{String(invoice?.invoice_number || '')}
+                        </Text>
+                        {/* Explicit space after colons for better readability */}
+                        <Text>Sąskaitos data: {' '}{formatDate(invoice?.invoice_date)}</Text>
+                        <Text style={{ color: '#ef4444' }}>
+                            Apmokėti iki: {' '}{formatDate(invoice?.invoice_due_date)}
+                        </Text>
                     </View>
                 </View>
 
@@ -155,14 +163,15 @@ const Invoicepdf = ({ invoice, company }) => {
                         <Text style={styles.sectionLabel}>From</Text>
                         <Text style={styles.entityName}>{String(company?.name || '')}</Text>
                         <Text>Code: {String(company?.code || '')}</Text>
-                        <Text>VAT: {String(company?.vat_code || '')}</Text>
-                        <Text>{String(company?.street || '')}, {String(company?.city || '')}</Text>
+                        <Text>VAT: {String(company?.vat_code || '-')}</Text>
+                        <Text>{String(company?.street || '')}</Text>
+                        <Text>{String(company?.city || '')}</Text>
                     </View>
-                    <View style={styles.addressGroup}>
+                    <View style={styles.addressGroup}>  
                         <Text style={styles.sectionLabel}>Bill To</Text>
                         <Text style={styles.entityName}>{String(invoice?.customer?.[1] || '')}</Text>
                         <Text>Code: {String(invoice?.customer?.[2] || '')}</Text>
-                        <Text>VAT: {String(invoice?.customer?.[3] || '')}</Text>
+                        <Text>VAT: {String(invoice?.customer?.[3] || '-')}</Text>
                         <Text>{String(invoice?.customer?.[4] || '')}, {String(invoice?.customer?.[5] || '')}</Text>
                     </View>
                 </View>

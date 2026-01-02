@@ -266,7 +266,8 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
 
     const handleDownloadPdf = async () => {
         setDownloaded(false);
-        
+        console.log(thisInvoice);
+        console.log(company);
         // 1. Create the PDF instance
         const doc = <Invoicepdf invoice={thisInvoice} company={company} />;
         

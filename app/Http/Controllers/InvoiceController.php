@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Product;
+use App\Models\Company;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -171,7 +172,7 @@ class InvoiceController extends Controller
         $products = Product::all();
         $customers = Customer::all();
         $actualInvoice = $invoice;
-        $company = Customer::where('id', $invoice->customer_id)->first();
+        $company = Company::where('company_id', '1')->first();
 
         return Inertia::render('Invoices/Invoice', [
             'updateRoute' => route('customers-update', ['customer' => $actualInvoice->id]),
