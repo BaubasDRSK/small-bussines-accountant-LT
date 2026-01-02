@@ -79,8 +79,10 @@ export default function Settings({ auth, newlist, updateExpenseRoute }) {
         e.stopPropagation();
         // The modal handler will update the state locally before calling this
         const updatedExpense = { ...expense, paid: expense.paid ? 0 : 1 };
+        const formData = new FormData();
+        formData.append('fullExpense', JSON.stringify(updatedExpense));
         
-        axios.post(updateExpenseRoute, { fullExpense: updatedExpense })
+        axios.post(updateExpenseRoute, formData)
             .then(res => {
                 if (res.status === 200 || res.status === 201) {
                     addMessage(res.data.message, res.data.type);
