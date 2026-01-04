@@ -4,6 +4,7 @@ import { Page, Text, View, Document, StyleSheet, Font, Image as PDFImage } from 
 import logo from './invoicePDF/logo.png';
 import robotoNormal from './invoicePDF/Roboto-Regular.ttf';
 import robotoBlack from './invoicePDF/Roboto-Black.ttf';
+import robotoBold from './invoicePDF/Roboto-Bold.ttf';
 
 // Registering Roboto with working URLs
 Font.register({
@@ -14,7 +15,7 @@ Font.register({
       fontWeight: 'normal',
     },
     {
-      src: robotoBlack,
+      src: robotoBold,
       fontWeight: 'bold',
     },
   ],
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 30,
-        borderBottom: 2,
+        borderBottom: 1,
         borderBottomColor: '#108fca',
         paddingBottom: 20,
     },
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#f9fafb',
         borderBottomColor: '#108fca',
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         alignItems: 'center',
         height: 30,
     },
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     totalText: {
         fontSize: 14,
         fontWeight: 700,
-        color: '#108fca',
+        color: 'black',
     },
     footer: {
         marginTop: 50,
