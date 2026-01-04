@@ -10,6 +10,7 @@ use App\Models\Company;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Services\InvoiceNumberGenerator;
 
 
 
@@ -121,20 +122,19 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $lastInvoice = Invoice::select('invoice_number')
-        ->orderBy('invoice_number', 'desc')
-        ->first();
+        // $lastInvoice = Invoice::select('invoice_number')
+        // ->orderBy('invoice_number', 'desc')
+        // ->first();
 
-        if ($lastInvoice) {
-            $lastInvoiceNumber = $lastInvoice->invoice_number;
-            $lastInvoiceNumber = str_replace('PSF-', '', $lastInvoiceNumber);
-            $lastInvoiceNumber = (int)$lastInvoiceNumber;
-        } else {
-            // If there are no previous invoices, start from a specific number, e.g., 0.
-            $lastInvoiceNumber = 0;
-        }
-        $nextInvoiceNumber = 'PSF-' . str_pad($lastInvoiceNumber + 1, 4, '0', STR_PAD_LEFT);
-
+        // if ($lastInvoice) {
+        //     $lastInvoiceNumber = $lastInvoice->invoice_number;
+        //     $lastInvoiceNumber = str_replace('PSF-', '', $lastInvoiceNumber);
+        //     $lastInvoiceNumber = (int)$lastInvoiceNumber;
+        // } else {
+        //     // If there are no previous invoices, start from a specific number, e.g., 0.
+        //     $lastInvoiceNumber = 0;
+        // }
+        $nextInvoiceNumber = InvoiceNumberGenerator::next();
         $fullInvoice =$request->input('fullInvoice');
         $invoice = new Invoice();
 

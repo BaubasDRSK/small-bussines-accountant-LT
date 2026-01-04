@@ -332,15 +332,21 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                         >
                             Save Expense
                         </button>
-                        {thisExpense.expense_number ?
+                        {hasAttachment && (
                             <button
                                 className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
-                                onClick={handleDownloadPdf}
+                                onClick={() => {
+                                            if (thisExpense.id) {
+                                                window.location.href = downloadAttachmentRoute;
+                                            } else {
+                                                addMessage("Save the expense first to download the attachment.", "warning");
+                                            }
+                                        }}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'Download PDF'}
+                                Download Attachment
                             </button>
-                            : null}
+                            )}
                     </div>
 
                     {/* Expense Meta and Dates Section */}
@@ -496,6 +502,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                                     <button
                                         type="button"
                                         onClick={() => {
+                                            console.log(downloadAttachmentRoute)
                                             if (thisExpense.id) {
                                                 window.location.href = downloadAttachmentRoute;
                                             } else {
@@ -541,15 +548,21 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                         >
                             Save Expense
                         </button>
-                        {thisExpense.expense_number ?
+                       {hasAttachment && (
                             <button
                                 className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
-                                onClick={handleDownloadPdf}
+                                onClick={() => {
+                                            if (thisExpense.id) {
+                                                window.location.href = downloadAttachmentRoute;
+                                            } else {
+                                                addMessage("Save the expense first to download the attachment.", "warning");
+                                            }
+                                        }}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'Download PDF'}
+                                Download Attachment
                             </button>
-                            : null}
+                            )}
                     </div>
 
                 </div>

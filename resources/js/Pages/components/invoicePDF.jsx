@@ -2,19 +2,22 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Font, Image as PDFImage } from '@react-pdf/renderer';
 
 import logo from './invoicePDF/logo.png';
+import robotoNormal from './invoicePDF/Roboto-Regular.ttf';
+import robotoBlack from './invoicePDF/Roboto-Black.ttf';
 
 // Registering Roboto with working URLs
 Font.register({
     family: 'Roboto',
-    fonts: [
-        { 
-            src: 'https://cdn.jsdelivr.net/gh/google/fonts@master/apache/roboto/static/Roboto-Regular.ttf' 
-        },
-        { 
-            src: 'https://cdn.jsdelivr.net/gh/google/fonts@master/apache/roboto/static/Roboto-Bold.ttf', 
-            fontWeight: 700 
-        },
-    ],
+  fonts: [
+    {
+      src: robotoNormal,
+      fontWeight: 'normal',
+    },
+    {
+      src: robotoBlack,
+      fontWeight: 'bold',
+    },
+  ],
 });
 
 const styles = StyleSheet.create({
@@ -33,15 +36,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 30,
         borderBottom: 2,
-        borderBottomColor: '#6366f1',
+        borderBottomColor: '#108fca',
         paddingBottom: 20,
     },
     invoiceMeta: {
         textAlign: 'right',
+        width: '50%',
     },
     invoiceTitle: {
         fontSize: 22,
-        color: '#6366f1',
+        color: '#108fca',
         fontWeight: 700,
         marginBottom: 4,
     },
@@ -72,7 +76,7 @@ const styles = StyleSheet.create({
     tableHeader: {
         flexDirection: 'row',
         backgroundColor: '#f9fafb',
-        borderBottomColor: '#6366f1',
+        borderBottomColor: '#108fca',
         borderBottomWidth: 2,
         alignItems: 'center',
         height: 30,
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
     totalText: {
         fontSize: 14,
         fontWeight: 700,
-        color: '#6366f1',
+        color: '#108fca',
     },
     footer: {
         marginTop: 50,
@@ -137,7 +141,6 @@ const Invoicepdf = ({ invoice, company }) => {
                 {/* Header */}
                 <View style={styles.header}>
                     <View>
-                        {/* Using PDFImage alias to prevent 'Failed to construct Image' error */}
                         <PDFImage
                             style={styles.logo}
                             src={logo}
@@ -145,9 +148,8 @@ const Invoicepdf = ({ invoice, company }) => {
                     </View>
                     <View style={styles.invoiceMeta}>
                         <Text style={styles.invoiceTitle}>SĄSKAITA</Text>
-                        {/* Increased Font Size for Invoice Number */}
                         <Text style={{ fontWeight: 700, fontSize: 16 }}>
-                            #{String(invoice?.invoice_number || '')}
+                            Serija ir nr.: {' '}{String(invoice?.invoice_number || '')}
                         </Text>
                         {/* Explicit space after colons for better readability */}
                         <Text>Sąskaitos data: {' '}{formatDate(invoice?.invoice_date)}</Text>
@@ -160,18 +162,20 @@ const Invoicepdf = ({ invoice, company }) => {
                 {/* Seller & Buyer */}
                 <View style={styles.addressContainer}>
                     <View style={styles.addressGroup}>
-                        <Text style={styles.sectionLabel}>From</Text>
+                        <Text style={styles.sectionLabel}>PARDAVĖJAS</Text>
                         <Text style={styles.entityName}>{String(company?.name || '')}</Text>
-                        <Text>Code: {String(company?.code || '')}</Text>
-                        <Text>VAT: {String(company?.vat_code || '-')}</Text>
+                        <Text>{company?.code ? `Įmonės kodas: ${String(company.code)}` : null}</Text>
+                        <Text>PVM kodas: {String(company?.vat_code || '-')}</Text>
                         <Text>{String(company?.street || '')}</Text>
                         <Text>{String(company?.city || '')}</Text>
+                        <Text>Bankas: {String(company?.bank_name || 'N/A')}</Text>
+                        <Text>Banko sąskaita: {String(company?.bank_account || 'N/A')}</Text>
                     </View>
                     <View style={styles.addressGroup}>  
-                        <Text style={styles.sectionLabel}>Bill To</Text>
+                        <Text style={styles.sectionLabel}>Pirkėjas</Text>
                         <Text style={styles.entityName}>{String(invoice?.customer?.[1] || '')}</Text>
-                        <Text>Code: {String(invoice?.customer?.[2] || '')}</Text>
-                        <Text>VAT: {String(invoice?.customer?.[3] || '-')}</Text>
+                        <Text>Įmonės kodas: {String(invoice?.customer?.[2] || '')}</Text>
+                        <Text>PVM mokėtojo kodas: {String(invoice?.customer?.[3] || '-')}</Text>
                         <Text>{String(invoice?.customer?.[4] || '')}, {String(invoice?.customer?.[5] || '')}</Text>
                     </View>
                 </View>
@@ -180,10 +184,10 @@ const Invoicepdf = ({ invoice, company }) => {
                 <View style={styles.table}>
                     <View style={[styles.tableRow, styles.tableHeader]}>
                         <Text style={[styles.colNr, styles.headerCell]}>Nr.</Text>
-                        <Text style={[styles.colDesc, styles.headerCell]}>Description</Text>
-                        <Text style={[styles.colQty, styles.headerCell]}>Qty</Text>
-                        <Text style={[styles.colPrice, styles.headerCell]}>Price</Text>
-                        <Text style={[styles.colTotal, styles.headerCell]}>Total</Text>
+                        <Text style={[styles.colDesc, styles.headerCell]}>Pavadinimas</Text>
+                        <Text style={[styles.colQty, styles.headerCell]}>Kiekis</Text>
+                        <Text style={[styles.colPrice, styles.headerCell]}>Kaina</Text>
+                        <Text style={[styles.colTotal, styles.headerCell]}>Viso</Text>
                     </View>
 
                     {(invoice?.products || []).map((product, index) => (
@@ -201,18 +205,18 @@ const Invoicepdf = ({ invoice, company }) => {
                 <View style={styles.summaryContainer}>
                     <View style={styles.summaryBox}>
                         <View style={styles.totalRow}>
-                            <Text style={styles.totalText}>Total:</Text>
+                            <Text style={styles.totalText}>Galutinė suma:</Text>
                             <Text style={styles.totalText}>{((invoice?.total || 0) / 100).toFixed(2)} €</Text>
                         </View>
                     </View>
                 </View>
 
-                {/* Footer */}
+                {/* Footer
                 <View style={styles.footer}>
                     <Text style={styles.sectionLabel}>Payment Details</Text>
                     <Text>Bank: {String(company?.bank_name || 'N/A')}</Text>
                     <Text>Account: {String(company?.bank_account || 'N/A')}</Text>
-                </View>
+                </View> */}
             </Page>
         </Document>
     );
