@@ -79,6 +79,16 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
         e.stopPropagation();
         // The modal handler will update the state locally before calling this
         const updatedInvoice = { ...invoice, paid: invoice.paid ? 0 : 1 };
+        updatedInvoice.customer = [
+            invoice.customer.id,
+            invoice.customer.name,
+            invoice.customer.code,
+            invoice.customer.vat_code,
+            invoice.customer.street,
+            invoice.customer.city,
+            invoice.customer.country,
+            invoice.customer.zip ?? null
+        ];
         
         axios.post(updateInvoiceRoute, { fullInvoice: updatedInvoice })
             .then(res => {
