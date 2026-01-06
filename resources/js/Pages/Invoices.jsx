@@ -151,7 +151,7 @@ export default function Settings({ auth, newlist, updateInvoiceRoute }) {
                         Invoices
                     </h2>
                     <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
-                        <a href={route('invoices-create', [1])}>Add new invoice</a>
+                        <a href={route('invoices-create', [0])}>Add new invoice</a>
                     </button>
                 </div>
             }
