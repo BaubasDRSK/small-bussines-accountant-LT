@@ -165,12 +165,17 @@ const Invoicepdf = ({ invoice, company }) => {
                     <View style={styles.addressGroup}>
                         <Text style={styles.sectionLabel}>PARDAVĖJAS</Text>
                         <Text style={styles.entityName}>{String(company?.name || '')}</Text>
-                        <Text>{company?.code ? `Įmonės kodas: ${String(company.code)}` : null}</Text>
-                        <Text>PVM kodas: {String(company?.vat_code || '-')}</Text>
+                        <Text>{company?.code ? `Indv. veikla nr.: ${String(company.code)}` : null}</Text>
+                        
+                        {company?.vat_code && company.vat_code !== "-" ? (
+                                <Text>PVM kodas: {String(company.vat_code)}</Text>
+                            ) : null}
+                        
                         <Text>{String(company?.street || '')}</Text>
                         <Text>{String(company?.city || '')}</Text>
                         <Text>Bankas: {String(company?.bank_name || 'N/A')}</Text>
                         <Text>Banko sąskaita: {String(company?.bank_account || 'N/A')}</Text>
+                        <Text>Tel: {String(company?.phone || 'N/A')}</Text>
                     </View>
                     <View style={styles.addressGroup}>  
                         <Text style={styles.sectionLabel}>Pirkėjas</Text>
