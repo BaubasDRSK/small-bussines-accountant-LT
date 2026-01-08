@@ -285,7 +285,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
             user={auth.user}
             header={
                 <div className='flex justify-between items-center'>
-                    <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+                    <h2 className="text-sm font-extrabold text-gray-900 dark:text-white md:text-base lg:text-xl">
                         {thisInvoice.invoice_number ? `Invoice #${thisInvoice.invoice_number} Details` : 'New Invoice'}
                     </h2>
                 </div>
@@ -298,24 +298,24 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                     {/* ACTION BUTTONS (TOP) */}
                     <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
                         <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => { window.location.href = '/invoices'; }}
                         >
                             Cancel
                         </button>
                         <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
                         >
-                            Save Invoice
+                            Save
                         </button>
                         {thisInvoice.invoice_number ?
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
                                 onClick={handleDownloadPdf}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'Download PDF'}
+                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
                             </button>
                             : null}
                     </div>
@@ -441,27 +441,26 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         />
                     </div>
 
-                    {/* ACTION BUTTONS (BOTTOM) */}
-                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg shadow-md">
+                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
                         <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => { window.location.href = '/invoices'; }}
                         >
                             Cancel
                         </button>
                         <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
                         >
-                            Save Invoice
+                            Save
                         </button>
                         {thisInvoice.invoice_number ?
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
                                 onClick={handleDownloadPdf}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'Download PDF'}
+                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
                             </button>
                             : null}
                     </div>

@@ -188,16 +188,18 @@ export default function Customer({ auth, updateRoute, customer, invoices, expens
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className='flex justify-between items-center '>
+                <div className='flex flex-col justify-between items-center lg:flex-row'>
                     <h2 className="lg:text-3xl md:text-xl font-extrabold text-gray-900 dark:text-white">
                         Client: {customer.name}
                     </h2>
-                    <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-2 rounded-lg shadow-md transition duration-150 ease-in-out">
-                        <a href={route('invoices-create',[customer.id ])}>+ Invoice</a>
-                    </button>
-                    <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-2 rounded-lg shadow-md transition duration-150 ease-in-out">
-                        <a href={route('expenses-create',[customer.id ])}>+ Expense</a>
-                    </button>
+                    <div className="mt-2 flex justify-end gap-3 items-right">
+                        <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-2 rounded-lg shadow-md transition duration-150 ease-in-out">
+                            <a href={route('invoices-create',[customer.id ])}>+ Invoice</a>
+                        </button>
+                        <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-2 rounded-lg shadow-md transition duration-150 ease-in-out">
+                            <a href={route('expenses-create',[customer.id ])}>+ Expense</a>
+                        </button>
+                    </div>
                 </div>
             }
         >

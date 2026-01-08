@@ -308,7 +308,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
             user={auth.user}
             header={
                 <div className='flex justify-between items-center'>
-                    <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+                    <h2 className="font-extrabold text-gray-900 dark:text-white text-xs md:text-base lg:text-lg">
                         {thisExpense.expense_number ? `Expense #${thisExpense.expense_number} Details` : 'New Expense'}
                     </h2>
                 </div>
@@ -321,20 +321,20 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                     {/* ACTION BUTTONS (TOP) */}
                     <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
                         <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => { window.location.href = '/expenses'; }}
                         >
                             Cancel
                         </button>
                         <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => thisExpense.id ? handelSaveExpense() : handelStoreExpense()}
                         >
-                            Save Expense
+                            Save
                         </button>
                         {hasAttachment && (
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
                                 onClick={() => {
                                             if (thisExpense.id) {
                                                 window.location.href = downloadAttachmentRoute;
@@ -344,7 +344,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                                         }}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                Download Attachment
+                                Download
                             </button>
                             )}
                     </div>
@@ -474,7 +474,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                             Attachment (Secure Storage)
                         </h3>
                         
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center flex-col md:flex-row justify-between gap-4">
                             <div className="flex-1">
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Upload Receipt (PDF or Image)
@@ -535,22 +535,22 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                     </div>
 
                     {/* ACTION BUTTONS (BOTTOM) */}
-                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg shadow-md">
+                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
                         <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => { window.location.href = '/expenses'; }}
                         >
                             Cancel
                         </button>
                         <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4"
+                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                             onClick={() => thisExpense.id ? handelSaveExpense() : handelStoreExpense()}
                         >
-                            Save Expense
+                            Save
                         </button>
-                       {hasAttachment && (
+                        {hasAttachment && (
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
                                 onClick={() => {
                                             if (thisExpense.id) {
                                                 window.location.href = downloadAttachmentRoute;
@@ -560,11 +560,10 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
                                         }}
                                 disabled={pdfBlob && !downloaded}
                             >
-                                Download Attachment
+                                Download
                             </button>
                             )}
                     </div>
-
                 </div>
             </div>
 

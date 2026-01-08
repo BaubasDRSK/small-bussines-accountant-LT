@@ -124,151 +124,132 @@ export default function ProductsList({ products, setProducts, addMessage, allPro
 
     return (
         <div className="w-full">
-            <h3 className="p-6 text-xl font-bold text-blue-600 dark:text-blue-400 border-b border-gray-200 dark:border-gray-700">
+             {/* Title */}
+             <h3 className="p-6 text-base md:text-lg font-bold text-blue-600 dark:text-blue-400 border-b">
                 Invoice Products and Services
             </h3>
 
-            <table className="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                
-                {/* Table Header */}
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" className="px-6 py-3 w-2/12" >
-                            Product / Service
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-4/12" >
-                            Description
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-1/12 text-center" >
-                            Qty
-                        </th>
-                         <th scope="col" className="px-6 py-3 w-2/12 text-right">
-                            Price (€)
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-2/12 text-right" >
-                            Total (€)
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-1/12 text-center" >
-                            Action
-                        </th>
-                    </tr>
-                </thead>
-                
-                {/* Table Body - Product Rows */}
-                <tbody>
-                    {products.length ? (products.map((product) => {
-                        if (!product || product.length < 8) return null; 
+            {/* Header (Desktop Only) */}
+            <div className="hidden md:grid grid-cols-[2fr_4fr_1fr_2fr_2fr_1fr] gap-2 px-6 py-3 text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div>Product / Service</div>
+                <div>Description</div>
+                <div className="text-center">Qty</div>
+                <div className="text-right">Price (€)</div>
+                <div className="text-right">Total (€)</div>
+                <div className="text-center">Action</div>
+            </div>
 
-                        return (
-                            <tr key={product[0]} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition duration-150">
-                                
-                                {/* Product Select */}
-                                <td scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <Select
-                                        unstyled
-                                        options={options}
-                                        value={options.find(opt => opt.value === product[2]) || null}
-                                        onChange={(selectedOption) => handleProductChange(selectedOption.value, product[0])}
-                                        classNames={dropDownClassNames}
-                                    />
-                                </td>
-                                
-                                {/* Description Input (index 4) */}
-                                <td className="px-4 py-3">
-                                    <label className="sr-only" htmlFor={`productDescription-${product[0]}`}>Description</label>
-                                    <textarea 
-                                        rows="2"
-                                        id={`productDescription-${product[0]}`} 
-                                        value={product[4] || ''} 
-                                        onChange={(e) => handleRecordEdit(e, product[0], 4)}
-                                        className={`${inputClass} resize-y min-h-[40px]`}
-                                    />
-                                </td>
-                                
-                                {/* Quantity Input (index 6) */}
-                                <td className={`px-4 py-3`}>
-                                    <label className="sr-only" htmlFor={`productQuantity-${product[0]}`}>Quantity</label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        id={`productQuantity-${product[0]}`}
-                                        value={product[6] || 1}
-                                        className={`${inputClass} text-center`}
-                                        onChange={(e) => handleRecordEdit(e, product[0], 6)}
-                                        onFocus={(e) => e.target.select()}
-                                    />
-                                </td>
+            {/* Rows */}
+            <div className="divide-y dark:divide-gray-700">
 
-                                {/* Price Input (index 5) - FIX APPLIED HERE */}
-                                <td className={`px-4 py-3`}>
-                                    <div className="relative">
-                                        <label className="sr-only" htmlFor={`productPrice-${product[0]}`}>Price</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            id={`productPrice-${product[0]}`}
-                                            // FIX: Removed .toFixed(2) so the user can freely type decimals
-                                            value={product[5] / 100} 
-                                            className={`${inputClass} pr-8 text-right`}
-                                            onChange={(e) => handleRecordEdit(e, product[0], 5)}
-                                            onFocus={(e) => e.target.select()}
-                                        />
-                                        <span className="pointer-events-none absolute inset-y-0 end-0 grid w-8 place-content-center text-gray-500 dark:text-gray-400"> € </span>
-                                    </div>
-                                </td>
+                {products.length ? (
+                products.map((product) => {
+                    if (!product || product.length < 8) return null
 
-                                
-                                {/* Total Display (index 7) */}
-                                <td className={`px-6 py-3 text-right font-semibold`}>
-                                    {(product[7] / 100).toFixed(2)}{" €"}
-                                </td>
-                                
-                                {/* Action Button */}
-                                <td className={`px-4 py-3 text-center`}>
-                                    <button
-                                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-600 transition duration-150"
-                                        onClick={() => handleRemoveProduct(product[0])}
-                                        title="Remove Product"
-                                    >
-                                        <TrashIcon className="w-5 h-5 mx-auto" />
-                                    </button>
-                                </td>
+                    return (
+                    <div
+                        key={product[0]}
+                        className="grid md:grid-cols-[2fr_4fr_1fr_2fr_2fr_1fr] gap-4 px-4 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                    >
 
-                            </tr>
-                        )
-                    })) : (
-                        <tr>
-                            <td colSpan="6" className="px-6 py-6 text-center text-base italic font-medium text-gray-500 dark:text-gray-400">
-                                No products added to the invoice. Click 'Add Product' below.
-                            </td>
-                        </tr>
-                    )}
+                        {/* Product */}
+                        <div>
+                        <span className="md:hidden text-xs text-gray-500">Product</span>
+                        <Select
+                            unstyled
+                            options={options}
+                            value={options.find(opt => opt.value === product[2]) || null}
+                            onChange={(opt) => handleProductChange(opt.value, product[0])}
+                            classNames={dropDownClassNames}
+                        />
+                        </div>
 
-                </tbody>
-                
-                {/* Table Footer - Total and Add Button */}
-                <tfoot>
-                    <tr>
-                        <td colSpan="3" className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border-t dark:border-gray-600">
-                            <button 
-                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg shadow-md flex items-center transition duration-150"
-                                onClick={handleAddProduct}
-                            >
-                                <PlusIcon className="w-5 h-5 mr-2" /> Add New Product
-                            </button>
-                        </td>
-                        
-                        <td colSpan="3" className="px-6 py-4 text-right text-base font-bold bg-gray-100 dark:bg-gray-700 border-t dark:border-gray-600">
-                            <div className="flex justify-end items-center">
-                                <span className="text-gray-700 dark:text-gray-300 mr-4">INVOICE TOTAL:</span>
-                                <span className="text-xl text-blue-600 dark:text-blue-400">
-                                    {(invoiceTotal / 100).toFixed(2)}{" €"}
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                        {/* Description */}
+                        <div>
+                        <span className="md:hidden text-xs text-gray-500">Description</span>
+                        <textarea
+                            rows="2"
+                            value={product[4] || ''}
+                            onChange={(e) => handleRecordEdit(e, product[0], 4)}
+                            className={`${inputClass} resize-y`}
+                        />
+                        </div>
+
+                        {/* Quantity */}
+                        <div>
+                        <span className="md:hidden text-xs text-gray-500">Qty</span>
+                        <input
+                            type="number"
+                            min="1"
+                            value={product[6] || 1}
+                            className={`${inputClass} text-center`}
+                            onChange={(e) => handleRecordEdit(e, product[0], 6)}
+                            onFocus={(e) => e.target.select()}
+                        />
+                        </div>
+
+                        {/* Price */}
+                        <div>
+                        <span className="md:hidden text-xs text-gray-500">Price (€)</span>
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={product[5] / 100}
+                            className={`${inputClass} text-right`}
+                            onChange={(e) => handleRecordEdit(e, product[0], 5)}
+                            onFocus={(e) => e.target.select()}
+                        />
+                        </div>
+
+                        {/* Total */}
+                        <div className="font-semibold text-right text-black dark:text-white">
+                        <span className="md:hidden text-xs text-black dark:text-white block">Total (€)</span>
+                        {(product[7] / 100).toFixed(2)} €
+                        </div>
+
+                        {/* Action */}
+                        <div className="flex justify-end md:justify-center items-center">
+                        <button
+                            onClick={() => handleRemoveProduct(product[0])}
+                            className="text-red-500 hover:text-red-700 dark:text-red-400"
+                            title="Remove Product"
+                        >
+                            <TrashIcon className="w-5 h-5" />
+                        </button>
+                        </div>
+
+                    </div>
+                    )
+                })
+                ) : (
+                <div className="px-6 py-6 text-center text-base italic font-medium text-gray-500 dark:text-gray-400">
+                    No products added to the invoice. Click 'Add Product' below.
+                </div>
+                )}
+
+            </div>
+
+            {/* Footer */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 bg-gray-100 dark:bg-gray-700 border-t dark:border-gray-600">
+
+                <button
+                onClick={handleAddProduct}
+                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg shadow-md flex items-center transition"
+                >
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Add New Product
+                </button>
+
+                <div className="flex items-center text-base font-bold">
+                <span className="mr-4 text-gray-700 dark:text-gray-300">
+                    INVOICE TOTAL:
+                </span>
+                <span className="text-xl text-blue-600 dark:text-blue-400">
+                    {(invoiceTotal / 100).toFixed(2)} €
+                </span>
+                </div>
+
+            </div>
 
             {/* Modal is kept here but is not used in this version */}
             <ModalYesCancel
