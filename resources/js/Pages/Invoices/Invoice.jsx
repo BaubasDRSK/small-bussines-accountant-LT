@@ -188,7 +188,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     };
     
     // Re-use save function for field updates
-    const updateField = handelSaveInvoice;
+    const updateField = () => {};;
 
     const handelStoreInvoice = () => {
         const fullInvoice = thisInvoice;

@@ -198,9 +198,7 @@ export default function Expense({ auth, updateRoute, expense, updateExpenseRoute
     
     // Re-use save function for field updates
     // const updateField = handelSaveExpense;
-    const updateField = () => {
-        console.log("aaa aaaa");
-    }
+    const updateField = () => {};
 
     const handelStoreExpense = () => {
         const formData = new FormData();

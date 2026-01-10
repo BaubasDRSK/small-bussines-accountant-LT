@@ -6,6 +6,7 @@ import Messages from './components/messages';
 import { v4 as uuidv4 } from 'uuid';
 import ModalYesCancel from './components/modalYesCancel';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid'; // Assuming you have Heroicons installed
+import { data } from "autoprefixer";
 
 export default function Settings({ auth, newlist, updateExpenseRoute }) {
 
@@ -79,8 +80,21 @@ export default function Settings({ auth, newlist, updateExpenseRoute }) {
         e.stopPropagation();
         // The modal handler will update the state locally before calling this
         const updatedExpense = { ...expense, paid: expense.paid ? 0 : 1 };
+        const dataToSend = {
+            ...updatedExpense,
+            customer: [
+                expense.customer.id,
+                expense.customer.name,
+                expense.customer.code,
+                expense.customer.vat_code,
+                expense.customer.street,
+                expense.customer.city,
+                expense.customer.country,
+                expense.customer.zip ?? null
+            ]
+        };
         const formData = new FormData();
-        formData.append('fullExpense', JSON.stringify(updatedExpense));
+        formData.append('fullExpense', JSON.stringify(dataToSend));
         
         axios.post(updateExpenseRoute, formData)
             .then(res => {
@@ -301,6 +315,7 @@ export default function Settings({ auth, newlist, updateExpenseRoute }) {
                                                             e.stopPropagation();
                                                             setModalStatus(true);
                                                             setModalItem(item);
+                                                            console.log(item);
                                                             setModalTitle('Confirm Paid Status Change');
                                                             setModalAction(() => [handlePaidStatusChange, e]);
                                                             setModalMessage(`Are you sure you want to change paid status for expense ${item.expense_number}?`);
