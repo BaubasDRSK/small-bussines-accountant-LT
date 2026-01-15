@@ -46,7 +46,7 @@ Route::prefix('customers')->middleware(['auth', 'verified'])->name('customers-')
     Route::get('/show/{customer}', [CustomerController::class,'show'])->name('show');
     Route::post('/update/{customer}', [CustomerController::class, 'update'])->name('update');
     Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
-
+    Route::get('/get/{code}', [CustomerController::class, 'getCustomer'])->name('getCustomer');
 
 });
 

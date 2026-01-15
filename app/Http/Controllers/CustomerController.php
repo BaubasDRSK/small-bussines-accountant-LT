@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Repositories\CustomerRepository;
+use Illuminate\Support\Facades\Http;
 
 
 class CustomerController extends Controller
@@ -136,5 +137,22 @@ class CustomerController extends Controller
             ],
             201
         );
+    }
+
+    public function getCustomer($code)
+    {
+         $response = Http::withHeaders([
+            'x-api-key' => config('services.jarsKey'),
+        ])->get("https://api.jars.lt/api/v1/companies/{$code}");
+
+        if (!$response->ok()) {
+            return response()->json([
+                'message' => 'Company not found',
+                'code' => $code,
+                'api' => config('services.jars.key'),
+            ], 404);
+        }
+
+        return $response->json();
     }
 }

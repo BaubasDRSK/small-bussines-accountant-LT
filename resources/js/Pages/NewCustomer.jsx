@@ -78,7 +78,10 @@ export default function Settings({ auth, storeRoute }) {
 
     const [newClient, setNewClient] = useState(initialClientState);
 
-    // ... (rest of addMessage, handleUpdateValue, and store functions)
+    //jars api imones duomenys
+    const [jarsData, setJarsData] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [loadingJars, setLoadingJars] = useState(false);
 
     const addMessage = (text, type) => {
         const uuid = uuidv4();
@@ -125,6 +128,59 @@ export default function Settings({ auth, storeRoute }) {
             });
     };
 
+
+    const checkCompanyOnline = () => {
+        console.log(newClient.code);
+        if (!newClient.code) {
+            addMessage('Please enter company code first', 'danger');
+            return;
+        }
+
+        setLoadingJars(true);
+
+        axios.get(`/customers/get/${newClient.code}`)
+            .then(res => {
+                setJarsData(res.data);
+                setShowConfirmModal(true);
+               
+            })
+            .catch(() => {
+                addMessage('Company not found in registry', 'danger');
+            })
+            .finally(() => {
+                setLoadingJars(false);
+            });
+    };
+
+    const applyJarsData = () => {
+        if (!jarsData) return;
+
+         const addressParts = jarsData.address
+            ? jarsData.address.split(',').map(part => part.trim())
+            : [];
+
+        const city = addressParts[0] || '';
+        const street = addressParts[1] || '';
+        const zip = addressParts[2] || '';
+        const name = jarsData.name.replace(/^(.+?)\s+"(.+)"$/, '$2, $1') || '';
+
+        setNewClient(prevClient => ({
+            ...prevClient,
+            name: name,
+            code: jarsData.code || '',
+            vat_code: jarsData.pvmRegistered ? jarsData.pvmCode || '' : '',
+            city: city,
+            street: street,
+            country: jarsData.country || 'Lietuva',
+            zip: zip
+
+        }));
+        setShowConfirmModal(false);
+
+        addMessage('Company details applied', 'success');
+    };
+
+
     return (
         // ... (your JSX rendering)
         <AuthenticatedLayout
@@ -162,22 +218,30 @@ export default function Settings({ auth, storeRoute }) {
                         </h3>
 
                         <div className="flex flex-col md:flex-row flex-wrap gap-x-8 gap-y-6 justify-between w-full">
-                            
-                            {/* === Column 1: Company Details === */}
-                            <div className='w-full md:w-[calc(33%-1rem)] min-w-[300px]'>
-                                <h4 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">
-                                    General Information
-                                </h4>
-                                {companyDetails.map((item) => (
-                                    <InputField
-                                        key={item[0]}
-                                        id={item[0]}
-                                        label={item[1]}
-                                        value={newClient[item[0]]}
-                                        onChange={handleUpdateValue}
-                                    />
-                                ))}
-                            </div>
+                        <div className="w-full md:w-[calc(33%-1rem)] min-w-[300px]">
+                            <h4 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">
+                                General Information
+                            </h4>
+                            {companyDetails.map((item) => (
+                                <div key={item[0]}>
+                                <InputField
+                                    id={item[0]}
+                                    label={item[1]}
+                                    value={newClient[item[0]]}
+                                    onChange={handleUpdateValue}
+                                />
+                                {item[0] === 'code' && (
+                                     <button
+                                        onClick={checkCompanyOnline}
+                                        disabled={loadingJars}
+                                        className="px-3 py-1 text-sm rounded-md bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+                                    >
+                                        {loadingJars ? 'Checking...' : 'Check online'}
+                                    </button>
+                                )}
+                                </div>
+                            ))}
+                        </div>
 
                             {/* === Column 2: Address Details === */}
                             <div className='w-full md:w-[calc(33%-1rem)] min-w-[300px]'>
@@ -244,7 +308,39 @@ export default function Settings({ auth, storeRoute }) {
                     </div>
                 </div>
             </div>
-            
+            {showConfirmModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6">
+                        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+                            Confirm company data
+                        </h3>
+
+                        <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                            <p><strong>Name:</strong> {jarsData?.name}</p>
+                            <p><strong>VAT:</strong> {jarsData?.pvmCode}</p>
+                            <p><strong>Address:</strong> {jarsData?.address}</p>
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button
+                                onClick={() => setShowConfirmModal(false)}
+                                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={applyJarsData}
+                                className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white"
+                            >
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}      
+
+
             <Messages
                 messages={messages}
             />
