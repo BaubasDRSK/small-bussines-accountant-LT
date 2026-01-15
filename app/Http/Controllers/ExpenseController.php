@@ -212,11 +212,8 @@ class ExpenseController extends Controller
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('expenses', 'private');
             $expense->attachment_path = $path;
-        } else {
-            $expense->attachment_path = null;
         }
-
-
+        
         $expense->save();
         return response()->json(
             [
