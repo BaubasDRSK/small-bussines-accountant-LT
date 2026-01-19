@@ -145,7 +145,7 @@ const formatDate = (dateValue) => {
     return d.toISOString().split('T')[0];
 };
 
-function amountToWordsLT(amount, currency = "eurai") {
+function amountToWordsLT(amount) {
     const ones = [
       "", "vienas", "du", "trys", "keturi", "penki",
       "šeši", "septyni", "aštuoni", "devyni"
@@ -153,13 +153,14 @@ function amountToWordsLT(amount, currency = "eurai") {
   
     const teens = [
       "dešimt", "vienuolika", "dvylika", "trylika", "keturiolika",
-      "penkiolika", "šešiolika", "septyniolika", "aštuoniolika", "devyniolika"
+      "penkiolika", "šešiolika", "septyniolika",
+      "aštuoniolika", "devyniolika"
     ];
   
     const tens = [
       "", "", "dvidešimt", "trisdešimt", "keturiasdešimt",
-      "penkiasdešimt", "šešiasdešimt", "septyniasdešimt",
-      "aštuoniasdešimt", "devyniasdešimt"
+      "penkiasdešimt", "šešiasdešimt",
+      "septyniasdešimt", "aštuoniasdešimt", "devyniasdešimt"
     ];
   
     const hundreds = [
@@ -170,52 +171,70 @@ function amountToWordsLT(amount, currency = "eurai") {
   
     function convertHundreds(num) {
       let result = "";
+  
       if (num >= 100) {
         result += hundreds[Math.floor(num / 100)] + " ";
         num %= 100;
       }
+  
       if (num >= 20) {
         result += tens[Math.floor(num / 10)] + " ";
         num %= 10;
       }
+  
       if (num >= 10) {
         result += teens[num - 10] + " ";
-        num = 0;
+        return result.trim();
       }
+  
       if (num > 0) {
         result += ones[num] + " ";
       }
+  
       return result.trim();
     }
   
-    function getThousandsWord(n) {
-      if (n === 1) return "tūkstantis";
-      if (n >= 2 && n <= 9) return "tūkstančiai";
+    function thousandForm(n) {
+      if (n % 10 === 1 && n % 100 !== 11) return "tūkstantis";
+      if (n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 10 || n % 100 >= 20))
+        return "tūkstančiai";
       return "tūkstančių";
     }
   
-    let [euros, cents] = Number(amount).toFixed(2).split(".");
-    euros = parseInt(euros, 10);
+    function euroForm(n) {
+      if (n % 10 === 1 && n % 100 !== 11) return "euras";
+      if (n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 10 || n % 100 >= 20))
+        return "eurai";
+      return "eurų";
+    }
+  
+    let [eur, ct] = Number(amount).toFixed(2).split(".");
+    eur = parseInt(eur, 10);
   
     let words = "";
   
-    if (euros === 0) {
+    if (eur === 0) {
       words = "nulis";
     } else {
-      const thousands = Math.floor(euros / 1000);
-      const remainder = euros % 1000;
+      const thousands = Math.floor(eur / 1000);
+      const rest = eur % 1000;
   
       if (thousands > 0) {
-        words += convertHundreds(thousands) + " " + getThousandsWord(thousands) + " ";
+        words +=
+          convertHundreds(thousands) +
+          " " +
+          thousandForm(thousands) +
+          " ";
       }
   
-      if (remainder > 0) {
-        words += convertHundreds(remainder);
+      if (rest > 0) {
+        words += convertHundreds(rest);
       }
     }
   
-    return `${words.trim()} ${currency} ${cents} ct`;
+    return `${words.trim()} ${euroForm(eur)} ${ct} ct €`;
   }
+  
 
 const Invoicepdf = ({ invoice, company }) => {
     return (
@@ -301,7 +320,7 @@ const Invoicepdf = ({ invoice, company }) => {
                 <View >
                     <View style={styles.amountInWords}>
                             <Text >Suma žodžiais:  </Text>
-                            <Text >{amountToWordsLT(((invoice?.total || 0) / 100).toFixed(2))} €</Text>
+                            <Text >{amountToWordsLT(((invoice?.total || 0) / 100).toFixed(2))}</Text>
                     </View>
                 </View>
 
