@@ -9,6 +9,7 @@ import Select from 'react-select';
 import Datepicker from "react-tailwindcss-datepicker";
 import { Page, Text, Document, PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import Invoicepdf from '../components/invoicePDF';
+import CashOrderPDF from "../components/cashOrderPDF";
 import saveAs from 'file-saver';
 // 👇 ADDED IMPORTS FOR STYLE CONSISTENCY (Heroicons)
 import { PencilSquareIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
@@ -280,6 +281,22 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         setDownloaded(true);
     };
 
+    const handleDownloadCashOrder = async () => {
+        setDownloaded(false);
+        console.log(thisInvoice);
+        console.log(company);
+        // 1. Create the PDF instance
+        const doc = <CashOrderPDF invoice={thisInvoice} company={company} />;
+        
+        // 2. Generate the blob
+        const blob = await pdf(doc).toBlob();
+        
+        // 3. Trigger the download (using file-saver or a manual link)
+        saveAs(blob, `CashOrder_${thisInvoice.invoice_number}.pdf`);
+        
+        setDownloaded(true);
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -318,6 +335,13 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
                             </button>
                             : null}
+                        <button
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
+                                onClick={handleDownloadCashOrder}
+                                disabled={pdfBlob && !downloaded}
+                            >
+                                {pdfBlob && !downloaded ? 'Generating ...' : 'Cash reciept'}
+                            </button>
                     </div>
 
                     {/* Invoice Meta and Dates Section */}
