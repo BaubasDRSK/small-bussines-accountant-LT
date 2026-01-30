@@ -328,19 +328,19 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         </button>
                         {thisInvoice.invoice_number ?
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
                                 onClick={handleDownloadPdf}
                                 disabled={pdfBlob && !downloaded}
                             >
                                 {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
                             </button>
                             : null}
-                        <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
-                                onClick={handleDownloadCashOrder}
-                                disabled={pdfBlob && !downloaded}
-                            >
-                                {pdfBlob && !downloaded ? 'Generating ...' : 'Cash reciept'}
+                            <button
+                                    className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
+                                    onClick={handleDownloadCashOrder}
+                                    disabled={pdfBlob && !downloaded}
+                                >
+                                    {pdfBlob && !downloaded ? 'Generating ...' : 'Cash Ord.'}
                             </button>
                     </div>
 

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Roboto',
-    fontSize: 9,
+    fontSize: 10,
     color: '#000',
   },
 
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 6,
+    alignSelf: 'center',
   },
 
   field: {
@@ -67,6 +68,8 @@ const styles = StyleSheet.create({
 
   signatures: {
     marginTop: 18,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
 
   signLine: {
@@ -83,21 +86,28 @@ const formatDateLT = (date) => {
 };
 
 
+const today = new Date();
+const formattedDate = `${today.getFullYear()} ${String(
+    today.getMonth() + 1
+  ).padStart(2, '0')} ${String(today.getDate()).padStart(2, '0')}`;
+
 const ReceiptBlock = ({ invoice, company }) => {
   const amount = ((invoice.total || 0) / 100).toFixed(2);
-
+  const eurosCents = amount.split('.');
   return (
     <View style={styles.invoice}>
       {/* Seller */}
       <View style={styles.seller}>
-        <Text>{company.name}, {company.address}</Text>
-        <Text style={styles.small}>
+        <Text style={{fontWeight: 'bold', width: '100%', textAlign: 'center'}}>{company.name}, {company.street},  {company.city},  {company.country}</Text>
+        <Text style={[styles.signLine, { width: '70%',  alignSelf: 'center', textAlign: 'center'}]} />
+        <Text style={[styles.small, { width: '70%', alignSelf: 'center', textAlign: 'center'}]}>
           (prekes / paslaugas parduodantis ūkio subjektas)
         </Text>
-        <Text style={{ marginTop: 4 }}>
-          {company.activity_code}
+        <Text style={{fontWeight: 'bold', fontsize:14, marginTop: 4, width: '50%',  alignSelf: 'center', textAlign: 'center' }}>
+          {company.code}
         </Text>
-        <Text style={styles.small}>(Indv. veiklos pažyma)</Text>
+        <Text style={[styles.signLine, { width: '50%',  alignSelf: 'center', textAlign: 'center'}]} />
+        <Text style={[styles.small, { width: '50%',  alignSelf: 'center', textAlign: 'center'}]}>(Indv. veiklos pažyma)</Text>
       </View>
 
       {/* Title */}
@@ -105,45 +115,49 @@ const ReceiptBlock = ({ invoice, company }) => {
 
       {/* Series & date */}
       <View style={styles.row}>
-        <Text>
-          Serija {invoice.series} Nr. {invoice.number}
+        <Text style={{ fontWeight: 'bold' }}>
+          Serija/Nr. <Text style={{fontWeight: 'bold', fontSize: 18}}>{invoice.invoice_number}</Text>
         </Text>
-        <Text>{formatDateLT(invoice.date)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text>{formattedDate}</Text>  
       </View>
 
       {/* Reason */}
       <View style={styles.field}>
-        <Text>Sumokėti už</Text>
+        <Text>Sumokėti už: <Text style={{ fontWeight: 'bold' }}> prekes ar paslaugas pagal SF {invoice.invoice_number}</Text></Text>
         <Text style={styles.underline}>{invoice.reason}</Text>
-        <Text style={styles.small}>
+        <Text style={[styles.small, {alignSelf:"center"}]}>
           (prekių / paslaugų pavadinimai, kiekiai, matavimo vienetai, vieneto kaina)
         </Text>
       </View>
 
+      <View style={{ marginBottom: "25px" }}>
+       
+      </View>
+
       {/* Amount */}
-      <View style={styles.amountRow}>
+      <View style={styles.row}>
         <Text>
-          Sumokėta suma {amountToWordsLT(amount)}
-        </Text>
-        <Text>
-          {amount} EUR
+          Sumokėta suma: <Text style={{ fontWeight: 'bold' }}> {amountToWordsLT(amount)}  |  {eurosCents[0]} Eur, {eurosCents[1]} ct.</Text>
         </Text>
       </View>
 
       {/* Signatures */}
       <View style={styles.signatures}>
-        <Text>Sumokėjau</Text>
+        <Text>Sumokėjau:  </Text>
         <View style={styles.signLine} />
-        <Text style={styles.small}>
-          (parašas, pirkėjo vardas, pavardė)
-        </Text>
-
-        <Text style={{ marginTop: 10 }}>
-          Pinigus gavau {company.name}
-        </Text>
-        <View style={styles.signLine} />
-        <Text style={styles.small}>(parašas)</Text>
       </View>
+      <Text style={[styles.small, {alignSelf:"center"}]}>
+          (parašas, vardas, pavardė)
+      </Text>
+      <View style={styles.signatures}>
+        <Text style={{ marginTop: 10 }}>
+          Pinigus gavau:  
+        </Text>
+        <View style={styles.signLine} />
+      </View>
+      <Text style={[styles.small, {alignSelf:"center"}]}>( (parašas, vardas, pavardė))</Text>
     </View>
   );
 };
