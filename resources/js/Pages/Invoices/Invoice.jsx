@@ -346,7 +346,13 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                          {thisInvoice.registered === false && (
                             <button
                                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
-                                onClick={() =>{ handelSaveInvoice(); handleRegisterInvoice();}}
+                                onClick={() =>{ 
+                                    setThisInvoice(prevInvoice => ({
+                                        ...prevInvoice,    // Copy all existing properties (invoice_number, date, etc.)
+                                        editable: false    // Override ONLY the editable property
+                                    }));
+                                    handelSaveInvoice(); 
+                                    handleRegisterInvoice();}}
                             >
                                 Register
                             </button>
