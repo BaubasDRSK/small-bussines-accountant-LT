@@ -11,12 +11,23 @@ class InvoiceNumberGenerator
     {
         return DB::transaction(function () use ($key) {
 
-            // Lock the row so no other process can read/update it
-            $sequence = InvoiceSequence::lockForUpdate()
+            if ($key === 'default') {
+                $sequence = InvoiceSequence::lockForUpdate()
                 ->firstOrCreate(
                     ['key' => $key],
                     ['last_number' => config('invoice.start_number') - 1]
-                );
+                ); 
+            }
+
+             if ($key === 'proforma') {
+                $sequence = InvoiceSequence::lockForUpdate()
+                ->firstOrCreate(
+                    ['key' => $key],
+                    ['last_number' => config('invoice.proforma_start_number') - 1]
+                ); 
+            }
+
+            
 
             // Increment number
             $nextNumber = $sequence->last_number + 1;
@@ -28,6 +39,10 @@ class InvoiceNumberGenerator
 
             // Read config values
             $prefix  = config('invoice.prefix');
+
+            if ($key === 'proforma') {
+                $prefix = 'IŠANKSTINĖ '.$prefix;
+            }
             $padding = config('invoice.padding');
 
             // Format invoice number

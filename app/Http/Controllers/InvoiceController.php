@@ -122,19 +122,7 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        // $lastInvoice = Invoice::select('invoice_number')
-        // ->orderBy('invoice_number', 'desc')
-        // ->first();
-
-        // if ($lastInvoice) {
-        //     $lastInvoiceNumber = $lastInvoice->invoice_number;
-        //     $lastInvoiceNumber = str_replace('PSF-', '', $lastInvoiceNumber);
-        //     $lastInvoiceNumber = (int)$lastInvoiceNumber;
-        // } else {
-        //     // If there are no previous invoices, start from a specific number, e.g., 0.
-        //     $lastInvoiceNumber = 0;
-        // }
-        $nextInvoiceNumber = InvoiceNumberGenerator::next();
+        $nextInvoiceNumber = InvoiceNumberGenerator::next('proforma');
         $fullInvoice =$request->input('fullInvoice');
         $invoice = new Invoice();
 
@@ -150,6 +138,10 @@ class InvoiceController extends Controller
         $invoice->invoice_due_date = $duedate->format('Y-m-d');
         $invoice->paid = $fullInvoice['paid'];
         $invoice->notes = $fullInvoice['notes'];
+        $invoice->registered = false;
+        $invoice->editable = true;
+        $invoice->cash_order = [];
+    
 
 
         $invoice->save();
@@ -178,6 +170,7 @@ class InvoiceController extends Controller
             'updateRoute' => route('customers-update', ['customer' => $actualInvoice->id]),
             'invoice' => $actualInvoice,
             'updateInvoiceRoute' => route('invoices-update'),
+            'registerInvoiceRoute' => route('invoices-register'),
             'allProducts' => $products,
             'allCustomers' => $customers,
             'company' => $company,
@@ -219,6 +212,28 @@ class InvoiceController extends Controller
         return response()->json(
             [
                 'message' => 'Invoice status updated successfully',
+                'type' => 'success',
+            ],
+            201
+        );
+    }
+
+
+     public function register(Request $request, Invoice $invoice)
+    {
+        $fullInvoice =$request->input('fullInvoice');
+        $nextInvoiceNumber = InvoiceNumberGenerator::next('default');
+        $invoice = Invoice::find($fullInvoice['id']);
+        $invoice->registered = true;
+        $invoice->editable = false;
+        $invoice->invoice_number = $nextInvoiceNumber;
+
+
+        $invoice->save();
+        return response()->json(
+            [
+                'registered_invoice' => $invoice,
+                'message' => 'Invoice registered successfully',
                 'type' => 'success',
             ],
             201

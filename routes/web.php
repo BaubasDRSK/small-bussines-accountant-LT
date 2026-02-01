@@ -55,6 +55,7 @@ Route::prefix('invoices')->middleware(['auth', 'verified'])->name('invoices-')->
     Route::get('/',[InvoiceController::class, 'index'])->name('index');
     Route::post('/list', [InvoiceController::class,'list'])->name('list');
     Route::post('/update', [InvoiceController::class,'update'])->name('update');
+    Route::post('/register', [InvoiceController::class,'register'])->name('register');
     Route::get('/show/{invoice}', [InvoiceController::class,'show'])->name('show');
     Route::get('/dashboard', [InvoiceController::class, 'dashboard'])->name('dashboard');
     Route::get('/new/{invoice}', [InvoiceController::class, 'create'])->name('create');

@@ -92,8 +92,7 @@ const EditableField = ({ label, value, stateKey, isEditing, setEditState, setVal
 // -------------------------------------------------------------------------
 
 
-export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, allProducts, allCustomers, storeRoute, company }) {
-
+export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, registerInvoiceRoute, allProducts, allCustomers, storeRoute, company }) {
     // Initialize state with props or defaults
     const [thisInvoice, setThisInvoice] = useState(invoice ?? null);
     const [invoiceDate, setInvoiceDate] = useState({
@@ -185,6 +184,22 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
             .catch(e => {
                 console.error("Error saving invoice:", e);
                 addMessage('Failed to save invoice.', 'danger');
+            });
+    };
+
+    const handleRegisterInvoice = () => {
+        const fullInvoice = thisInvoice;
+
+        axios.post(registerInvoiceRoute, { fullInvoice })
+            .then(res => {
+                if (res.status === 200 || res.status === 201) {
+                    addMessage(res.data.message, res.data.type);
+                    setThisInvoice(res.data.registered_invoice);
+                }
+            })
+            .catch(e => {
+                console.error("Error registering invoice:", e);
+                addMessage('Failed to register invoice.', 'danger');
             });
     };
     
@@ -320,12 +335,22 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         >
                             Cancel
                         </button>
-                        <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
-                            onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
-                        >
-                            Save
-                        </button>
+                        {(thisInvoice.editable || !thisInvoice.invoice_number) && (
+                            <button
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                                onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
+                            >
+                                Save
+                            </button>
+                         )}   
+                         {thisInvoice.registered === false && (
+                            <button
+                                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                                onClick={() =>{ handelSaveInvoice(); handleRegisterInvoice();}}
+                            >
+                                Register
+                            </button>
+                        )}
                         {thisInvoice.invoice_number ?
                             <button
                                 className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
@@ -335,6 +360,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
                             </button>
                             : null}
+                         {thisInvoice.invoice_number ?
                             <button
                                     className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
                                     onClick={handleDownloadCashOrder}
@@ -342,6 +368,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 >
                                     {pdfBlob && !downloaded ? 'Generating ...' : 'Cash Ord.'}
                             </button>
+                            : null}
                     </div>
 
                     {/* Invoice Meta and Dates Section */}
