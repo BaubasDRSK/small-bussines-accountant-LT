@@ -92,7 +92,7 @@ const EditableField = ({ label, value, stateKey, isEditing, setEditState, setVal
 // -------------------------------------------------------------------------
 
 
-export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, registerInvoiceRoute, allProducts, allCustomers, storeRoute, company }) {
+export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute, registerInvoiceRoute, cashOrderRoute, allProducts, allCustomers, storeRoute, company }) {
     // Initialize state with props or defaults
     const [thisInvoice, setThisInvoice] = useState(invoice ?? null);
     const [invoiceDate, setInvoiceDate] = useState({
@@ -282,8 +282,6 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
 
     const handleDownloadPdf = async () => {
         setDownloaded(false);
-        console.log(thisInvoice);
-        console.log(company);
         // 1. Create the PDF instance
         const doc = <Invoicepdf invoice={thisInvoice} company={company} />;
         
@@ -298,18 +296,33 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
 
     const handleDownloadCashOrder = async () => {
         setDownloaded(false);
-        console.log(thisInvoice);
-        console.log(company);
-        // 1. Create the PDF instance
-        const doc = <CashOrderPDF invoice={thisInvoice} company={company} />;
-        
-        // 2. Generate the blob
-        const blob = await pdf(doc).toBlob();
-        
-        // 3. Trigger the download (using file-saver or a manual link)
-        saveAs(blob, `CashOrder_${thisInvoice.invoice_number}.pdf`);
-        
-        setDownloaded(true);
+        try {
+            const fullInvoice = thisInvoice;
+    
+            // 1. Wait for the server response
+            const res = await axios.post(cashOrderRoute, { fullInvoice });
+    
+            if (res.status === 200 || res.status === 201) {
+                addMessage(res.data.message, res.data.type);
+                
+                // 2. Update state for the UI
+                const updatedInvoice = res.data.cash_order;
+                console.log(updatedInvoice);
+                setThisInvoice(updatedInvoice);
+    
+                // 3. Use the fresh data directly (don't wait for state)
+                const doc = <CashOrderPDF invoice={updatedInvoice} company={company} />;
+                
+                const blob = await pdf(doc).toBlob();
+                saveAs(blob, `CashOrder_${updatedInvoice.invoice_number}.pdf`);
+                
+                setDownloaded(true);
+            }
+        } catch (e) {
+            console.error("Error registering cash order:", e);
+            addMessage('Failed to register cash order.', 'danger');
+            setDownloaded(true); // Reset even on failure
+        }
     };
 
     return (

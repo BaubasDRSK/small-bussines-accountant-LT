@@ -160,7 +160,9 @@ const Invoicepdf = ({ invoice, company }) => {
                         />
                     </View>
                     <View style={styles.invoiceMeta}>
-                        <Text style={styles.invoiceTitle}>SĄSKAITA</Text>
+                        <Text style={styles.invoiceTitle}>
+                            {invoice.registered ? "SĄSKAITA" : "IŠANKSTINĖ SĄSKAITA"}
+                        </Text>
                         <Text style={{ fontWeight: 700, fontSize: 16 }}>
                             Serija ir nr.: {' '}{String(invoice?.invoice_number || '')}
                         </Text>

@@ -27,6 +27,14 @@ class InvoiceNumberGenerator
                 ); 
             }
 
+            if ($key === 'cash_order') {
+                $sequence = InvoiceSequence::lockForUpdate()
+                ->firstOrCreate(
+                    ['key' => $key],
+                    ['last_number' => config('invoice.cash_order_start_number') - 1]
+                ); 
+            }
+
             
 
             // Increment number
@@ -41,7 +49,11 @@ class InvoiceNumberGenerator
             $prefix  = config('invoice.prefix');
 
             if ($key === 'proforma') {
-                $prefix = 'IŠANKSTINĖ '.$prefix;
+                $prefix = 'PRO-FORMA- '.$prefix;
+            }
+
+            if ($key === 'cash_order') {
+                $prefix = 'PPK';
             }
             $padding = config('invoice.padding');
 

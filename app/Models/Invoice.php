@@ -15,7 +15,6 @@ class Invoice extends Model
         'customer' => 'array',
         'products' => 'array',
         'registered' => 'boolean',
-        'cash_order' => 'array',
         'editable' => 'boolean',
     ];
 

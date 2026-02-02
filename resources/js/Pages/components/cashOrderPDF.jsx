@@ -116,7 +116,7 @@ const ReceiptBlock = ({ invoice, company }) => {
       {/* Series & date */}
       <View style={styles.row}>
         <Text style={{ fontWeight: 'bold' }}>
-          Serija/Nr. <Text style={{fontWeight: 'bold', fontSize: 18}}>{invoice.invoice_number}</Text>
+          Serija/Nr. <Text style={{fontWeight: 'bold', fontSize: 18}}>{invoice.cash_order}</Text>
         </Text>
       </View>
       <View style={styles.row}>
@@ -125,7 +125,11 @@ const ReceiptBlock = ({ invoice, company }) => {
 
       {/* Reason */}
       <View style={styles.field}>
-        <Text>Sumokėti už: <Text style={{ fontWeight: 'bold' }}> prekes ar paslaugas pagal SF {invoice.invoice_number}</Text></Text>
+        <Text>Sumokėti už: 
+            <Text style={{ fontWeight: 'bold' }}> 
+              {invoice.registered ? "prekes ar paslaugas pagal saskaitą  "  : "prekes ar paslaugas pagal išankstinę sąskaitą  "}{invoice.invoice_number}
+            </Text>
+          </Text>
         <Text style={styles.underline}>{invoice.reason}</Text>
         <Text style={[styles.small, {alignSelf:"center"}]}>
           (prekių / paslaugų pavadinimai, kiekiai, matavimo vienetai, vieneto kaina)

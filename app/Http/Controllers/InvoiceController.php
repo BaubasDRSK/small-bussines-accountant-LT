@@ -171,6 +171,7 @@ class InvoiceController extends Controller
             'invoice' => $actualInvoice,
             'updateInvoiceRoute' => route('invoices-update'),
             'registerInvoiceRoute' => route('invoices-register'),
+            'cashOrderRoute' => route('invoices-cashOrder'),
             'allProducts' => $products,
             'allCustomers' => $customers,
             'company' => $company,
@@ -240,9 +241,29 @@ class InvoiceController extends Controller
         );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function cashOrder(Request $request, Invoice $invoice)
+    {   
+        $fullInvoice =$request->input('fullInvoice');
+        
+        $invoice = Invoice::find($fullInvoice['id']);
+        if (!$invoice->cash_order) {
+            $cashOrderNumber = InvoiceNumberGenerator::next('cash_order');
+            $invoice->cash_order = $cashOrderNumber;
+            $invoice->save();
+        }
+        
+        return response()->json(
+            [
+                'cash_order' => $invoice,
+                'message' => 'Cash order registered successfully',
+                'type' => 'success',
+            ],
+            201
+        );
+    }
+
+
+    
     public function destroy(Invoice $invoice)
     {
         //
