@@ -49,7 +49,7 @@ class InvoiceNumberGenerator
             $prefix  = config('invoice.prefix');
 
             if ($key === 'proforma') {
-                $prefix = 'PRO-FORMA- '.$prefix;
+                $prefix = 'PRO-FORMA-'.$prefix;
             }
 
             if ($key === 'cash_order') {

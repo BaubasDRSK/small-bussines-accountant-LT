@@ -125,7 +125,7 @@ const ReceiptBlock = ({ invoice, company }) => {
 
       {/* Reason */}
       <View style={styles.field}>
-        <Text>Sumokėti už: 
+        <Text>Sumokėti už:  
             <Text style={{ fontWeight: 'bold' }}> 
               {invoice.registered ? "prekes ar paslaugas pagal saskaitą  "  : "prekes ar paslaugas pagal išankstinę sąskaitą  "}{invoice.invoice_number}
             </Text>

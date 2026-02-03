@@ -280,13 +280,6 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         }
     }, [pdfBlob, thisInvoice.invoice_number, downloaded]);
 
-    // const handleDownloadPdf = () => {
-    //     handelSaveInvoice();
-    //     setDownloaded(false); // Reset the downloaded state
-    //     const pdfPromise = pdf(<Invoicepdf invoice={thisInvoice} company={company} />);
-    //     setPdfBlob(pdfPromise);
-    // };
-
     const handleDownloadPdf = async () => {
         setDownloaded(false);
         // 1. Create the PDF instance
@@ -314,7 +307,6 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                 
                 // 2. Update state for the UI
                 const updatedInvoice = res.data.cash_order;
-                console.log(updatedInvoice);
                 setThisInvoice(updatedInvoice);
     
                 // 3. Use the fresh data directly (don't wait for state)
@@ -355,16 +347,16 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
                     {/* ACTION BUTTONS (TOP) */}
-                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
+                    <div className="flex flex-wrap gap-4 max-w-70 justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
                         <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out  text-xs md:text-base"
                             onClick={() => { window.location.href = '/invoices'; }}
                         >
                             Cancel
                         </button>
                         {(thisInvoice.editable || !thisInvoice.invoice_number) && (
                             <button
-                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out  text-xs md:text-base"
                                 onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
                             >
                                 Save
@@ -372,18 +364,18 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                          )}   
                          {thisInvoice.registered === false && (
                             <button
-                                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out  text-xs md:text-base"
                                
                                 onClick = {(e) => {     
-                                                        setThisInvoice(prevInvoice => ({
-                                                            ...prevInvoice,    
-                                                            editable: false    
-                                                        }));
-                                                        setModalStatus(true);
-                                                        setModalItem(thisInvoice);
-                                                        setModalTitle('Confirm REGISTRATION');
-                                                        setModalAction(() => [handleRegisterInvoice, e]); 
-                                                        setModalMessage(`Are you sure you want to REGISTER ${thisInvoice.invoice_number}?`);
+                                                    setThisInvoice(prevInvoice => ({
+                                                        ...prevInvoice,    
+                                                        editable: false    
+                                                    }));
+                                                    setModalStatus(true);
+                                                    setModalItem(thisInvoice);
+                                                    setModalTitle('Confirm REGISTRATION');
+                                                    setModalAction(() => [handleRegisterInvoice, e]); 
+                                                    setModalMessage(`Are you sure you want to REGISTER ${thisInvoice.invoice_number}?`);
                                                     }}  
                             >
                                 Register
@@ -391,7 +383,7 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                         )}
                         {thisInvoice.invoice_number ?
                             <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
+                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out  text-xs md:text-base"
                                 onClick={handleDownloadPdf}
                                 disabled={pdfBlob && !downloaded}
                             >
@@ -541,31 +533,6 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                             dropDownClassNames={dropDownClassNames}
                         />
                     </div>
-
-                    <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-700 sm:rounded-lg mb-6 shadow-md">
-                        <button
-                            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
-                            onClick={() => { window.location.href = '/invoices'; }}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
-                            onClick={() => thisInvoice.invoice_number === 0 ? handelStoreInvoice() : handelSaveInvoice()}
-                        >
-                            Save
-                        </button>
-                        {thisInvoice.invoice_number ?
-                            <button
-                                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out text-xs md:text-base"
-                                onClick={handleDownloadPdf}
-                                disabled={pdfBlob && !downloaded}
-                            >
-                                {pdfBlob && !downloaded ? 'Generating PDF...' : 'PDF'}
-                            </button>
-                            : null}
-                    </div>
-
                 </div>
             </div>
             <ModalYesCancel
