@@ -140,7 +140,7 @@ class InvoiceController extends Controller
         $invoice->notes = $fullInvoice['notes'];
         $invoice->registered = false;
         $invoice->editable = true;
-        $invoice->cash_order = [];
+        $invoice->cash_order = null;
     
 
 

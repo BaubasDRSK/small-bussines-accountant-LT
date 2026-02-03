@@ -11,6 +11,7 @@ import { Page, Text, Document, PDFViewer, PDFDownloadLink, pdf } from '@react-pd
 import Invoicepdf from '../components/invoicePDF';
 import CashOrderPDF from "../components/cashOrderPDF";
 import saveAs from 'file-saver';
+import ModalYesCancel from '../components/modalYesCancel';
 // 👇 ADDED IMPORTS FOR STYLE CONSISTENCY (Heroicons)
 import { PencilSquareIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
@@ -119,6 +120,12 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     // [recodrID ,id, code, name, description, price, quantity, total]
     const [products, setProducts] = useState(invoice.products ?? []);
 
+    const [modalStatus, setModalStatus] = useState(false);
+    const [modalItem, setModalItem] = useState('');
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalAction, setModalAction] = useState(null);
+
     const customersOptions = allCustomers.map(customer => {
         return ({ value: customer.id, label: customer.name })
     });
@@ -172,9 +179,9 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
     };
     
     // Function to handle saving changes to the invoice
-    const handelSaveInvoice = () => {
-        const fullInvoice = thisInvoice;
-
+    const handelSaveInvoice = (invoice = thisInvoice) => {
+        const fullInvoice = invoice;
+        console.log(fullInvoice);
         axios.post(updateInvoiceRoute, { fullInvoice })
             .then(res => {
                 if (res.status === 200 || res.status === 201) {
@@ -325,6 +332,13 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
         }
     };
 
+    const handlePaidStatusChange = () => {
+        const invoice = { ...thisInvoice }
+        invoice.paid = invoice.paid === 1 ? 0 : 1;
+        handelSaveInvoice(invoice);
+
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -359,13 +373,18 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                          {thisInvoice.registered === false && (
                             <button
                                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out mr-4 text-xs md:text-base"
-                                onClick={() =>{ 
-                                    setThisInvoice(prevInvoice => ({
-                                        ...prevInvoice,    // Copy all existing properties (invoice_number, date, etc.)
-                                        editable: false    // Override ONLY the editable property
-                                    }));
-                                    handelSaveInvoice(); 
-                                    handleRegisterInvoice();}}
+                               
+                                onClick = {(e) => {     
+                                                        setThisInvoice(prevInvoice => ({
+                                                            ...prevInvoice,    
+                                                            editable: false    
+                                                        }));
+                                                        setModalStatus(true);
+                                                        setModalItem(thisInvoice);
+                                                        setModalTitle('Confirm REGISTRATION');
+                                                        setModalAction(() => [handleRegisterInvoice, e]); 
+                                                        setModalMessage(`Are you sure you want to REGISTER ${thisInvoice.invoice_number}?`);
+                                                    }}  
                             >
                                 Register
                             </button>
@@ -413,7 +432,19 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
                                 <input 
                                     type="checkbox" 
                                     className='w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                                    onChange={() => setPaid(p => (p === 1 ? 0 : 1))}                                
+                                    // onChange={() => setPaid(p => (p === 1 ? 0 : 1))}       
+                                     onChange={(e) => {
+                                                        e.stopPropagation();
+                                                        
+                                                        setPaid(paid === 1 ? 0 : 1);
+                                                        console.log(thisInvoice.paid);
+
+                                                        setModalStatus(true);
+                                                        setModalItem(thisInvoice);
+                                                        setModalTitle('Confirm Paid Status Change');
+                                                        setModalAction(() => [handlePaidStatusChange, e]); 
+                                                        setModalMessage(`Are you sure you want to change paid status for invoice ${thisInvoice.invoice_number}?`);
+                                                    }}                         
                                     id="paidStatus" 
                                     name="paidStatus" 
                                     checked={paid === 1} 
@@ -537,7 +568,15 @@ export default function Invoice({ auth, updateRoute, invoice, updateInvoiceRoute
 
                 </div>
             </div>
-
+            <ModalYesCancel
+                            modalItem={modalItem}
+                            modalStatus={modalStatus}
+                            setModalStatus={setModalStatus}
+                            modalTitle={modalTitle}
+                            modalMessage={modalMessage}
+                            modalAction={modalAction}
+                        >
+            </ModalYesCancel>
             <Messages messages={messages} />
         </AuthenticatedLayout>
     );
