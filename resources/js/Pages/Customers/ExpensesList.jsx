@@ -21,17 +21,18 @@ export default function ExpensesList({ expensesList, doSort, setExpensesList, so
     const handlePaidStatusChange = (e, expense) =>{
         e.stopPropagation();
         console.log("siunciam");
-        expense.paid = expense.paid ? 0 : 1;
+        const newPaidStatus = expense.paid ? 0 : 1;
         const fullExpense = expense;
         const updatedExpensesList = expensesList.map(item => {
             if(item.id === expense.id){
-                item.paid = expense.paid;
+                item.paid = newPaidStatus;
                 return item;
             }
             return item;
         });
 
         setExpensesList(updatedExpensesList);
+        
         axios.post(updateExpenseRoute, {fullExpense})
         .then(res => {
             if (res.status === 201) {

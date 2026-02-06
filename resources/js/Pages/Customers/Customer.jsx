@@ -268,7 +268,7 @@ export default function Customer({ auth, updateRoute, customer, invoices, expens
                         <ExpensesList
                             expensesList={expensesList}
                             doSort={doSort}
-                            setInvoicesList={setExpensesList}
+                            setExpensesList={setExpensesList}
                             sortExpenses={sortInvoices}
                             updateExpenseRoute={updateExpenseRoute}
                             addMessage={addMessage}
